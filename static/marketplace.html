@@ -1,0 +1,1151 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>장터 | PAM-TALK</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* 헤더 */
+        header {
+            background: #fff;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 2rem;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #27ae60;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: #333;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: #27ae60;
+        }
+
+        .nav-links a.active {
+            color: #27ae60;
+            font-weight: 600;
+        }
+
+        .nav-links a.active::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: #27ae60;
+        }
+
+        .cart-icon {
+            position: relative;
+            font-size: 1.2rem;
+            color: #27ae60;
+            cursor: pointer;
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #e74c3c;
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: bold;
+        }
+
+        /* 메인 콘텐츠 */
+        main {
+            margin-top: 80px;
+            padding: 2rem 0;
+        }
+
+        /* 페이지 헤더 */
+        .page-header {
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            color: white;
+            padding: 3rem 0;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .page-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .page-header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        /* 필터 섹션 */
+        .filters {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .filter-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            align-items: end;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .filter-group label {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #555;
+        }
+
+        .filter-select, .filter-input {
+            padding: 0.75rem;
+            border: 2px solid #eee;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .filter-select:focus, .filter-input:focus {
+            outline: none;
+            border-color: #27ae60;
+        }
+
+        .filter-tags {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+
+        .filter-tag {
+            background: #27ae60;
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+        }
+
+        .filter-tag .remove {
+            background: rgba(255,255,255,0.3);
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+        }
+
+        /* 제품 그리드 */
+        .products-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .products-count {
+            color: #666;
+        }
+
+        .sort-select {
+            padding: 0.5rem 1rem;
+            border: 2px solid #eee;
+            border-radius: 8px;
+            background: white;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(45deg, #27ae60, #2ecc71);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .product-image::before {
+            content: '🥕';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 3rem;
+        }
+
+        .farmer-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(255,255,255,0.9);
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #27ae60;
+        }
+
+        .eco-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #27ae60;
+            color: white;
+            padding: 0.3rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        .product-info {
+            padding: 1.5rem;
+        }
+
+        .product-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        .product-farmer {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .product-location {
+            color: #888;
+            font-size: 0.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .product-price {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #27ae60;
+            margin-bottom: 1rem;
+        }
+
+        .product-price .unit {
+            font-size: 0.9rem;
+            font-weight: normal;
+            color: #666;
+        }
+
+        .eco-impact {
+            background: #f8f9fa;
+            padding: 0.8rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .eco-stats {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+        }
+
+        .eco-stat {
+            text-align: center;
+        }
+
+        .eco-value {
+            font-weight: bold;
+            color: #27ae60;
+            display: block;
+        }
+
+        .product-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            flex: 1;
+        }
+
+        .btn-primary {
+            background: #27ae60;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2ecc71;
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: #27ae60;
+            border: 2px solid #27ae60;
+        }
+
+        .btn-outline:hover {
+            background: #27ae60;
+            color: white;
+        }
+
+        /* 로딩 애니메이션 */
+        .loading {
+            text-align: center;
+            padding: 3rem;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #27ae60;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* 반응형 디자인 */
+        @media (max-width: 768px) {
+            .filter-row {
+                grid-template-columns: 1fr;
+            }
+
+            .products-header {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 1rem;
+            }
+
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .page-header h1 {
+                font-size: 2rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+        }
+
+        /* 장바구니 사이드바 */
+        .cart-sidebar {
+            position: fixed;
+            right: -400px;
+            top: 0;
+            width: 400px;
+            height: 100vh;
+            background: white;
+            box-shadow: -5px 0 20px rgba(0,0,0,0.1);
+            transition: right 0.3s ease;
+            z-index: 1001;
+            overflow-y: auto;
+        }
+
+        .cart-sidebar.open {
+            right: 0;
+        }
+
+        .cart-header {
+            padding: 2rem;
+            border-bottom: 1px solid #eee;
+            position: sticky;
+            top: 0;
+            background: white;
+            z-index: 10;
+        }
+
+        .cart-close {
+            float: right;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .cart-items {
+            padding: 1rem;
+        }
+
+        .cart-item {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .cart-item-image {
+            width: 60px;
+            height: 60px;
+            background: #27ae60;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .cart-item-info {
+            flex: 1;
+        }
+
+        .cart-item-name {
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+        }
+
+        .cart-item-farmer {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 0.5rem;
+        }
+
+        .cart-item-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .qty-btn {
+            width: 30px;
+            height: 30px;
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .qty-input {
+            width: 50px;
+            text-align: center;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 0.3rem;
+        }
+
+        .cart-summary {
+            position: sticky;
+            bottom: 0;
+            background: white;
+            padding: 2rem;
+            border-top: 2px solid #eee;
+        }
+
+        .cart-total {
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .cart-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            display: none;
+        }
+
+        .cart-overlay.show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="container">
+            <a href="/" class="logo">
+                <i class="fas fa-leaf"></i>
+                PAM-TALK
+            </a>
+
+            <ul class="nav-links">
+                <li><a href="/">피드</a></li>
+                <li><a href="/marketplace" class="active">장터</a></li>
+                <li><a href="#challenges">챌린지</a></li>
+                <li><a href="#community">커뮤니티</a></li>
+            </ul>
+
+            <div class="cart-icon" onclick="toggleCart()">
+                <i class="fas fa-shopping-cart"></i>
+                <span class="cart-count" id="cartCount">0</span>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="page-header">
+            <div class="container">
+                <h1>🛒 PAM-TALK 장터</h1>
+                <p>농부와 직접 연결되는 지역 농산물 마켓플레이스</p>
+            </div>
+        </section>
+
+        <div class="container">
+            <!-- 필터 섹션 -->
+            <section class="filters">
+                <div class="filter-row">
+                    <div class="filter-group">
+                        <label for="category">카테고리</label>
+                        <select id="category" class="filter-select">
+                            <option value="">전체 카테고리</option>
+                            <option value="채소">채소</option>
+                            <option value="과일">과일</option>
+                            <option value="곡물">곡물</option>
+                            <option value="축산물">축산물</option>
+                            <option value="수산물">수산물</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label for="location">지역</label>
+                        <select id="location" class="filter-select">
+                            <option value="">전체 지역</option>
+                            <option value="경기도">경기도</option>
+                            <option value="강원도">강원도</option>
+                            <option value="충청도">충청도</option>
+                            <option value="전라도">전라도</option>
+                            <option value="경상도">경상도</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label for="distance">최대 거리</label>
+                        <select id="distance" class="filter-select">
+                            <option value="">제한 없음</option>
+                            <option value="10">10km 이내</option>
+                            <option value="30">30km 이내</option>
+                            <option value="50">50km 이내</option>
+                            <option value="100">100km 이내</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label for="search">검색</label>
+                        <input type="text" id="search" class="filter-input" placeholder="상품명, 농부명 검색...">
+                    </div>
+                </div>
+
+                <div class="filter-tags" id="filterTags">
+                    <!-- 동적으로 필터 태그 추가 -->
+                </div>
+            </section>
+
+            <!-- 상품 목록 -->
+            <section class="products-section">
+                <div class="products-header">
+                    <div class="products-count">
+                        총 <span id="productCount">0</span>개 상품
+                    </div>
+                    <select class="sort-select" id="sortSelect">
+                        <option value="newest">최신순</option>
+                        <option value="price_low">가격 낮은 순</option>
+                        <option value="price_high">가격 높은 순</option>
+                        <option value="distance">가까운 거리순</option>
+                        <option value="eco_friendly">친환경 순</option>
+                        <option value="popular">인기순</option>
+                    </select>
+                </div>
+
+                <div class="products-grid" id="productsGrid">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        <p>상품을 불러오는 중...</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- 장바구니 사이드바 -->
+    <div class="cart-overlay" id="cartOverlay" onclick="closeCart()"></div>
+    <div class="cart-sidebar" id="cartSidebar">
+        <div class="cart-header">
+            <h3>장바구니</h3>
+            <button class="cart-close" onclick="closeCart()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="cart-items" id="cartItems">
+            <!-- 장바구니 아이템들이 동적으로 추가 -->
+        </div>
+        <div class="cart-summary">
+            <div class="cart-total">
+                총 금액: <span id="cartTotal">0</span>원
+            </div>
+            <button class="btn btn-primary" style="width: 100%;" onclick="checkout()">
+                <i class="fas fa-credit-card"></i>
+                주문하기
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // API 엔드포인트
+        const API_BASE = 'http://localhost:5003/api';
+
+        // 장바구니 상태
+        let cart = JSON.parse(localStorage.getItem('pamtalk_cart') || '[]');
+        let products = [];
+        let filteredProducts = [];
+
+        // 페이지 로드 시 실행
+        document.addEventListener('DOMContentLoaded', async () => {
+            updateCartUI();
+            await loadProducts();
+            setupEventListeners();
+        });
+
+        // 상품 목록 로드
+        async function loadProducts() {
+            try {
+                const response = await fetch(`${API_BASE}/products`);
+                const data = await response.json();
+
+                if (data.success && data.products) {
+                    products = data.products;
+                    filteredProducts = [...products];
+                    renderProducts();
+                    updateProductCount();
+                } else {
+                    // 데모 데이터 사용
+                    products = generateDemoProducts();
+                    filteredProducts = [...products];
+                    renderProducts();
+                    updateProductCount();
+                }
+            } catch (error) {
+                console.error('상품 로드 실패:', error);
+                // 데모 데이터 사용
+                products = generateDemoProducts();
+                filteredProducts = [...products];
+                renderProducts();
+                updateProductCount();
+            }
+        }
+
+        // 데모 상품 데이터 생성
+        function generateDemoProducts() {
+            const categories = ['채소', '과일', '곡물', '축산물'];
+            const locations = ['경기도 용인시', '강원도 춘천시', '충남 아산시', '전북 완주군', '경남 김해시'];
+            const farmers = ['김농부', '이농부', '박농부', '최농부', '정농부'];
+            const products = ['토마토', '오이', '배추', '사과', '배', '쌀', '감자', '양파', '당근', '상추'];
+
+            return Array.from({ length: 20 }, (_, i) => ({
+                product_id: `demo_${i + 1}`,
+                name: `신선한 ${products[i % products.length]}`,
+                category: categories[i % categories.length],
+                farmer_name: farmers[i % farmers.length],
+                farmer_id: `farmer_${(i % farmers.length) + 1}`,
+                location: locations[i % locations.length],
+                price_per_kg: Math.floor(Math.random() * 5000) + 2000,
+                available_quantity: Math.floor(Math.random() * 50) + 10,
+                carbon_footprint: (Math.random() * 1.5 + 0.3).toFixed(1),
+                distance_km: Math.floor(Math.random() * 80) + 5,
+                certifications: Math.random() > 0.5 ? ['유기농'] : ['친환경'],
+                description: `농부가 직접 기른 신선한 ${products[i % products.length]}입니다.`,
+                likes: Math.floor(Math.random() * 50),
+                harvest_date: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
+            }));
+        }
+
+        // 상품 렌더링
+        function renderProducts() {
+            const grid = document.getElementById('productsGrid');
+
+            if (filteredProducts.length === 0) {
+                grid.innerHTML = `
+                    <div style="grid-column: 1/-1; text-align: center; padding: 3rem;">
+                        <i class="fas fa-search" style="font-size: 3rem; color: #ddd; margin-bottom: 1rem;"></i>
+                        <p>조건에 맞는 상품이 없습니다.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = filteredProducts.map(product => `
+                <div class="product-card" onclick="viewProduct('${product.product_id}')">
+                    <div class="product-image">
+                        <div class="farmer-badge">
+                            <i class="fas fa-user"></i> ${product.farmer_name || '농부'}
+                        </div>
+                        <div class="eco-badge">
+                            -${product.carbon_footprint}kg CO₂
+                        </div>
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-name">${product.name}</h3>
+                        <div class="product-farmer">
+                            <i class="fas fa-seedling"></i>
+                            ${product.farmer_name || '농부'}
+                        </div>
+                        <div class="product-location">
+                            <i class="fas fa-map-marker-alt"></i>
+                            ${product.location} · ${product.distance_km || Math.floor(Math.random() * 50)}km
+                        </div>
+
+                        <div class="product-price">
+                            ${product.price_per_kg.toLocaleString()}원
+                            <span class="unit">/kg</span>
+                        </div>
+
+                        <div class="eco-impact">
+                            <div class="eco-stats">
+                                <div class="eco-stat">
+                                    <span class="eco-value">${product.available_quantity}kg</span>
+                                    <small>재고</small>
+                                </div>
+                                <div class="eco-stat">
+                                    <span class="eco-value">${product.certifications ? product.certifications[0] : '친환경'}</span>
+                                    <small>인증</small>
+                                </div>
+                                <div class="eco-stat">
+                                    <span class="eco-value">${product.likes || 0}</span>
+                                    <small>좋아요</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="product-actions">
+                            <button class="btn btn-outline" onclick="event.stopPropagation(); likeProduct('${product.product_id}')">
+                                <i class="far fa-heart"></i>
+                            </button>
+                            <button class="btn btn-primary" onclick="event.stopPropagation(); addToCart('${product.product_id}')">
+                                <i class="fas fa-cart-plus"></i>
+                                담기
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 상품 개수 업데이트
+        function updateProductCount() {
+            document.getElementById('productCount').textContent = filteredProducts.length;
+        }
+
+        // 이벤트 리스너 설정
+        function setupEventListeners() {
+            // 필터 변경
+            ['category', 'location', 'distance'].forEach(id => {
+                document.getElementById(id).addEventListener('change', applyFilters);
+            });
+
+            // 검색
+            document.getElementById('search').addEventListener('input', debounce(applyFilters, 300));
+
+            // 정렬
+            document.getElementById('sortSelect').addEventListener('change', applySorting);
+        }
+
+        // 필터 적용
+        function applyFilters() {
+            const category = document.getElementById('category').value;
+            const location = document.getElementById('location').value;
+            const distance = document.getElementById('distance').value;
+            const search = document.getElementById('search').value.toLowerCase();
+
+            filteredProducts = products.filter(product => {
+                const matchCategory = !category || product.category === category;
+                const matchLocation = !location || (product.location && product.location.includes(location));
+                const matchDistance = !distance || (product.distance_km && product.distance_km <= parseInt(distance));
+                const matchSearch = !search ||
+                    product.name.toLowerCase().includes(search) ||
+                    (product.farmer_name && product.farmer_name.toLowerCase().includes(search));
+
+                return matchCategory && matchLocation && matchDistance && matchSearch;
+            });
+
+            renderProducts();
+            updateProductCount();
+            updateFilterTags();
+        }
+
+        // 정렬 적용
+        function applySorting() {
+            const sortBy = document.getElementById('sortSelect').value;
+
+            filteredProducts.sort((a, b) => {
+                switch (sortBy) {
+                    case 'price_low':
+                        return a.price_per_kg - b.price_per_kg;
+                    case 'price_high':
+                        return b.price_per_kg - a.price_per_kg;
+                    case 'distance':
+                        return (a.distance_km || 0) - (b.distance_km || 0);
+                    case 'eco_friendly':
+                        return parseFloat(a.carbon_footprint) - parseFloat(b.carbon_footprint);
+                    case 'popular':
+                        return (b.likes || 0) - (a.likes || 0);
+                    default: // newest
+                        return new Date(b.harvest_date || b.created_at) - new Date(a.harvest_date || a.created_at);
+                }
+            });
+
+            renderProducts();
+        }
+
+        // 필터 태그 업데이트
+        function updateFilterTags() {
+            const category = document.getElementById('category').value;
+            const location = document.getElementById('location').value;
+            const distance = document.getElementById('distance').value;
+            const search = document.getElementById('search').value;
+
+            const tags = [];
+            if (category) tags.push({ type: 'category', value: category, label: category });
+            if (location) tags.push({ type: 'location', value: location, label: location });
+            if (distance) tags.push({ type: 'distance', value: distance, label: `${distance}km 이내` });
+            if (search) tags.push({ type: 'search', value: search, label: `"${search}"` });
+
+            const tagsContainer = document.getElementById('filterTags');
+            tagsContainer.innerHTML = tags.map(tag => `
+                <div class="filter-tag" onclick="removeFilter('${tag.type}')">
+                    ${tag.label}
+                    <span class="remove">×</span>
+                </div>
+            `).join('');
+        }
+
+        // 필터 제거
+        function removeFilter(type) {
+            document.getElementById(type).value = '';
+            applyFilters();
+        }
+
+        // 장바구니에 추가
+        function addToCart(productId) {
+            const product = products.find(p => p.product_id === productId);
+            if (!product) return;
+
+            const existingItem = cart.find(item => item.product_id === productId);
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({
+                    product_id: productId,
+                    name: product.name,
+                    farmer_name: product.farmer_name,
+                    price: product.price_per_kg,
+                    quantity: 1,
+                    carbon_footprint: product.carbon_footprint
+                });
+            }
+
+            saveCart();
+            updateCartUI();
+
+            // 추가 완료 피드백
+            showNotification('장바구니에 추가되었습니다! 🛒');
+        }
+
+        // 장바구니 토글
+        function toggleCart() {
+            const sidebar = document.getElementById('cartSidebar');
+            const overlay = document.getElementById('cartOverlay');
+
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('show');
+
+            if (sidebar.classList.contains('open')) {
+                renderCartItems();
+            }
+        }
+
+        // 장바구니 닫기
+        function closeCart() {
+            document.getElementById('cartSidebar').classList.remove('open');
+            document.getElementById('cartOverlay').classList.remove('show');
+        }
+
+        // 장바구니 UI 업데이트
+        function updateCartUI() {
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            document.getElementById('cartCount').textContent = totalItems;
+        }
+
+        // 장바구니 아이템 렌더링
+        function renderCartItems() {
+            const container = document.getElementById('cartItems');
+            const totalContainer = document.getElementById('cartTotal');
+
+            if (cart.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 3rem; color: #666;">
+                        <i class="fas fa-shopping-cart" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.3;"></i>
+                        <p>장바구니가 비어있습니다</p>
+                    </div>
+                `;
+                totalContainer.textContent = '0';
+                return;
+            }
+
+            let total = 0;
+            container.innerHTML = cart.map(item => {
+                const itemTotal = item.price * item.quantity;
+                total += itemTotal;
+
+                return `
+                    <div class="cart-item">
+                        <div class="cart-item-image">🥕</div>
+                        <div class="cart-item-info">
+                            <div class="cart-item-name">${item.name}</div>
+                            <div class="cart-item-farmer">
+                                <i class="fas fa-seedling"></i> ${item.farmer_name}
+                            </div>
+                            <div class="cart-item-controls">
+                                <button class="qty-btn" onclick="updateQuantity('${item.product_id}', -1)">-</button>
+                                <input type="number" value="${item.quantity}" min="1" class="qty-input"
+                                       onchange="setQuantity('${item.product_id}', this.value)">
+                                <button class="qty-btn" onclick="updateQuantity('${item.product_id}', 1)">+</button>
+                                <div style="margin-left: auto; font-weight: bold;">
+                                    ${itemTotal.toLocaleString()}원
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            totalContainer.textContent = total.toLocaleString();
+        }
+
+        // 수량 업데이트
+        function updateQuantity(productId, change) {
+            const item = cart.find(item => item.product_id === productId);
+            if (!item) return;
+
+            item.quantity += change;
+            if (item.quantity <= 0) {
+                cart = cart.filter(item => item.product_id !== productId);
+            }
+
+            saveCart();
+            updateCartUI();
+            renderCartItems();
+        }
+
+        // 수량 직접 설정
+        function setQuantity(productId, quantity) {
+            const item = cart.find(item => item.product_id === productId);
+            if (!item) return;
+
+            const newQty = parseInt(quantity);
+            if (newQty <= 0) {
+                cart = cart.filter(item => item.product_id !== productId);
+            } else {
+                item.quantity = newQty;
+            }
+
+            saveCart();
+            updateCartUI();
+            renderCartItems();
+        }
+
+        // 장바구니 저장
+        function saveCart() {
+            localStorage.setItem('pamtalk_cart', JSON.stringify(cart));
+        }
+
+        // 주문하기
+        function checkout() {
+            if (cart.length === 0) {
+                showNotification('장바구니가 비어있습니다!', 'warning');
+                return;
+            }
+
+            const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const totalCarbonSaved = cart.reduce((sum, item) => sum + (parseFloat(item.carbon_footprint) * item.quantity), 0);
+
+            alert(`주문 정보:
+- 총 금액: ${total.toLocaleString()}원
+- 절약할 탄소: ${totalCarbonSaved.toFixed(1)}kg CO₂
+- 획득 에코포인트: ${Math.floor(totalCarbonSaved * 10)}pt
+
+실제 결제 시스템은 개발 중입니다! 🚧`);
+        }
+
+        // 상품 상세보기
+        function viewProduct(productId) {
+            const product = products.find(p => p.product_id === productId);
+            if (!product) return;
+
+            alert(`${product.name} 상세정보:
+- 농부: ${product.farmer_name}
+- 위치: ${product.location}
+- 가격: ${product.price_per_kg.toLocaleString()}원/kg
+- 재고: ${product.available_quantity}kg
+- 탄소발자국: ${product.carbon_footprint}kg CO₂/kg
+
+상세 페이지는 개발 중입니다! 🚧`);
+        }
+
+        // 좋아요
+        function likeProduct(productId) {
+            const product = products.find(p => p.product_id === productId);
+            if (product) {
+                product.likes = (product.likes || 0) + 1;
+                renderProducts();
+                showNotification('좋아요! ❤️');
+            }
+        }
+
+        // 알림 표시
+        function showNotification(message, type = 'success') {
+            // 간단한 알림 구현
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 100px;
+                right: 20px;
+                background: ${type === 'success' ? '#27ae60' : '#e74c3c'};
+                color: white;
+                padding: 1rem 1.5rem;
+                border-radius: 8px;
+                z-index: 10000;
+                box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+                transform: translateX(400px);
+                transition: transform 0.3s ease;
+            `;
+            notification.textContent = message;
+
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.style.transform = 'translateX(0)';
+            }, 100);
+
+            setTimeout(() => {
+                notification.style.transform = 'translateX(400px)';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        // 디바운스 유틸리티
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+    </script>
+</body>
+</html>
