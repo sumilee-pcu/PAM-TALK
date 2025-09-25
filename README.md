@@ -1,8 +1,13 @@
-# PAM-TALK 사용설명서
-## 블록체인 기반 AI 농업 예측 플랫폼
+# PAM-TALK: Platform for Active Meta
+## 지역 농수축산물 유통 혁신 SNS 플랫폼
 
-PAM-TALK는 Algorand 블록체인과 AI 기술을 결합한 농업 예측 플랫폼입니다.
-농장 등록부터 ESG 토큰 발행, 수요 예측, 스마트 계약 거래까지 전체 농업 생태계를 지원합니다.
+PAM-TALK는 단순한 농업 플랫폼이 아닌, **Platform for Active Meta** - 지역 농수축산물 유통 혁신을 위한 소셜 네트워킹 플랫폼입니다.
+
+### 🌟 핵심 기능
+- 🌱 **탄소발자국 추적** 및 개인 참여 시스템
+- 🤝 **농촌-도시 직접 연결** SNS
+- 💰 **지역 기반 유통 활성화**
+- ⚡ **이윤 창출 구조**
 
 ---
 
@@ -595,3 +600,16 @@ The project is structured to support:
 - Testing (tests/)
 
 Each directory contains its own components for modular development.
+## 🚀 온라인 데모
+
+**라이브 데모**: https://pam-talk.vercel.app
+**GitHub**: https://github.com/sumilee-pcu/PAM-TALK
+
+---
+
+## 💻 기술 스택
+
+- **백엔드**: Python Flask, REST API
+- **프론트엔드**: HTML5, CSS3, ES6+ JavaScript
+- **배포**: Vercel + GitHub
+- **스타일링**: 반응형 웹 디자인
