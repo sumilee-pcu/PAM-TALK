@@ -1,0 +1,60 @@
+# Python 관련 파일들 제외
+__pycache__/
+*.py
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# AI 모델 및 데이터 파일들 제외
+ai_models/
+data/
+contracts/
+api/
+tests/
+
+# 로그 및 임시 파일
+*.log
+*.tmp
+*.cache
+
+# 백엔드 관련 파일들
+pamtalk_social_platform.py
+algorand_utils.py
+app.py
+basic_setup.py
+config.py
+requirements.txt
+setup.sh
+run_*.py
+start_*.py
+phase2_*.py
+optimized_*.py
+baseline_*.py
+performance_*.py
+demo_scenarios.py
+advanced_cache.py
+gunicorn.conf.py
+
+# 테스트 파일들
+pytest.ini
+run_tests.bat
+simple_baseline_results.json
+
+# 문서 파일들 (README는 유지)
+QUICKSTART.md
+SCALING_STRATEGY.md
+README_DEPLOYMENT.md
+
+# 환경 설정
+.env
+.env.example
+
+# Git 관련
+.gitignore
+
+# 오직 static 폴더와 필수 파일들만 배포
+# index.html (루트)
+# package.json
+# vercel.json
+# README.md
