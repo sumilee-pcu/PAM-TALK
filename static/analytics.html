@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PAM-TALK 대시보드 - AI 분석</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.min.js"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <i class="fas fa-leaf"></i> PAM-TALK
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">
+                            <i class="fas fa-home"></i> 대시보드
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="farms.html">
+                            <i class="fas fa-tractor"></i> 농장 관리
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="transactions.html">
+                            <i class="fas fa-exchange-alt"></i> 거래 내역
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="esg.html">
+                            <i class="fas fa-leaf"></i> ESG 현황
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="analytics.html">
+                            <i class="fas fa-chart-line"></i> AI 분석
+                        </a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user"></i> 계정
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-user-cog"></i> 설정</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-sign-out-alt"></i> 로그아웃</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container mt-4 main-content">
+        <!-- Alert Container -->
+        <div id="alert-container"></div>
+
+        <!-- Role Selector -->
+        <div class="role-selector">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5><i class="fas fa-user-tag"></i> 사용자 역할</h5>
+                    <p class="text-muted mb-0">보고 싶은 데이터에 따라 역할을 선택하세요</p>
+                </div>
+                <div class="col-md-6">
+                    <div id="role-selector"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- AI Analysis Overview -->
+        <div class="row mb-4">
+            <div class="col-md-3 col-sm-6 mb-3">
+                <div class="stat-card">
+                    <div class="stat-number" id="total-predictions">-</div>
+                    <div class="stat-label">총 예측 수행</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 mb-3">
+                <div class="stat-card">
+                    <div class="stat-number" id="prediction-accuracy">-</div>
+                    <div class="stat-label">예측 정확도</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 mb-3">
+                <div class="stat-card">
+                    <div class="stat-number" id="anomalies-detected">-</div>
+                    <div class="stat-label">이상 거래 탐지</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 mb-3">
+                <div class="stat-card">
+                    <div class="stat-number" id="ai-confidence">-</div>
+                    <div class="stat-label">AI 신뢰도</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Analysis Controls -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card dashboard-card">
+                    <div class="card-body">
+                        <div class="row align-items-end">
+                            <div class="col-md-2">
+                                <label class="form-label">분석 유형</label>
+                                <select class="form-select" id="analysis-type">
+                                    <option value="demand">수요 예측</option>
+                                    <option value="price">가격 예측</option>
+                                    <option value="anomaly">이상 탐지</option>
+                                    <option value="esg">ESG 분석</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">농장 선택</label>
+                                <select class="form-select" id="farm-selector">
+                                    <option value="">전체 농장</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">품목</label>
+                                <select class="form-select" id="product-selector">
+                                    <option value="all">전체</option>
+                                    <option value="tomatoes">토마토</option>
+                                    <option value="rice">쌀</option>
+                                    <option value="lettuce">상추</option>
+                                    <option value="carrots">당근</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">예측 기간</label>
+                                <select class="form-select" id="prediction-period">
+                                    <option value="7">7일</option>
+                                    <option value="14">14일</option>
+                                    <option value="30">30일</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">신뢰도 임계값</label>
+                                <input type="range" class="form-range" id="confidence-threshold" min="60" max="95" value="80">
+                                <small class="text-muted" id="confidence-value">80%</small>
+                            </div>
+                            <div class="col-md-2">
+                                <button class="btn btn-primary w-100" id="run-analysis">
+                                    <i class="fas fa-play"></i> 분석 실행
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Analysis Charts -->
+        <div class="row mb-4">
+            <div class="col-lg-8">
+                <div class="card dashboard-card">
+                    <div class="card-header">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 id="main-chart-title"><i class="fas fa-chart-line"></i> 수요 예측 분석</h5>
+                            <div>
+                                <button class="btn btn-sm btn-outline-secondary" id="export-chart">
+                                    <i class="fas fa-download"></i> 내보내기
+                                </button>
+                                <button class="btn btn-sm btn-outline-primary" id="refresh-chart">
+                                    <i class="fas fa-sync-alt"></i> 새로고침
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container">
+                            <canvas id="main-analysis-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="card dashboard-card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-info-circle"></i> 분석 결과 요약</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="analysis-summary">
+                            <div class="text-center text-muted">
+                                <i class="fas fa-chart-line fa-3x mb-3"></i>
+                                <p>분석을 실행하면 결과가 여기에 표시됩니다.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Secondary Analysis -->
+        <div class="row mb-4">
+            <div class="col-lg-6">
+                <div class="card dashboard-card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-exclamation-triangle"></i> 이상 탐지 결과</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container" style="height: 300px;">
+                            <canvas id="anomaly-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="card dashboard-card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-leaf"></i> ESG 점수 분포</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container" style="height: 300px;">
+                            <canvas id="esg-analysis-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Model Performance -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card dashboard-card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-brain"></i> AI 모델 성능 지표</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="text-center">
+                                    <h6>수요 예측 모델</h6>
+                                    <div class="progress mb-2">
+                                        <div class="progress-bar bg-success" id="demand-accuracy" style="width: 0%"></div>
+                                    </div>
+                                    <small class="text-muted" id="demand-accuracy-text">정확도: -</small>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="text-center">
+                                    <h6>가격 예측 모델</h6>
+                                    <div class="progress mb-2">
+                                        <div class="progress-bar bg-info" id="price-accuracy" style="width: 0%"></div>
+                                    </div>
+                                    <small class="text-muted" id="price-accuracy-text">정확도: -</small>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="text-center">
+                                    <h6>이상 탐지 모델</h6>
+                                    <div class="progress mb-2">
+                                        <div class="progress-bar bg-warning" id="anomaly-accuracy" style="width: 0%"></div>
+                                    </div>
+                                    <small class="text-muted" id="anomaly-accuracy-text">정확도: -</small>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="text-center">
+                                    <h6>ESG 예측 모델</h6>
+                                    <div class="progress mb-2">
+                                        <div class="progress-bar bg-primary" id="esg-model-accuracy" style="width: 0%"></div>
+                                    </div>
+                                    <small class="text-muted" id="esg-model-accuracy-text">정확도: -</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Detailed Analysis Results -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card dashboard-card">
+                    <div class="card-header">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5><i class="fas fa-table"></i> 상세 분석 결과</h5>
+                            <div>
+                                <button class="btn btn-sm btn-outline-secondary" id="export-results">
+                                    <i class="fas fa-file-csv"></i> CSV 내보내기
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr id="analysis-table-header">
+                                        <th>날짜</th>
+                                        <th>품목</th>
+                                        <th>예측값</th>
+                                        <th>신뢰도</th>
+                                        <th>상태</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="analysis-results-table">
+                                    <tr>
+                                        <td colspan="5" class="text-center text-muted">
+                                            분석을 실행하면 결과가 표시됩니다.
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Pagination -->
+                        <nav aria-label="분석 결과 페이지 네비게이션">
+                            <ul class="pagination justify-content-center" id="analysis-pagination">
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Analysis Settings Modal -->
+    <div class="modal fade" id="analysisSettingsModal" tabindex="-1" aria-labelledby="analysisSettingsModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="analysisSettingsModalLabel">
+                        <i class="fas fa-cog"></i> 고급 분석 설정
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="analysis-settings-form">
+                        <div class="mb-3">
+                            <label class="form-label">모델 선택</label>
+                            <select class="form-select" id="model-type">
+                                <option value="prophet">Facebook Prophet</option>
+                                <option value="lstm">LSTM 신경망</option>
+                                <option value="arima">ARIMA</option>
+                                <option value="ensemble">앙상블 모델</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">학습 데이터 기간 (일)</label>
+                            <input type="number" class="form-control" id="training-period" min="30" max="365" value="90">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">계절성 고려</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="include-seasonality" checked>
+                                <label class="form-check-label" for="include-seasonality">
+                                    계절적 패턴 포함
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">외부 요인 고려</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="include-weather" checked>
+                                <label class="form-check-label" for="include-weather">
+                                    날씨 데이터
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="include-holidays" checked>
+                                <label class="form-check-label" for="include-holidays">
+                                    휴일 및 이벤트
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">이상값 처리</label>
+                            <select class="form-select" id="outlier-handling">
+                                <option value="remove">제거</option>
+                                <option value="cap">상한/하한 적용</option>
+                                <option value="keep">유지</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                    <button type="button" class="btn btn-primary" id="apply-settings">
+                        <i class="fas fa-check"></i> 설정 적용
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h6>PAM-TALK Platform</h6>
+                    <p class="mb-0">농업 시장을 위한 블록체인 기반 AI 예측 플랫폼</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p class="mb-0">&copy; <span id="current-year"></span> PAM-TALK. All rights reserved.</p>
+                    <p class="mb-0">
+                        <a href="#" class="me-3">도움말</a>
+                        <a href="#" class="me-3">개인정보처리방침</a>
+                        <a href="#">이용약관</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Common JS -->
+    <script src="js/common.js"></script>
+    <!-- Page specific JS -->
+    <script src="js/analytics.js"></script>
+</body>
+</html>

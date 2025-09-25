@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PAM-TALK 대시보드 - 농장 관리</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.min.js"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <i class="fas fa-leaf"></i> PAM-TALK
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">
+                            <i class="fas fa-home"></i> 대시보드
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="farms.html">
+                            <i class="fas fa-tractor"></i> 농장 관리
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="transactions.html">
+                            <i class="fas fa-exchange-alt"></i> 거래 내역
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="esg.html">
+                            <i class="fas fa-leaf"></i> ESG 현황
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="analytics.html">
+                            <i class="fas fa-chart-line"></i> AI 분석
+                        </a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user"></i> 계정
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-user-cog"></i> 설정</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-sign-out-alt"></i> 로그아웃</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container mt-4 main-content">
+        <!-- Alert Container -->
+        <div id="alert-container"></div>
+
+        <!-- Role Selector -->
+        <div class="role-selector">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5><i class="fas fa-user-tag"></i> 사용자 역할</h5>
+                    <p class="text-muted mb-0">보고 싶은 데이터에 따라 역할을 선택하세요</p>
+                </div>
+                <div class="col-md-6">
+                    <div id="role-selector"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Farm Statistics -->
+        <div class="row mb-4">
+            <div class="col-md-3 col-sm-6 mb-3">
+                <div class="stat-card farms">
+                    <div class="stat-number" id="active-farms">-</div>
+                    <div class="stat-label">활성 농장</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 mb-3">
+                <div class="stat-card">
+                    <div class="stat-number" id="total-area">-</div>
+                    <div class="stat-label">총 면적 (ha)</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 mb-3">
+                <div class="stat-card">
+                    <div class="stat-number" id="product-types">-</div>
+                    <div class="stat-label">재배 품목</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 mb-3">
+                <div class="stat-card">
+                    <div class="stat-number" id="avg-esg">-</div>
+                    <div class="stat-label">평균 ESG 점수</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Farm Management Actions -->
+        <div class="row mb-4" data-role="farmer,admin">
+            <div class="col-12">
+                <div class="card dashboard-card">
+                    <div class="card-header">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5><i class="fas fa-plus"></i> 농장 관리</h5>
+                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#farmModal">
+                                <i class="fas fa-plus"></i> 새 농장 등록
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <p class="text-muted mb-0">새로운 농장을 등록하거나 기존 농장 정보를 관리할 수 있습니다.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card dashboard-card">
+                    <div class="card-body">
+                        <div class="row align-items-end">
+                            <div class="col-md-3">
+                                <label class="form-label">상태별 필터</label>
+                                <select class="form-select" id="status-filter">
+                                    <option value="">전체</option>
+                                    <option value="active">활성</option>
+                                    <option value="inactive">비활성</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">품목별 필터</label>
+                                <select class="form-select" id="product-filter">
+                                    <option value="">전체</option>
+                                    <option value="tomatoes">토마토</option>
+                                    <option value="rice">쌀</option>
+                                    <option value="lettuce">상추</option>
+                                    <option value="carrots">당근</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">검색</label>
+                                <input type="text" class="form-control" id="search-input" placeholder="농장명, 소유자명">
+                            </div>
+                            <div class="col-md-3">
+                                <button class="btn btn-outline-primary w-100" id="apply-filters">
+                                    <i class="fas fa-search"></i> 필터 적용
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Farm List -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card dashboard-card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-list"></i> 농장 목록</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>농장명</th>
+                                        <th>소유자</th>
+                                        <th>위치</th>
+                                        <th>면적</th>
+                                        <th>주요 품목</th>
+                                        <th>ESG 점수</th>
+                                        <th>상태</th>
+                                        <th>작업</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="farms-table">
+                                    <tr>
+                                        <td colspan="8" class="text-center">
+                                            <div class="spinner"></div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Pagination -->
+                        <nav aria-label="농장 목록 페이지 네비게이션">
+                            <ul class="pagination justify-content-center" id="farms-pagination">
+                                <li class="page-item disabled">
+                                    <a class="page-link" href="#" tabindex="-1">이전</a>
+                                </li>
+                                <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                                <li class="page-item">
+                                    <a class="page-link" href="#">다음</a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Farm Registration Modal -->
+    <div class="modal fade" id="farmModal" tabindex="-1" aria-labelledby="farmModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="farmModalLabel">
+                        <i class="fas fa-tractor"></i> 새 농장 등록
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="farm-form">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">농장 ID *</label>
+                                <input type="text" class="form-control" id="farm-id" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">농장명 *</label>
+                                <input type="text" class="form-control" id="farm-name" required>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">소유자명 *</label>
+                                <input type="text" class="form-control" id="owner-name" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">연락처</label>
+                                <input type="tel" class="form-control" id="phone">
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-8 mb-3">
+                                <label class="form-label">위치 *</label>
+                                <input type="text" class="form-control" id="location" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">면적 (ha) *</label>
+                                <input type="number" class="form-control" id="size-hectares" step="0.1" required>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">설립일</label>
+                                <input type="date" class="form-control" id="established-date">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">이메일</label>
+                                <input type="email" class="form-control" id="email">
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">주요 재배 품목</label>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="tomatoes" id="product-tomatoes">
+                                        <label class="form-check-label" for="product-tomatoes">토마토</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="rice" id="product-rice">
+                                        <label class="form-check-label" for="product-rice">쌀</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="lettuce" id="product-lettuce">
+                                        <label class="form-check-label" for="product-lettuce">상추</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="carrots" id="product-carrots">
+                                        <label class="form-check-label" for="product-carrots">당근</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">인증</label>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="organic" id="cert-organic">
+                                        <label class="form-check-label" for="cert-organic">유기농 인증</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="fair_trade" id="cert-fair-trade">
+                                        <label class="form-check-label" for="cert-fair-trade">공정무역 인증</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">헥타르당 물 사용량 (L)</label>
+                                <input type="number" class="form-control" id="water-usage" value="5000">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">탄소 배출량 (t/ha)</label>
+                                <input type="number" class="form-control" id="carbon-emissions" step="0.1" value="2.5">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">재생 에너지 비율 (%)</label>
+                                <input type="number" class="form-control" id="renewable-energy" min="0" max="100" value="60">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                    <button type="button" class="btn btn-primary" id="save-farm">
+                        <i class="fas fa-save"></i> 등록
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Farm Details Modal -->
+    <div class="modal fade" id="farmDetailsModal" tabindex="-1" aria-labelledby="farmDetailsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="farmDetailsModalLabel">
+                        <i class="fas fa-info-circle"></i> 농장 상세 정보
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="farm-details-content">
+                        <div class="loading">
+                            <div class="spinner"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h6>PAM-TALK Platform</h6>
+                    <p class="mb-0">농업 시장을 위한 블록체인 기반 AI 예측 플랫폼</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p class="mb-0">&copy; <span id="current-year"></span> PAM-TALK. All rights reserved.</p>
+                    <p class="mb-0">
+                        <a href="#" class="me-3">도움말</a>
+                        <a href="#" class="me-3">개인정보처리방침</a>
+                        <a href="#">이용약관</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Common JS -->
+    <script src="js/common.js"></script>
+    <!-- Page specific JS -->
+    <script src="js/farms.js"></script>
+</body>
+</html>

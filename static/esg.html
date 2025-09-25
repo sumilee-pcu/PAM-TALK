@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PAM-TALK 대시보드 - ESG 현황</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.min.js"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <i class="fas fa-leaf"></i> PAM-TALK
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">
+                            <i class="fas fa-home"></i> 대시보드
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="farms.html">
+                            <i class="fas fa-tractor"></i> 농장 관리
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="transactions.html">
+                            <i class="fas fa-exchange-alt"></i> 거래 내역
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="esg.html">
+                            <i class="fas fa-leaf"></i> ESG 현황
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="analytics.html">
+                            <i class="fas fa-chart-line"></i> AI 분석
+                        </a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user"></i> 계정
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-user-cog"></i> 설정</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-sign-out-alt"></i> 로그아웃</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container mt-4 main-content">
+        <!-- Alert Container -->
+        <div id="alert-container"></div>
+
+        <!-- Role Selector -->
+        <div class="role-selector">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5><i class="fas fa-user-tag"></i> 사용자 역할</h5>
+                    <p class="text-muted mb-0">보고 싶은 데이터에 따라 역할을 선택하세요</p>
+                </div>
+                <div class="col-md-6">
+                    <div id="role-selector"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ESG Overview -->
+        <div class="row mb-4">
+            <div class="col-md-3 col-sm-6 mb-3">
+                <div class="stat-card esg">
+                    <div class="stat-number" id="overall-esg">-</div>
+                    <div class="stat-label">전체 평균 ESG</div>
+                    <div class="stat-trend trend-up" id="esg-trend">
+                        <i class="fas fa-arrow-up"></i> +2% (지난달)
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 mb-3">
+                <div class="stat-card">
+                    <div class="stat-number" id="environmental-score">-</div>
+                    <div class="stat-label">환경 점수</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 mb-3">
+                <div class="stat-card">
+                    <div class="stat-number" id="social-score">-</div>
+                    <div class="stat-label">사회 점수</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 mb-3">
+                <div class="stat-card">
+                    <div class="stat-number" id="governance-score">-</div>
+                    <div class="stat-label">지배구조 점수</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ESG Score Distribution -->
+        <div class="row mb-4">
+            <div class="col-lg-6">
+                <div class="card dashboard-card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-chart-pie"></i> ESG 점수 분포</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container">
+                            <canvas id="esg-distribution-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="card dashboard-card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-chart-line"></i> ESG 점수 추이</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container">
+                            <canvas id="esg-trend-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ESG Token Rewards -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card dashboard-card">
+                    <div class="card-header">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5><i class="fas fa-coins"></i> ESG 토큰 보상 현황</h5>
+                            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#esgTokenModal" data-role="admin">
+                                <i class="fas fa-plus"></i> 토큰 발행
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-3 text-center">
+                                <div class="stat-card">
+                                    <div class="stat-number text-warning" id="total-tokens">-</div>
+                                    <div class="stat-label">총 발행량</div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 text-center">
+                                <div class="stat-card">
+                                    <div class="stat-number text-info" id="monthly-tokens">-</div>
+                                    <div class="stat-label">이번달 발행</div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 text-center">
+                                <div class="stat-card">
+                                    <div class="stat-number text-success" id="reward-farms">-</div>
+                                    <div class="stat-label">보상 받은 농장</div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 text-center">
+                                <div class="stat-card">
+                                    <div class="stat-number text-primary" id="avg-reward">-</div>
+                                    <div class="stat-label">평균 보상량</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ESG Performance by Farm -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card dashboard-card">
+                    <div class="card-header">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5><i class="fas fa-tractor"></i> 농장별 ESG 성과</h5>
+                            <div>
+                                <select class="form-select form-select-sm" id="esg-sort">
+                                    <option value="score_desc">점수 높은순</option>
+                                    <option value="score_asc">점수 낮은순</option>
+                                    <option value="name">농장명순</option>
+                                    <option value="tokens">토큰 많은순</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>농장명</th>
+                                        <th>전체 ESG</th>
+                                        <th>환경 (E)</th>
+                                        <th>사회 (S)</th>
+                                        <th>지배구조 (G)</th>
+                                        <th>토큰 보상</th>
+                                        <th>인증</th>
+                                        <th>마지막 업데이트</th>
+                                        <th>작업</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="esg-farms-table">
+                                    <tr>
+                                        <td colspan="9" class="text-center">
+                                            <div class="spinner"></div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ESG Improvement Suggestions -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card dashboard-card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-lightbulb"></i> ESG 개선 제안</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="esg-suggestions">
+                            <div class="loading">
+                                <div class="spinner"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ESG Token Modal -->
+    <div class="modal fade" id="esgTokenModal" tabindex="-1" aria-labelledby="esgTokenModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="esgTokenModalLabel">
+                        <i class="fas fa-coins"></i> ESG 토큰 발행
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="esg-token-form">
+                        <div class="mb-3">
+                            <label class="form-label">농장 선택 *</label>
+                            <select class="form-select" id="token-farm-id" required>
+                                <option value="">농장을 선택하세요</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">토큰 수량 *</label>
+                            <input type="number" class="form-control" id="token-amount" min="1" max="1000" required>
+                            <small class="form-text text-muted">최대 1,000 토큰까지 발행 가능</small>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">발행 사유</label>
+                            <select class="form-select" id="token-reason">
+                                <option value="esg_excellence">ESG 우수 성과</option>
+                                <option value="organic_certification">유기농 인증</option>
+                                <option value="carbon_reduction">탄소 감축</option>
+                                <option value="water_conservation">물 절약</option>
+                                <option value="renewable_energy">재생에너지 사용</option>
+                                <option value="social_contribution">사회 공헌</option>
+                                <option value="other">기타</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">추가 메모</label>
+                            <textarea class="form-control" id="token-memo" rows="3" placeholder="토큰 발행에 대한 추가 설명"></textarea>
+                        </div>
+
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle"></i>
+                            발행된 토큰은 농장의 ESG 성과를 인정하는 보상으로, 블록체인에 기록됩니다.
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                    <button type="button" class="btn btn-success" id="issue-tokens">
+                        <i class="fas fa-coins"></i> 토큰 발행
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ESG Details Modal -->
+    <div class="modal fade" id="esgDetailsModal" tabindex="-1" aria-labelledby="esgDetailsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="esgDetailsModalLabel">
+                        <i class="fas fa-leaf"></i> ESG 상세 점수
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="esg-details-content">
+                        <div class="loading">
+                            <div class="spinner"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h6>PAM-TALK Platform</h6>
+                    <p class="mb-0">농업 시장을 위한 블록체인 기반 AI 예측 플랫폼</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p class="mb-0">&copy; <span id="current-year"></span> PAM-TALK. All rights reserved.</p>
+                    <p class="mb-0">
+                        <a href="#" class="me-3">도움말</a>
+                        <a href="#" class="me-3">개인정보처리방침</a>
+                        <a href="#">이용약관</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Common JS -->
+    <script src="js/common.js"></script>
+    <!-- Page specific JS -->
+    <script src="js/esg.js"></script>
+</body>
+</html>

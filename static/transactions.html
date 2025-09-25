@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PAM-TALK 대시보드 - 거래 내역</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.min.js"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <i class="fas fa-leaf"></i> PAM-TALK
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">
+                            <i class="fas fa-home"></i> 대시보드
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="farms.html">
+                            <i class="fas fa-tractor"></i> 농장 관리
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="transactions.html">
+                            <i class="fas fa-exchange-alt"></i> 거래 내역
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="esg.html">
+                            <i class="fas fa-leaf"></i> ESG 현황
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="analytics.html">
+                            <i class="fas fa-chart-line"></i> AI 분석
+                        </a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user"></i> 계정
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-user-cog"></i> 설정</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-sign-out-alt"></i> 로그아웃</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container mt-4 main-content">
+        <!-- Alert Container -->
+        <div id="alert-container"></div>
+
+        <!-- Role Selector -->
+        <div class="role-selector">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5><i class="fas fa-user-tag"></i> 사용자 역할</h5>
+                    <p class="text-muted mb-0">보고 싶은 데이터에 따라 역할을 선택하세요</p>
+                </div>
+                <div class="col-md-6">
+                    <div id="role-selector"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Transaction Statistics -->
+        <div class="row mb-4">
+            <div class="col-md-3 col-sm-6 mb-3">
+                <div class="stat-card transactions">
+                    <div class="stat-number" id="total-transactions">-</div>
+                    <div class="stat-label">총 거래</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 mb-3">
+                <div class="stat-card revenue">
+                    <div class="stat-number" id="total-volume">-</div>
+                    <div class="stat-label">총 거래액</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 mb-3">
+                <div class="stat-card">
+                    <div class="stat-number" id="avg-transaction">-</div>
+                    <div class="stat-label">평균 거래액</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 mb-3">
+                <div class="stat-card">
+                    <div class="stat-number" id="anomaly-rate">-</div>
+                    <div class="stat-label">이상 거래율</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Create Transaction -->
+        <div class="row mb-4" data-role="farmer,consumer">
+            <div class="col-12">
+                <div class="card dashboard-card">
+                    <div class="card-header">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5><i class="fas fa-plus"></i> 새 거래 생성</h5>
+                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#transactionModal">
+                                <i class="fas fa-plus"></i> 거래 생성
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <p class="text-muted mb-0">새로운 농산물 거래를 생성하고 블록체인에 기록할 수 있습니다.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Transaction Chart -->
+        <div class="row mb-4">
+            <div class="col-lg-8">
+                <div class="card dashboard-card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-chart-bar"></i> 월별 거래량</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container">
+                            <canvas id="transaction-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="card dashboard-card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-exclamation-triangle"></i> 이상 거래 현황</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="anomaly-summary">
+                            <div class="loading">
+                                <div class="spinner"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card dashboard-card">
+                    <div class="card-body">
+                        <div class="row align-items-end">
+                            <div class="col-md-2">
+                                <label class="form-label">농장 ID</label>
+                                <input type="text" class="form-control" id="farm-filter" placeholder="FARM_001">
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">품목</label>
+                                <select class="form-select" id="product-filter">
+                                    <option value="">전체</option>
+                                    <option value="tomatoes">토마토</option>
+                                    <option value="rice">쌀</option>
+                                    <option value="lettuce">상추</option>
+                                    <option value="carrots">당근</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">시작일</label>
+                                <input type="date" class="form-control" id="start-date">
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">종료일</label>
+                                <input type="date" class="form-control" id="end-date">
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">건수</label>
+                                <select class="form-select" id="limit-filter">
+                                    <option value="50">50건</option>
+                                    <option value="100">100건</option>
+                                    <option value="200">200건</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <button class="btn btn-outline-primary w-100" id="apply-filters">
+                                    <i class="fas fa-search"></i> 필터 적용
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Transaction List -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card dashboard-card">
+                    <div class="card-header">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5><i class="fas fa-list"></i> 거래 목록</h5>
+                            <button class="btn btn-sm btn-outline-secondary" id="refresh-transactions">
+                                <i class="fas fa-sync-alt"></i> 새로고침
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>거래 ID</th>
+                                        <th>시간</th>
+                                        <th>생산자</th>
+                                        <th>소비자</th>
+                                        <th>품목</th>
+                                        <th>수량</th>
+                                        <th>단가</th>
+                                        <th>총액</th>
+                                        <th>ESG 점수</th>
+                                        <th>이상 탐지</th>
+                                        <th>작업</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="transactions-table">
+                                    <tr>
+                                        <td colspan="11" class="text-center">
+                                            <div class="spinner"></div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Pagination -->
+                        <nav aria-label="거래 목록 페이지 네비게이션">
+                            <ul class="pagination justify-content-center" id="transactions-pagination">
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Transaction Creation Modal -->
+    <div class="modal fade" id="transactionModal" tabindex="-1" aria-labelledby="transactionModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="transactionModalLabel">
+                        <i class="fas fa-exchange-alt"></i> 새 거래 생성
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="transaction-form">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">생산자 ID *</label>
+                                <input type="text" class="form-control" id="producer-id" placeholder="FARM_001" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">소비자 ID *</label>
+                                <input type="text" class="form-control" id="consumer-id" placeholder="CONSUMER_001" required>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">품목 *</label>
+                                <select class="form-select" id="transaction-product" required>
+                                    <option value="">선택하세요</option>
+                                    <option value="tomatoes">토마토</option>
+                                    <option value="rice">쌀</option>
+                                    <option value="lettuce">상추</option>
+                                    <option value="carrots">당근</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">수량 (kg) *</label>
+                                <input type="number" class="form-control" id="quantity" min="1" required>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">단가 (원/kg) *</label>
+                                <input type="number" class="form-control" id="price-per-unit" min="1" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">총액</label>
+                                <input type="text" class="form-control" id="total-amount" readonly>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">품질 점수 (1-100)</label>
+                                <input type="number" class="form-control" id="quality-score" min="1" max="100" value="85">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">ESG 점수 (1-100)</label>
+                                <input type="number" class="form-control" id="esg-score" min="1" max="100" value="75">
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">위치</label>
+                                <input type="text" class="form-control" id="transaction-location" placeholder="Seoul">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">결제 방법</label>
+                                <select class="form-select" id="payment-method">
+                                    <option value="PAMT_TRANSFER">PAM 토큰 전송</option>
+                                    <option value="BANK_TRANSFER">계좌 이체</option>
+                                    <option value="CASH">현금</option>
+                                    <option value="CREDIT_CARD">신용카드</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">배송 시간 (시간)</label>
+                                <input type="number" class="form-control" id="delivery-time" value="24" min="1">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">메모</label>
+                                <input type="text" class="form-control" id="transaction-note" placeholder="거래 관련 메모">
+                            </div>
+                        </div>
+
+                        <div class="alert alert-info" role="alert">
+                            <i class="fas fa-info-circle"></i>
+                            거래 생성 시 자동으로 이상 탐지 검사가 수행됩니다.
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                    <button type="button" class="btn btn-warning" id="check-anomaly">
+                        <i class="fas fa-search"></i> 이상 탐지 확인
+                    </button>
+                    <button type="button" class="btn btn-primary" id="create-transaction">
+                        <i class="fas fa-plus"></i> 거래 생성
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Transaction Details Modal -->
+    <div class="modal fade" id="transactionDetailsModal" tabindex="-1" aria-labelledby="transactionDetailsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="transactionDetailsModalLabel">
+                        <i class="fas fa-info-circle"></i> 거래 상세 정보
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="transaction-details-content">
+                        <div class="loading">
+                            <div class="spinner"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h6>PAM-TALK Platform</h6>
+                    <p class="mb-0">농업 시장을 위한 블록체인 기반 AI 예측 플랫폼</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p class="mb-0">&copy; <span id="current-year"></span> PAM-TALK. All rights reserved.</p>
+                    <p class="mb-0">
+                        <a href="#" class="me-3">도움말</a>
+                        <a href="#" class="me-3">개인정보처리방침</a>
+                        <a href="#">이용약관</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Common JS -->
+    <script src="js/common.js"></script>
+    <!-- Page specific JS -->
+    <script src="js/transactions.js"></script>
+</body>
+</html>
