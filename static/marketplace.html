@@ -247,17 +247,27 @@
         .product-image {
             width: 100%;
             height: 200px;
-            background: linear-gradient(45deg, #27ae60, #2ecc71);
             position: relative;
             overflow: hidden;
+            background: #f0f0f0;
         }
 
-        .product-image::before {
-            content: '🥕';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s;
+        }
+
+        .product-card:hover .product-image img {
+            transform: scale(1.05);
+        }
+
+        .product-image.placeholder {
+            background: linear-gradient(45deg, #27ae60, #2ecc71);
+            display: flex;
+            align-items: center;
+            justify-content: center;
             font-size: 3rem;
         }
 
@@ -271,6 +281,7 @@
             font-size: 0.8rem;
             font-weight: 600;
             color: #27ae60;
+            z-index: 1;
         }
 
         .eco-badge {
@@ -283,6 +294,7 @@
             border-radius: 12px;
             font-size: 0.7rem;
             font-weight: 600;
+            z-index: 1;
         }
 
         .product-info {
@@ -489,6 +501,13 @@
             justify-content: center;
             color: white;
             font-size: 1.2rem;
+            overflow: hidden;
+        }
+
+        .cart-item-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
         .cart-item-info {
@@ -736,27 +755,314 @@
             }
         }
 
-        // 데모 상품 데이터 생성
+        // 데모 상품 데이터 생성 (이미지 포함)
         function generateDemoProducts() {
-            const categories = ['채소', '과일', '곡물', '축산물'];
-            const locations = ['경기도 용인시', '강원도 춘천시', '충남 아산시', '전북 완주군', '경남 김해시'];
-            const farmers = ['김농부', '이농부', '박농부', '최농부', '정농부'];
-            const products = ['토마토', '오이', '배추', '사과', '배', '쌀', '감자', '양파', '당근', '상추'];
+            const productData = [
+                {
+                    name: '유기농 방울토마토',
+                    category: '채소',
+                    farmer_name: '김민수 농부',
+                    location: '경기도 용인시',
+                    price_per_kg: 8500,
+                    available_quantity: 45,
+                    carbon_footprint: 0.8,
+                    distance_km: 12,
+                    certifications: ['유기농', '무농약'],
+                    description: '태양 아래에서 정성껏 키운 달콤한 방울토마토입니다.',
+                    likes: 128,
+                    image: 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=400&h=300&fit=crop',
+                    emoji: '🍅'
+                },
+                {
+                    name: '청정 무농약 오이',
+                    category: '채소',
+                    farmer_name: '이영희 농부',
+                    location: '강원도 춘천시',
+                    price_per_kg: 4200,
+                    available_quantity: 60,
+                    carbon_footprint: 0.6,
+                    distance_km: 85,
+                    certifications: ['무농약'],
+                    description: '아삭아삭한 신선한 오이입니다.',
+                    likes: 89,
+                    image: 'https://images.unsplash.com/photo-1604977042946-1eecc30f269e?w=400&h=300&fit=crop',
+                    emoji: '🥒'
+                },
+                {
+                    name: '알타리 무',
+                    category: '채소',
+                    farmer_name: '박철수 농부',
+                    location: '충남 아산시',
+                    price_per_kg: 3800,
+                    available_quantity: 80,
+                    carbon_footprint: 0.5,
+                    distance_km: 48,
+                    certifications: ['친환경'],
+                    description: '아삭하고 시원한 알타리 무입니다.',
+                    likes: 45,
+                    image: 'https://images.unsplash.com/photo-1585868241961-5a7c2ed062b8?w=400&h=300&fit=crop',
+                    emoji: '🥕'
+                },
+                {
+                    name: '유기농 사과',
+                    category: '과일',
+                    farmer_name: '최수진 농부',
+                    location: '경북 영천시',
+                    price_per_kg: 12000,
+                    available_quantity: 35,
+                    carbon_footprint: 1.2,
+                    distance_km: 220,
+                    certifications: ['유기농'],
+                    description: '아삭하고 달콤한 유기농 사과입니다.',
+                    likes: 234,
+                    image: 'https://images.unsplash.com/photo-1568702846914-96b305d2aaeb?w=400&h=300&fit=crop',
+                    emoji: '🍎'
+                },
+                {
+                    name: '햇 감자',
+                    category: '채소',
+                    farmer_name: '정태양 농부',
+                    location: '강원도 평창군',
+                    price_per_kg: 3500,
+                    available_quantity: 120,
+                    carbon_footprint: 0.4,
+                    distance_km: 145,
+                    certifications: ['친환경'],
+                    description: '고랭지에서 자란 신선한 햇 감자입니다.',
+                    likes: 167,
+                    image: 'https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=400&h=300&fit=crop',
+                    emoji: '🥔'
+                },
+                {
+                    name: '수박',
+                    category: '과일',
+                    farmer_name: '윤지현 농부',
+                    location: '전남 무안군',
+                    price_per_kg: 2800,
+                    available_quantity: 25,
+                    carbon_footprint: 1.5,
+                    distance_km: 310,
+                    certifications: ['친환경'],
+                    description: '달콤하고 시원한 여름 수박입니다.',
+                    likes: 312,
+                    image: 'https://images.unsplash.com/photo-1587049352846-4a222e784422?w=400&h=300&fit=crop',
+                    emoji: '🍉'
+                },
+                {
+                    name: '유기농 상추',
+                    category: '채소',
+                    farmer_name: '강민지 농부',
+                    location: '경기도 광주시',
+                    price_per_kg: 7500,
+                    available_quantity: 30,
+                    carbon_footprint: 0.3,
+                    distance_km: 28,
+                    certifications: ['유기농'],
+                    description: '싱싱하고 부드러운 유기농 상추입니다.',
+                    likes: 76,
+                    image: 'https://images.unsplash.com/photo-1622206151226-18ca2c9ab4a1?w=400&h=300&fit=crop',
+                    emoji: '🥬'
+                },
+                {
+                    name: '딸기',
+                    category: '과일',
+                    farmer_name: '송하늘 농부',
+                    location: '충남 논산시',
+                    price_per_kg: 15000,
+                    available_quantity: 20,
+                    carbon_footprint: 0.9,
+                    distance_km: 95,
+                    certifications: ['친환경'],
+                    description: '달콤하고 향긋한 논산 딸기입니다.',
+                    likes: 456,
+                    image: 'https://images.unsplash.com/photo-1464965911861-746a04b4bca6?w=400&h=300&fit=crop',
+                    emoji: '🍓'
+                },
+                {
+                    name: '쌀(10kg)',
+                    category: '곡물',
+                    farmer_name: '황금들 농부',
+                    location: '전북 김제시',
+                    price_per_kg: 4200,
+                    available_quantity: 200,
+                    carbon_footprint: 1.8,
+                    distance_km: 185,
+                    certifications: ['친환경'],
+                    description: '황금들판에서 자란 고품질 쌀입니다.',
+                    likes: 289,
+                    image: 'https://images.unsplash.com/photo-1586201375761-83865001e31c?w=400&h=300&fit=crop',
+                    emoji: '🌾'
+                },
+                {
+                    name: '당근',
+                    category: '채소',
+                    farmer_name: '고은별 농부',
+                    location: '제주도 서귀포시',
+                    price_per_kg: 4500,
+                    available_quantity: 70,
+                    carbon_footprint: 0.7,
+                    distance_km: 450,
+                    certifications: ['무농약'],
+                    description: '제주 청정 지역에서 자란 당근입니다.',
+                    likes: 134,
+                    image: 'https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?w=400&h=300&fit=crop',
+                    emoji: '🥕'
+                },
+                {
+                    name: '방울양배추',
+                    category: '채소',
+                    farmer_name: '신예진 농부',
+                    location: '경기도 파주시',
+                    price_per_kg: 6800,
+                    available_quantity: 40,
+                    carbon_footprint: 0.6,
+                    distance_km: 35,
+                    certifications: ['유기농'],
+                    description: '영양 가득한 방울양배추입니다.',
+                    likes: 58,
+                    image: 'https://images.unsplash.com/photo-1568584711271-e5d6a7954de0?w=400&h=300&fit=crop',
+                    emoji: '🥬'
+                },
+                {
+                    name: '블루베리',
+                    category: '과일',
+                    farmer_name: '문서연 농부',
+                    location: '경남 거창군',
+                    price_per_kg: 18000,
+                    available_quantity: 15,
+                    carbon_footprint: 1.1,
+                    distance_km: 265,
+                    certifications: ['유기농'],
+                    description: '항산화 성분 풍부한 블루베리입니다.',
+                    likes: 398,
+                    image: 'https://images.unsplash.com/photo-1498557850523-fd3d118b962e?w=400&h=300&fit=crop',
+                    emoji: '🫐'
+                },
+                {
+                    name: '고구마',
+                    category: '채소',
+                    farmer_name: '백진우 농부',
+                    location: '전남 해남군',
+                    price_per_kg: 3200,
+                    available_quantity: 150,
+                    carbon_footprint: 0.5,
+                    distance_km: 340,
+                    certifications: ['친환경'],
+                    description: '달콤한 해남 고구마입니다.',
+                    likes: 201,
+                    image: 'https://images.unsplash.com/photo-1591824438708-ce405f36ba3d?w=400&h=300&fit=crop',
+                    emoji: '🍠'
+                },
+                {
+                    name: '배',
+                    category: '과일',
+                    farmer_name: '임지호 농부',
+                    location: '충남 천안시',
+                    price_per_kg: 9800,
+                    available_quantity: 50,
+                    carbon_footprint: 1.3,
+                    distance_km: 78,
+                    certifications: ['친환경'],
+                    description: '시원하고 달콤한 천안 배입니다.',
+                    likes: 187,
+                    image: 'https://images.unsplash.com/photo-1568371991916-4def1d958b34?w=400&h=300&fit=crop',
+                    emoji: '🍐'
+                },
+                {
+                    name: '깻잎',
+                    category: '채소',
+                    farmer_name: '한소민 농부',
+                    location: '경북 상주시',
+                    price_per_kg: 8900,
+                    available_quantity: 25,
+                    carbon_footprint: 0.4,
+                    distance_km: 198,
+                    certifications: ['무농약'],
+                    description: '향긋한 무농약 깻잎입니다.',
+                    likes: 92,
+                    image: 'https://images.unsplash.com/photo-1576045057995-568f588f82fb?w=400&h=300&fit=crop',
+                    emoji: '🍃'
+                },
+                {
+                    name: '양파',
+                    category: '채소',
+                    farmer_name: '김태희 농부',
+                    location: '경남 창녕군',
+                    price_per_kg: 2900,
+                    available_quantity: 180,
+                    carbon_footprint: 0.6,
+                    distance_km: 280,
+                    certifications: ['친환경'],
+                    description: '저장성 좋은 창녕 양파입니다.',
+                    likes: 156,
+                    image: 'https://images.unsplash.com/photo-1580201092675-a0a6a6cafbb1?w=400&h=300&fit=crop',
+                    emoji: '🧅'
+                },
+                {
+                    name: '포도',
+                    category: '과일',
+                    farmer_name: '오세훈 농부',
+                    location: '경북 김천시',
+                    price_per_kg: 13500,
+                    available_quantity: 30,
+                    carbon_footprint: 1.4,
+                    distance_km: 205,
+                    certifications: ['친환경'],
+                    description: '알이 통통한 달콤한 포도입니다.',
+                    likes: 421,
+                    image: 'https://images.unsplash.com/photo-1537640538966-79f369143f8f?w=400&h=300&fit=crop',
+                    emoji: '🍇'
+                },
+                {
+                    name: '버섯 모듬',
+                    category: '채소',
+                    farmer_name: '권지우 농부',
+                    location: '경기도 양평군',
+                    price_per_kg: 11000,
+                    available_quantity: 35,
+                    carbon_footprint: 0.8,
+                    distance_km: 55,
+                    certifications: ['유기농'],
+                    description: '신선한 유기농 버섯 모듬입니다.',
+                    likes: 143,
+                    image: 'https://images.unsplash.com/photo-1509358271058-acd22cc93898?w=400&h=300&fit=crop',
+                    emoji: '🍄'
+                },
+                {
+                    name: '복숭아',
+                    category: '과일',
+                    farmer_name: '조미영 농부',
+                    location: '경북 영천시',
+                    price_per_kg: 14000,
+                    available_quantity: 28,
+                    carbon_footprint: 1.2,
+                    distance_km: 225,
+                    certifications: ['친환경'],
+                    description: '달콤하고 향긋한 영천 복숭아입니다.',
+                    likes: 367,
+                    image: 'https://images.unsplash.com/photo-1629828874514-944673184351?w=400&h=300&fit=crop',
+                    emoji: '🍑'
+                },
+                {
+                    name: '배추',
+                    category: '채소',
+                    farmer_name: '서진아 농부',
+                    location: '강원도 정선군',
+                    price_per_kg: 2500,
+                    available_quantity: 200,
+                    carbon_footprint: 0.5,
+                    distance_km: 168,
+                    certifications: ['친환경'],
+                    description: '김장용 고랭지 배추입니다.',
+                    likes: 278,
+                    image: 'https://images.unsplash.com/photo-1597362925123-77861d3fbac7?w=400&h=300&fit=crop',
+                    emoji: '🥬'
+                }
+            ];
 
-            return Array.from({ length: 20 }, (_, i) => ({
+            return productData.map((item, i) => ({
                 product_id: `demo_${i + 1}`,
-                name: `신선한 ${products[i % products.length]}`,
-                category: categories[i % categories.length],
-                farmer_name: farmers[i % farmers.length],
-                farmer_id: `farmer_${(i % farmers.length) + 1}`,
-                location: locations[i % locations.length],
-                price_per_kg: Math.floor(Math.random() * 5000) + 2000,
-                available_quantity: Math.floor(Math.random() * 50) + 10,
-                carbon_footprint: (Math.random() * 1.5 + 0.3).toFixed(1),
-                distance_km: Math.floor(Math.random() * 80) + 5,
-                certifications: Math.random() > 0.5 ? ['유기농'] : ['친환경'],
-                description: `농부가 직접 기른 신선한 ${products[i % products.length]}입니다.`,
-                likes: Math.floor(Math.random() * 50),
+                ...item,
                 harvest_date: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
             }));
         }
@@ -777,7 +1083,11 @@
 
             grid.innerHTML = filteredProducts.map(product => `
                 <div class="product-card" onclick="viewProduct('${product.product_id}')">
-                    <div class="product-image">
+                    <div class="product-image ${product.image ? '' : 'placeholder'}">
+                        ${product.image
+                            ? `<img src="${product.image}" alt="${product.name}" onerror="this.parentElement.innerHTML='<div style=\\'display:flex;align-items:center;justify-content:center;height:100%;font-size:3rem;\\'>${product.emoji || '🥕'}</div>'">`
+                            : product.emoji || '🥕'
+                        }
                         <div class="farmer-badge">
                             <i class="fas fa-user"></i> ${product.farmer_name || '농부'}
                         </div>
@@ -793,7 +1103,7 @@
                         </div>
                         <div class="product-location">
                             <i class="fas fa-map-marker-alt"></i>
-                            ${product.location} · ${product.distance_km || Math.floor(Math.random() * 50)}km
+                            ${product.location} · ${product.distance_km}km
                         </div>
 
                         <div class="product-price">
@@ -941,7 +1251,9 @@
                     farmer_name: product.farmer_name,
                     price: product.price_per_kg,
                     quantity: 1,
-                    carbon_footprint: product.carbon_footprint
+                    carbon_footprint: product.carbon_footprint,
+                    image: product.image,
+                    emoji: product.emoji
                 });
             }
 
@@ -1000,7 +1312,12 @@
 
                 return `
                     <div class="cart-item">
-                        <div class="cart-item-image">🥕</div>
+                        <div class="cart-item-image">
+                            ${item.image
+                                ? `<img src="${item.image}" alt="${item.name}">`
+                                : (item.emoji || '🥕')
+                            }
+                        </div>
                         <div class="cart-item-info">
                             <div class="cart-item-name">${item.name}</div>
                             <div class="cart-item-farmer">
@@ -1089,6 +1406,9 @@
 - 가격: ${product.price_per_kg.toLocaleString()}원/kg
 - 재고: ${product.available_quantity}kg
 - 탄소발자국: ${product.carbon_footprint}kg CO₂/kg
+- 인증: ${product.certifications.join(', ')}
+
+${product.description}
 
 상세 페이지는 개발 중입니다! 🚧`);
         }
