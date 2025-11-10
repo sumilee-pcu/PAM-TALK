@@ -35,62 +35,36 @@
             z-index: 1000;
         }
 
-        nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0.75rem 2rem;
+        /* 상단 헤더 */
+        .top-header {
+            background: #f8f9fa;
+            border-bottom: 1px solid #e0e0e0;
+            padding: 0.5rem 0;
         }
 
-        .logo {
-            font-size: 1.8rem;
-            font-weight: bold;
-            color: #27ae60;
+        .top-header .container {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .top-header a {
+            color: #666;
             text-decoration: none;
+            font-size: 0.9rem;
             display: flex;
             align-items: center;
-            gap: 0.5rem;
-        }
-
-        .nav-links {
-            display: flex;
-            list-style: none;
-            gap: 2rem;
-            align-items: center;
-        }
-
-        .nav-links a {
-            color: #333;
-            text-decoration: none;
-            font-weight: 500;
+            gap: 0.3rem;
             transition: color 0.3s;
+        }
+
+        .top-header a:hover {
+            color: #27ae60;
+        }
+
+        .cart-link {
             position: relative;
-        }
-
-        .nav-links a:hover {
-            color: #27ae60;
-        }
-
-        .nav-links a.active {
-            color: #27ae60;
-            font-weight: 600;
-        }
-
-        .nav-links a.active::after {
-            content: '';
-            position: absolute;
-            bottom: -8px;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background: #27ae60;
-        }
-
-        .cart-icon {
-            position: relative;
-            font-size: 1.2rem;
-            color: #27ae60;
-            cursor: pointer;
         }
 
         .cart-count {
@@ -109,9 +83,129 @@
             font-weight: bold;
         }
 
+        /* 메인 헤더 */
+        .main-header {
+            padding: 1.5rem 0;
+        }
+
+        .main-header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #27ae60;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            white-space: nowrap;
+        }
+
+        .search-bar {
+            flex: 1;
+            max-width: 600px;
+            position: relative;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 0.8rem 3rem 0.8rem 1rem;
+            border: 2px solid #27ae60;
+            border-radius: 25px;
+            font-size: 1rem;
+            outline: none;
+        }
+
+        .search-bar button {
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #27ae60;
+            color: white;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .search-bar button:hover {
+            background: #2ecc71;
+        }
+
+        /* 메뉴바 */
+        .menu-bar {
+            background: #27ae60;
+            padding: 0;
+        }
+
+        .menu-bar .container {
+            display: flex;
+            align-items: center;
+        }
+
+        .category-btn {
+            background: #1e8449;
+            color: white;
+            padding: 1rem 1.5rem;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: background 0.3s;
+        }
+
+        .category-btn:hover {
+            background: #196f3d;
+        }
+
+        .main-menu {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            flex: 1;
+        }
+
+        .main-menu li {
+            flex: 1;
+        }
+
+        .main-menu a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            padding: 1rem 1rem;
+            text-align: center;
+            font-weight: 500;
+            transition: background 0.3s;
+            white-space: nowrap;
+        }
+
+        .main-menu a:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .main-menu a.highlight {
+            background: #f39c12;
+        }
+
+        .main-menu a.highlight:hover {
+            background: #e67e22;
+        }
+
         /* 메인 콘텐츠 */
         main {
-            margin-top: 80px;
+            margin-top: 180px;
             padding: 2rem 0;
         }
 
@@ -421,6 +515,23 @@
 
         /* 반응형 디자인 */
         @media (max-width: 768px) {
+            main {
+                margin-top: 150px;
+            }
+
+            .search-bar {
+                max-width: 100%;
+            }
+
+            .main-menu {
+                display: none;
+            }
+
+            .category-btn {
+                flex: 1;
+                justify-content: center;
+            }
+
             .filter-row {
                 grid-template-columns: 1fr;
             }
@@ -437,10 +548,6 @@
 
             .page-header h1 {
                 font-size: 2rem;
-            }
-
-            .nav-links {
-                display: none;
             }
         }
 
@@ -584,24 +691,60 @@
 </head>
 <body>
     <header>
-        <nav class="container">
-            <a href="/" class="logo">
-                <i class="fas fa-shopping-bag"></i>
-                PAM MALL
-            </a>
-
-            <ul class="nav-links">
-                <li><a href="/">피드</a></li>
-                <li><a href="/marketplace" class="active">PAM MALL</a></li>
-                <li><a href="/static/challenges.html">챌린지</a></li>
-                <li><a href="/#community">커뮤니티</a></li>
-            </ul>
-
-            <div class="cart-icon" onclick="toggleCart()">
-                <i class="fas fa-shopping-cart"></i>
-                <span class="cart-count" id="cartCount">0</span>
+        <!-- 상단 헤더 -->
+        <div class="top-header">
+            <div class="container">
+                <a href="#login">
+                    <i class="fas fa-user"></i>
+                    로그인
+                </a>
+                <a href="#cart" class="cart-link" onclick="toggleCart()">
+                    <i class="fas fa-shopping-cart"></i>
+                    장바구니
+                    <span class="cart-count" id="cartCount">0</span>
+                </a>
+                <a href="#mypage">
+                    <i class="fas fa-heart"></i>
+                    나의쇼핑
+                </a>
             </div>
-        </nav>
+        </div>
+
+        <!-- 메인 헤더 -->
+        <div class="main-header">
+            <div class="container">
+                <a href="/" class="logo">
+                    <i class="fas fa-shopping-bag"></i>
+                    PAM MALL
+                </a>
+                <div class="search-bar">
+                    <input type="text" placeholder="검색어를 입력하세요" id="mainSearch">
+                    <button type="button">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 메뉴바 -->
+        <div class="menu-bar">
+            <div class="container">
+                <button class="category-btn" onclick="toggleCategory()">
+                    <i class="fas fa-bars"></i>
+                    전체카테고리
+                </button>
+                <ul class="main-menu">
+                    <li><a href="#ai-recommend">AI추천</a></li>
+                    <li><a href="#local-gov">지자체(아산시)</a></li>
+                    <li><a href="#birthday-coupon">생일쿠폰</a></li>
+                    <li><a href="#hope-share" class="highlight">희망나눔</a></li>
+                    <li><a href="#best">베스트</a></li>
+                    <li><a href="#special-price" class="highlight">특가</a></li>
+                    <li><a href="#specialty">특산물</a></li>
+                    <li><a href="#traditional-market">전통시장</a></li>
+                </ul>
+            </div>
+        </div>
     </header>
 
     <main>
@@ -1262,6 +1405,11 @@
 
             // 추가 완료 피드백
             showNotification('장바구니에 추가되었습니다! 🛒');
+        }
+
+        // 전체 카테고리 토글
+        function toggleCategory() {
+            showNotification('전체 카테고리 기능은 준비 중입니다! 🚧');
         }
 
         // 장바구니 토글
