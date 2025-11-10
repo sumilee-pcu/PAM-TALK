@@ -141,8 +141,10 @@
 
         /* 메뉴바 */
         .menu-bar {
-            background: #27ae60;
+            background: #fff;
             padding: 0;
+            border-bottom: 1px solid #e0e0e0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
 
         .menu-bar .container {
@@ -151,7 +153,7 @@
         }
 
         .category-btn {
-            background: #1e8449;
+            background: #27ae60;
             color: white;
             padding: 1rem 1.5rem;
             border: none;
@@ -165,7 +167,7 @@
         }
 
         .category-btn:hover {
-            background: #196f3d;
+            background: #2ecc71;
         }
 
         .main-menu {
@@ -182,25 +184,30 @@
 
         .main-menu a {
             display: block;
-            color: white;
+            color: #333;
             text-decoration: none;
             padding: 1rem 1rem;
             text-align: center;
             font-weight: 500;
-            transition: background 0.3s;
+            transition: all 0.3s;
             white-space: nowrap;
+            border-bottom: 3px solid transparent;
         }
 
         .main-menu a:hover {
-            background: rgba(255,255,255,0.1);
+            color: #27ae60;
+            background: #f8f9fa;
+            border-bottom-color: #27ae60;
         }
 
         .main-menu a.highlight {
-            background: #f39c12;
+            color: #e74c3c;
+            font-weight: 600;
         }
 
         .main-menu a.highlight:hover {
-            background: #e67e22;
+            background: #fff5f5;
+            border-bottom-color: #e74c3c;
         }
 
         /* 메인 콘텐츠 */
