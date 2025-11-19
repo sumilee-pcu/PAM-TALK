@@ -64,3 +64,8 @@ frontend/node_modules/
 frontend/build/
 frontend/.env.local
 frontend/.env.production
+
+# ESG module (work in progress, not ready for production)
+frontend/src/pages/user/ESG/
+frontend/src/utils/aiClassifier.js
+frontend/src/utils/rewardDistributor.js
