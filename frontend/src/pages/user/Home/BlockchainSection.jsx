@@ -11,15 +11,15 @@ function BlockchainSection() {
       <div className="blockchain-container">
         <div className="blockchain-content">
           <div className="blockchain-badge">
-            <img src="https://algorand.foundation/static/algorand-logo.svg" alt="Algorand" />
+            <span style={{ fontSize: '3rem' }}>🪙</span>
           </div>
           <h2 className="blockchain-title">
-            <span className="gradient-text">Algorand</span> 블록체인<br />
-            기반의 투명한 시스템
+            <span className="gradient-text">ESG-GOLD</span> 디지털 쿠폰<br />
+            블록체인 기반 보상 시스템
           </h2>
           <p className="blockchain-description">
-            PAM-TALK은 탄소 중립 블록체인인 Algorand를 사용하여 모든 탄소 감축 활동과 검증 결과를
-            투명하고 안전하게 기록합니다.
+            PAM-TALK은 블록체인 기술을 활용하여 ESG-GOLD 디지털 쿠폰을 발행하고,
+            모든 탄소 감축 활동과 거래 내역을 투명하고 안전하게 기록합니다.
           </p>
 
           <div className="blockchain-features">
@@ -27,40 +27,40 @@ function BlockchainSection() {
               <div className="feature-icon-wrapper">
                 <span className="feature-icon">🌱</span>
               </div>
-              <h4>탄소 중립</h4>
-              <p>에너지 효율적인 Pure Proof-of-Stake로 환경을 보호합니다</p>
+              <h4>친환경 기술</h4>
+              <p>탄소 중립 블록체인으로 환경을 보호합니다</p>
             </div>
             <div className="blockchain-feature">
               <div className="feature-icon-wrapper">
                 <span className="feature-icon">⚡</span>
               </div>
-              <h4>초고속 처리</h4>
-              <p>4.5초 이내 거래 완결로 즉시 리워드를 받을 수 있습니다</p>
+              <h4>즉시 보상</h4>
+              <p>활동 인증 즉시 ESG-GOLD 쿠폰을 받을 수 있습니다</p>
             </div>
             <div className="blockchain-feature">
               <div className="feature-icon-wrapper">
                 <span className="feature-icon">🔒</span>
               </div>
               <h4>완벽한 보안</h4>
-              <p>블록체인 기술로 데이터 위변조가 불가능합니다</p>
+              <p>블록체인 기술로 쿠폰 위변조가 불가능합니다</p>
             </div>
             <div className="blockchain-feature">
               <div className="feature-icon-wrapper">
                 <span className="feature-icon">💰</span>
               </div>
-              <h4>저렴한 수수료</h4>
-              <p>0.001 ALGO의 최소 수수료로 경제적입니다</p>
+              <h4>자유로운 거래</h4>
+              <p>ESG-GOLD로 농산물 구매 및 다양한 거래가 가능합니다</p>
             </div>
           </div>
 
           <div className="blockchain-stats">
             <div className="stat">
-              <div className="stat-value">3,330,375,002</div>
-              <div className="stat-label">PAM Token Asset ID</div>
+              <div className="stat-value">ESG-GOLD</div>
+              <div className="stat-label">디지털 쿠폰 발행</div>
             </div>
             <div className="stat">
               <div className="stat-value">100%</div>
-              <div className="stat-label">투명성 보장</div>
+              <div className="stat-label">블록체인 투명성</div>
             </div>
           </div>
         </div>

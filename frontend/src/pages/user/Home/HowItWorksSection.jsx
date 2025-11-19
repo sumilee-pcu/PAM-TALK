@@ -38,15 +38,15 @@ function HowItWorksSection() {
     {
       number: '05',
       title: '블록체인 기록',
-      description: '검증 결과가 Algorand 블록체인에 영구적으로 기록되어 투명성이 보장됩니다.',
+      description: '검증 결과가 블록체인에 영구적으로 기록되어 투명성과 신뢰성이 보장됩니다.',
       icon: '⛓️',
       image: 'https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=500&h=350&fit=crop'
     },
     {
       number: '06',
-      title: '리워드 수령',
-      description: '검증 완료 즉시 디지털 포인트를 받고, 쿠폰이나 친환경 제품으로 교환하세요.',
-      icon: '🎁',
+      title: 'ESG-GOLD 수령',
+      description: '검증 완료 즉시 ESG-GOLD 디지털 쿠폰을 받고, 로컬푸드나 친환경 제품 구매에 사용하세요.',
+      icon: '🪙',
       image: 'https://images.unsplash.com/photo-1607082349566-187342175e2f?w=500&h=350&fit=crop'
     }
   ];
