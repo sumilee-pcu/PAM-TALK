@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Gunicorn 설정 파일
 # PAM-TALK API 서버 최적화용
 

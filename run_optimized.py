@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """
 PAM-TALK Windows용 최적화 서버 실행기
 Gunicorn 대신 ThreadingWSGIServer와 캐싱으로 성능 최적화

@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """
 PAM-TALK Phase 2 고성능 서버 실행기
 Waitress + 고급 캐싱 + 백그라운드 태스크

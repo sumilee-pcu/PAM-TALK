@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESG-Gold Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .card-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-right: 15px;
+        }
+
+        .icon-gold {
+            background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+        }
+
+        .icon-carbon {
+            background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+        }
+
+        .icon-activity {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        }
+
+        .icon-discount {
+            background: linear-gradient(135deg, #30cfd0 0%, #330867 100%);
+        }
+
+        .card-title {
+            font-size: 1.1em;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .card-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #333;
+            margin: 15px 0;
+        }
+
+        .card-subtitle {
+            color: #999;
+            font-size: 0.9em;
+        }
+
+        .highlight-gold {
+            color: #f6d365;
+        }
+
+        .highlight-green {
+            color: #84fab0;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+            color: white;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .activity-form {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .preview-card {
+            background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .preview-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .preview-item:last-child {
+            border-bottom: none;
+        }
+
+        .preview-label {
+            color: #666;
+            font-weight: 500;
+        }
+
+        .preview-value {
+            color: #333;
+            font-weight: bold;
+        }
+
+        .activity-list {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .activity-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #f0f0f0;
+            transition: background 0.3s ease;
+        }
+
+        .activity-item:hover {
+            background: #f9f9f9;
+        }
+
+        .activity-info {
+            flex: 1;
+        }
+
+        .activity-type {
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .activity-details {
+            color: #999;
+            font-size: 0.9em;
+        }
+
+        .activity-reward {
+            text-align: right;
+        }
+
+        .reward-amount {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #f6d365;
+        }
+
+        .reward-carbon {
+            color: #84fab0;
+            font-size: 0.9em;
+        }
+
+        .wallet-input {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+
+        .status-success {
+            background: #84fab0;
+            color: white;
+        }
+
+        .status-pending {
+            background: #fda085;
+            color: white;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header h1 {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌿 ESG-Gold Dashboard</h1>
+            <p>1 DC = 1 kg CO₂ 감축량</p>
+        </div>
+
+        <!-- 지갑 주소 입력 -->
+        <div class="wallet-input">
+            <h2 style="margin-bottom: 15px;">지갑 연결</h2>
+            <div class="form-group">
+                <input type="text" id="walletAddress" placeholder="Algorand 지갑 주소 입력">
+                <button class="btn btn-primary" onclick="loadWalletData()" style="margin-top: 10px; width: 100%;">
+                    지갑 연결
+                </button>
+            </div>
+        </div>
+
+        <!-- Dashboard Cards -->
+        <div class="dashboard">
+            <!-- ESG-Gold Balance Card -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon icon-gold">💰</div>
+                    <div class="card-title">ESG-Gold 잔액</div>
+                </div>
+                <div class="card-value highlight-gold" id="esgGoldBalance">0.00</div>
+                <div class="card-subtitle">DC (Digital Carbon)</div>
+                <div class="button-group">
+                    <button class="btn btn-primary" onclick="showTransferModal()">전송</button>
+                    <button class="btn btn-secondary" onclick="showBurnModal()">소각</button>
+                </div>
+            </div>
+
+            <!-- Carbon Offset Card -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon icon-carbon">🌱</div>
+                    <div class="card-title">탄소 상쇄량</div>
+                </div>
+                <div class="card-value highlight-green" id="carbonOffset">0.00</div>
+                <div class="card-subtitle">kg CO₂ 감축</div>
+                <div style="margin-top: 15px; padding: 15px; background: #f0f9ff; border-radius: 8px;">
+                    <div style="font-size: 0.9em; color: #666;">나무 환산: <strong id="treeEquivalent">0</strong>그루</div>
+                </div>
+            </div>
+
+            <!-- Total Activities Card -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon icon-activity">📊</div>
+                    <div class="card-title">총 활동 수</div>
+                </div>
+                <div class="card-value" id="totalActivities">0</div>
+                <div class="card-subtitle">탄소 감축 활동</div>
+                <div class="button-group">
+                    <button class="btn btn-primary" onclick="showActivityForm()">활동 등록</button>
+                </div>
+            </div>
+
+            <!-- Marketplace Discount Card -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon icon-discount">🛒</div>
+                    <div class="card-title">할인 혜택</div>
+                </div>
+                <div class="card-value" id="totalDiscounts">₩0</div>
+                <div class="card-subtitle">마켓플레이스 할인 총액</div>
+                <div style="margin-top: 15px; font-size: 0.9em; color: #666;">
+                    1 DC = ₩1 할인 (최대 20%)
+                </div>
+            </div>
+        </div>
+
+        <!-- Activity Form -->
+        <div class="activity-form" id="activityForm" style="display: none;">
+            <h2 style="margin-bottom: 25px;">탄소 감축 활동 등록</h2>
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>활동 유형</label>
+                    <select id="activityType" onchange="updatePreview()">
+                        <option value="local_food_purchase">지역 먹거리 구매</option>
+                        <option value="organic_farming">유기농 농사</option>
+                        <option value="renewable_energy">재생에너지 사용</option>
+                        <option value="waste_reduction">폐기물 감축</option>
+                        <option value="transport_reduction">운송 감축</option>
+                        <option value="packaging_reduction">포장 감축</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>제품명</label>
+                    <input type="text" id="productName" placeholder="예: 유기농 토마토" onchange="updatePreview()">
+                </div>
+
+                <div class="form-group">
+                    <label>수량 (kg)</label>
+                    <input type="number" id="quantity" placeholder="2.0" step="0.1" onchange="updatePreview()">
+                </div>
+
+                <div class="form-group">
+                    <label>생산 지역</label>
+                    <select id="originRegion" onchange="updatePreview()">
+                        <option value="경기도">경기도</option>
+                        <option value="강원도">강원도</option>
+                        <option value="충청남도">충청남도</option>
+                        <option value="전라남도">전라남도</option>
+                        <option value="경상북도">경상북도</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>배송 지역</label>
+                    <select id="destinationRegion" onchange="updatePreview()">
+                        <option value="서울시">서울시</option>
+                        <option value="부산시">부산시</option>
+                        <option value="대구시">대구시</option>
+                        <option value="인천시">인천시</option>
+                        <option value="광주시">광주시</option>
+                        <option value="대전시">대전시</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>농법</label>
+                    <select id="farmingMethod" onchange="updatePreview()">
+                        <option value="organic">유기농</option>
+                        <option value="conventional">일반농법</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>운송 방법</label>
+                    <select id="transportMethod" onchange="updatePreview()">
+                        <option value="truck_small">소형 트럭</option>
+                        <option value="truck_medium">중형 트럭</option>
+                        <option value="truck_large">대형 트럭</option>
+                        <option value="rail">철도</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>포장재</label>
+                    <select id="packagingType" onchange="updatePreview()">
+                        <option value="paper">종이</option>
+                        <option value="biodegradable">생분해성</option>
+                        <option value="reusable">재사용</option>
+                        <option value="plastic">플라스틱</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Preview -->
+            <div class="preview-card" id="previewCard" style="display: none;">
+                <h3 style="margin-bottom: 15px;">예상 보상</h3>
+                <div class="preview-item">
+                    <span class="preview-label">탄소 절약량</span>
+                    <span class="preview-value highlight-green"><span id="previewCarbon">0.00</span> kg CO₂</span>
+                </div>
+                <div class="preview-item">
+                    <span class="preview-label">DC 획득</span>
+                    <span class="preview-value highlight-gold"><span id="previewDC">0.00</span> DC</span>
+                </div>
+                <div class="preview-item">
+                    <span class="preview-label">ESG-Gold</span>
+                    <span class="preview-value"><span id="previewESG">0.00</span> ESG-GOLD</span>
+                </div>
+                <div class="preview-item">
+                    <span class="preview-label">PAM 토큰</span>
+                    <span class="preview-value"><span id="previewPAM">0</span> PAM</span>
+                </div>
+            </div>
+
+            <div class="button-group" style="margin-top: 25px;">
+                <button class="btn btn-secondary" onclick="hideActivityForm()">취소</button>
+                <button class="btn btn-primary" onclick="submitActivity()">활동 등록</button>
+            </div>
+        </div>
+
+        <!-- Recent Activities -->
+        <div class="activity-list">
+            <h2 style="margin-bottom: 20px;">최근 활동</h2>
+            <div id="activityListContainer">
+                <div class="loading">활동 내역을 불러오는 중...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:5000/api/esg-gold';
+        let currentWallet = '';
+
+        // 지갑 데이터 로드
+        async function loadWalletData() {
+            const walletAddress = document.getElementById('walletAddress').value.trim();
+            if (!walletAddress) {
+                alert('지갑 주소를 입력해주세요.');
+                return;
+            }
+
+            currentWallet = walletAddress;
+
+            try {
+                // 잔액 조회
+                const balanceResponse = await fetch(`${API_BASE_URL}/balance/${walletAddress}`);
+                const balanceData = await balanceResponse.json();
+
+                if (balanceData.success) {
+                    const data = balanceData.data;
+                    document.getElementById('esgGoldBalance').textContent = data.balance_dc.toFixed(2);
+                    document.getElementById('carbonOffset').textContent = data.carbon_offset.carbon_offset_kg.toFixed(2);
+                    document.getElementById('treeEquivalent').textContent = data.carbon_offset.trees_equivalent.toFixed(1);
+                }
+
+                // 사용자 통계 조회 (user_id가 있는 경우)
+                // TODO: Implement user stats API call
+
+            } catch (error) {
+                console.error('Failed to load wallet data:', error);
+                alert('지갑 데이터 로드 실패');
+            }
+        }
+
+        // 활동 폼 표시
+        function showActivityForm() {
+            document.getElementById('activityForm').style.display = 'block';
+            document.getElementById('activityForm').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function hideActivityForm() {
+            document.getElementById('activityForm').style.display = 'none';
+        }
+
+        // 보상 미리보기
+        async function updatePreview() {
+            const activityData = {
+                activity_type: document.getElementById('activityType').value,
+                product_name: document.getElementById('productName').value,
+                quantity: parseFloat(document.getElementById('quantity').value) || 0,
+                origin_region: document.getElementById('originRegion').value,
+                destination_region: document.getElementById('destinationRegion').value,
+                farming_method: document.getElementById('farmingMethod').value,
+                transport_method: document.getElementById('transportMethod').value,
+                packaging_type: document.getElementById('packagingType').value
+            };
+
+            if (activityData.quantity === 0) return;
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/activity/preview`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(activityData)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    const data = result.data;
+                    document.getElementById('previewCarbon').textContent = data.carbon_savings_kg.toFixed(2);
+                    document.getElementById('previewDC').textContent = data.dc_units.toFixed(2);
+                    document.getElementById('previewESG').textContent = data.esg_gold_amount.toFixed(6);
+                    document.getElementById('previewPAM').textContent = data.pam_tokens;
+                    document.getElementById('previewCard').style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Preview failed:', error);
+            }
+        }
+
+        // 활동 제출
+        async function submitActivity() {
+            if (!currentWallet) {
+                alert('먼저 지갑을 연결해주세요.');
+                return;
+            }
+
+            // Note: 실제로는 private key를 안전하게 처리해야 합니다
+            alert('활동 제출 기능은 백엔드와의 통합이 필요합니다.\n지갑 서명을 통한 안전한 트랜잭션 처리가 구현되어야 합니다.');
+        }
+
+        // 전송 모달
+        function showTransferModal() {
+            alert('ESG-Gold 전송 기능\n구현 예정');
+        }
+
+        // 소각 모달
+        function showBurnModal() {
+            alert('ESG-Gold 소각 기능\n탄소 크레딧 영구 상쇄용');
+        }
+
+        // 페이지 로드 시
+        window.addEventListener('load', () => {
+            console.log('ESG-Gold Dashboard initialized');
+        });
+    </script>
+</body>
+</html>

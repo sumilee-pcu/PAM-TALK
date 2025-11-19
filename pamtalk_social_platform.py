@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """
 PAM-TALK: Platform for Active Meta
 지역 농수축산물 유통 혁신 SNS 플랫폼

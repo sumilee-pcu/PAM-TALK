@@ -1,0 +1,20 @@
+PAM-TALK ESG Chain - REAL WORKING SOLUTION
+==================================================
+
+VERIFIED WORKING LINKS:
+Admin: https://allo.info/account/HXEHBWEDLO272XOIFFME26D5EAWULT4PGE75V3NKGGBIMQL2JM7S4ZU5PM
+User:  https://allo.info/account/F34WKJ6ZZOPJS264UEP6XF4WJZ6UDMXVXIDFX447KKGGVF5XYELHEBRWUI
+
+ACCOUNT RECOVERY:
+Admin Address: HXEHBWEDLO272XOIFFME26D5EAWULT4PGE75V3NKGGBIMQL2JM7S4ZU5PM
+Admin Mnemonic: address midnight rotate brush convince east exact shallow eager dignity promote object sea casual fantasy sleep soup display cover security sadness mosquito clarify abandon help
+
+User Address: F34WKJ6ZZOPJS264UEP6XF4WJZ6UDMXVXIDFX447KKGGVF5XYELHEBRWUI
+User Mnemonic: upper pulp include insect clown fatigue rough gas teach elder route quantum improve mind feel coyote south hand eight like penalty ahead ocean able mixed
+
+API VERIFICATION:
+Testnet: https://testnet-api.algonode.cloud/v2/accounts/HXEHBWEDLO272XOIFFME26D5EAWULT4PGE75V3NKGGBIMQL2JM7S4ZU5PM
+Mainnet: https://mainnet-api.algonode.cloud/v2/accounts/HXEHBWEDLO272XOIFFME26D5EAWULT4PGE75V3NKGGBIMQL2JM7S4ZU5PM
+
+WORKING FAUCET:
+https://dispenser.testnet.aws.algodev.network

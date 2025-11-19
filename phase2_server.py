@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """
 PAM-TALK Phase 2 고성능 서버
 - Waitress 프로덕션 WSGI 서버

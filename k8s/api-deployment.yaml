@@ -1,0 +1,81 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pam-api
+  namespace: pam-coupon
+  labels:
+    app: pam-api
+    tier: backend
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: pam-api
+  template:
+    metadata:
+      labels:
+        app: pam-api
+        tier: backend
+    spec:
+      containers:
+      - name: api
+        image: pam-coupon-api:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 5000
+          name: http
+        env:
+        - name: FLASK_ENV
+          value: "production"
+        - name: PYTHONUNBUFFERED
+          value: "1"
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /api/health
+            port: 5000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /api/health
+            port: 5000
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+        volumeMounts:
+        - name: account-secret
+          mountPath: /app/pam_mainnet_account_20251116_181939.json
+          subPath: account.json
+          readOnly: true
+      volumes:
+      - name: account-secret
+        secret:
+          secretName: algorand-account
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pam-api-service
+  namespace: pam-coupon
+  labels:
+    app: pam-api
+spec:
+  type: ClusterIP
+  selector:
+    app: pam-api
+  ports:
+  - port: 5000
+    targetPort: 5000
+    protocol: TCP
+    name: http
+  sessionAffinity: ClientIP

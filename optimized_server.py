@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """
 PAM-TALK 최적화된 서버
 Phase 1 최적화: Gunicorn + 캐싱 + 연결 풀링

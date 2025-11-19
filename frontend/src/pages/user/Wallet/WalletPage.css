@@ -1,0 +1,550 @@
+/**
+ * Wallet Page Styles
+ */
+
+.wallet-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 2rem 0;
+  padding-top: calc(80px + 2rem);
+}
+
+.wallet-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.wallet-header {
+  text-align: center;
+  color: white;
+  margin-bottom: 2rem;
+}
+
+.wallet-header h1 {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.wallet-header p {
+  font-size: 1.1rem;
+  opacity: 0.9;
+}
+
+/* 지갑 없을 때 */
+.wallet-empty {
+  background: white;
+  border-radius: 20px;
+  padding: 3rem 2rem;
+  text-align: center;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+}
+
+.empty-icon {
+  font-size: 5rem;
+  margin-bottom: 1rem;
+}
+
+.wallet-empty h2 {
+  font-size: 1.8rem;
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+.wallet-empty > p {
+  color: #666;
+  margin-bottom: 2rem;
+}
+
+.wallet-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-bottom: 3rem;
+}
+
+.btn-create,
+.btn-recover {
+  padding: 1rem 2rem;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.btn-create {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+}
+
+.btn-create:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+}
+
+.btn-recover {
+  background: white;
+  color: #667eea;
+  border: 2px solid #667eea;
+}
+
+.btn-recover:hover {
+  background: #667eea;
+  color: white;
+}
+
+.wallet-info {
+  background: #f8f9fa;
+  padding: 2rem;
+  border-radius: 12px;
+  text-align: left;
+}
+
+.wallet-info h3 {
+  color: #333;
+  margin-bottom: 1rem;
+}
+
+.wallet-info ul {
+  list-style: none;
+  padding: 0;
+}
+
+.wallet-info li {
+  padding: 0.5rem 0;
+  color: #666;
+  display: flex;
+  align-items: center;
+}
+
+.wallet-info li::before {
+  content: "✓";
+  color: #27ae60;
+  font-weight: bold;
+  margin-right: 0.5rem;
+}
+
+/* 지갑 있을 때 */
+.wallet-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* 잔액 카드 */
+.balance-card {
+  background: linear-gradient(135deg, #27ae60, #2ecc71);
+  color: white;
+  border-radius: 20px;
+  padding: 2rem;
+  text-align: center;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+}
+
+.balance-label {
+  font-size: 1rem;
+  opacity: 0.9;
+  margin-bottom: 0.5rem;
+}
+
+.balance-amount {
+  margin-bottom: 1.5rem;
+}
+
+.balance-amount .amount {
+  font-size: 3rem;
+  font-weight: bold;
+  margin-right: 0.5rem;
+}
+
+.balance-amount .currency {
+  font-size: 1.5rem;
+  opacity: 0.8;
+}
+
+.loading-spinner {
+  font-size: 1.2rem;
+  padding: 1rem;
+}
+
+.btn-refresh {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 2px solid white;
+  padding: 0.75rem 2rem;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.btn-refresh:hover:not(:disabled) {
+  background: white;
+  color: #27ae60;
+}
+
+.btn-refresh:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* 토큰 카드 */
+.token-card {
+  background: white;
+  border-radius: 15px;
+  padding: 1.5rem;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+  border: 2px solid #f0f0f0;
+}
+
+.btn-create-token {
+  background: linear-gradient(135deg, #f39c12, #e67e22);
+  color: white;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.btn-create-token:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(243, 156, 18, 0.4);
+}
+
+.btn-create-token:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.token-empty {
+  text-align: center;
+  padding: 3rem 2rem;
+  color: #999;
+}
+
+.token-empty p {
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+}
+
+.token-empty small {
+  color: #aaa;
+}
+
+.token-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.token-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.2rem;
+  background: #f8f9fa;
+  border-radius: 12px;
+  transition: all 0.3s;
+}
+
+.token-item:hover {
+  background: #e9ecef;
+  transform: translateX(5px);
+}
+
+.token-icon {
+  font-size: 2.5rem;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: white;
+  border-radius: 50%;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.token-info {
+  flex: 1;
+}
+
+.token-name {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 0.3rem;
+}
+
+.token-id {
+  font-size: 0.85rem;
+  color: #888;
+  font-family: 'Courier New', monospace;
+}
+
+.token-balance {
+  text-align: right;
+}
+
+.token-amount {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #27ae60;
+}
+
+.token-unit {
+  font-size: 0.85rem;
+  color: #666;
+  margin-top: 0.2rem;
+}
+
+.token-info-box {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: #fff3cd;
+  border-radius: 8px;
+  border-left: 4px solid #ffc107;
+}
+
+.token-info-box small {
+  color: #856404;
+  line-height: 1.8;
+}
+
+.token-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.btn-token-action {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  font-size: 0.95rem;
+}
+
+.btn-token-action:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.btn-token-action:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* 주소 카드 */
+.address-card,
+.faucet-card,
+.mnemonic-card {
+  background: white;
+  border-radius: 15px;
+  padding: 1.5rem;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.card-header h3 {
+  margin: 0;
+  font-size: 1.2rem;
+  color: #333;
+}
+
+.btn-copy,
+.btn-toggle {
+  background: #667eea;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.btn-copy:hover,
+.btn-toggle:hover {
+  background: #764ba2;
+}
+
+.address-box {
+  background: #f8f9fa;
+  padding: 1rem;
+  border-radius: 10px;
+  word-break: break-all;
+  font-family: 'Courier New', monospace;
+  font-size: 0.9rem;
+  color: #333;
+  margin-bottom: 1rem;
+}
+
+.address-qr p {
+  color: #666;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+/* Faucet 카드 */
+.faucet-card h3 {
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+.faucet-card > p {
+  color: #666;
+  margin-bottom: 1rem;
+}
+
+.btn-faucet {
+  display: inline-block;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  padding: 1rem 2rem;
+  border-radius: 10px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s;
+  margin-bottom: 1rem;
+}
+
+.btn-faucet:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.faucet-info {
+  background: #fff3cd;
+  padding: 1rem;
+  border-radius: 8px;
+  border-left: 4px solid #ffc107;
+}
+
+.faucet-info small {
+  color: #856404;
+  line-height: 1.8;
+}
+
+/* 니모닉 카드 */
+.warning-box {
+  background: #fff3cd;
+  border-left: 4px solid #ffc107;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  color: #856404;
+  font-weight: 600;
+}
+
+.mnemonic-box {
+  background: #f8f9fa;
+  padding: 1.5rem;
+  border-radius: 10px;
+  word-break: break-word;
+  font-family: 'Courier New', monospace;
+  font-size: 0.95rem;
+  color: #333;
+  line-height: 1.8;
+  margin-bottom: 1rem;
+  border: 2px dashed #dee2e6;
+}
+
+.btn-copy-mnemonic {
+  width: 100%;
+  background: #667eea;
+  color: white;
+  border: none;
+  padding: 0.75rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.btn-copy-mnemonic:hover {
+  background: #764ba2;
+}
+
+/* 지갑 메타 */
+.wallet-meta {
+  background: white;
+  border-radius: 15px;
+  padding: 1.5rem;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+}
+
+.wallet-meta p {
+  margin: 0.5rem 0;
+  color: #666;
+}
+
+/* 위험 구역 */
+.danger-zone {
+  background: white;
+  border: 2px solid #dc3545;
+  border-radius: 15px;
+  padding: 1.5rem;
+  box-shadow: 0 5px 20px rgba(220, 53, 69, 0.2);
+}
+
+.danger-zone h3 {
+  color: #dc3545;
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
+.btn-delete {
+  background: #dc3545;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.btn-delete:hover {
+  background: #c82333;
+}
+
+.danger-warning {
+  color: #666;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0;
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+  .wallet-header h1 {
+    font-size: 2rem;
+  }
+
+  .wallet-actions {
+    flex-direction: column;
+  }
+
+  .balance-amount .amount {
+    font-size: 2.5rem;
+  }
+
+  .address-box {
+    font-size: 0.75rem;
+  }
+}

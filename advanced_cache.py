@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """
 PAM-TALK 고급 캐싱 시스템
 Redis 대신 고성능 메모리 캐시 구현

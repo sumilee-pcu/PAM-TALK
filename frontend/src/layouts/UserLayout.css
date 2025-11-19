@@ -1,0 +1,15 @@
+/**
+ * User Layout Styles
+ */
+
+.user-layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #ffffff;
+}
+
+.user-main {
+  flex: 1;
+  width: 100%;
+}

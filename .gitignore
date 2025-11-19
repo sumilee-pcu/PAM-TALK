@@ -58,3 +58,9 @@ data/*.json
 
 # Jupyter Notebooks
 .ipynb_checkpoints
+
+# Frontend build artifacts
+frontend/node_modules/
+frontend/build/
+frontend/.env.local
+frontend/.env.production

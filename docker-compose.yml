@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  # Backend API Service
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    container_name: pam-api
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_ENV=production
+      - PYTHONUNBUFFERED=1
+    volumes:
+      - ./pam_mainnet_account_20251116_181939.json:/app/pam_mainnet_account_20251116_181939.json:ro
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    restart: unless-stopped
+    networks:
+      - pam-network
+
+  # Frontend Service (Nginx serving static files)
+  frontend:
+    image: nginx:alpine
+    container_name: pam-frontend
+    ports:
+      - "80:80"
+    volumes:
+      - ./frontend/public:/usr/share/nginx/html:ro
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - api
+    restart: unless-stopped
+    networks:
+      - pam-network
+
+networks:
+  pam-network:
+    driver: bridge
+
+# For production, add volumes for persistence
+volumes:
+  api-logs:

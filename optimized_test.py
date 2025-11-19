@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """
 PAM-TALK 최적화 성능 테스트
 기존 서버 vs 최적화 서버 성능 비교

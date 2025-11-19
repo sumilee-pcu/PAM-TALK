@@ -1,0 +1,36 @@
+PAM-TALK ESG Chain - Working Algorand Links
+==================================================
+
+ACCOUNT INFORMATION:
+Admin Address: OY2ODY3GTMEKDN74NOJKNC2CJPDLVOCJXZOIJIW5CPEU2PVQP4M7NR55MA
+Admin Mnemonic: scrap light crumble tissue boost pact spring identify test holiday pink duck okay over outdoor play sleep urge skirt useful problem ecology witness about jewel
+
+User1 Address: BQGPJ4FJKMGCRFC5VHIZI3MMRMG4FOPEOVP5DMVM6ZD5CVBKZ5YRLHXSVE
+User1 Mnemonic: olive rare grow urge chaos seed ethics east pair february wing minute neither beauty same endless idle notice sketch puppy accident monitor anger ability casual
+
+EXPLORER LINKS TO TRY:
+
+AlgoExplorer MainNet:
+Admin: https://algoexplorer.io/address/OY2ODY3GTMEKDN74NOJKNC2CJPDLVOCJXZOIJIW5CPEU2PVQP4M7NR55MA
+User1: https://algoexplorer.io/address/BQGPJ4FJKMGCRFC5VHIZI3MMRMG4FOPEOVP5DMVM6ZD5CVBKZ5YRLHXSVE
+
+AlgoExplorer TestNet:
+Admin: https://testnet.algoexplorer.io/address/OY2ODY3GTMEKDN74NOJKNC2CJPDLVOCJXZOIJIW5CPEU2PVQP4M7NR55MA
+User1: https://testnet.algoexplorer.io/address/BQGPJ4FJKMGCRFC5VHIZI3MMRMG4FOPEOVP5DMVM6ZD5CVBKZ5YRLHXSVE
+
+Pera Explorer:
+Admin: https://explorer.perawallet.app/address/OY2ODY3GTMEKDN74NOJKNC2CJPDLVOCJXZOIJIW5CPEU2PVQP4M7NR55MA
+User1: https://explorer.perawallet.app/address/BQGPJ4FJKMGCRFC5VHIZI3MMRMG4FOPEOVP5DMVM6ZD5CVBKZ5YRLHXSVE
+
+Allo Explorer:
+Admin: https://allo.info/address/OY2ODY3GTMEKDN74NOJKNC2CJPDLVOCJXZOIJIW5CPEU2PVQP4M7NR55MA
+User1: https://allo.info/address/BQGPJ4FJKMGCRFC5VHIZI3MMRMG4FOPEOVP5DMVM6ZD5CVBKZ5YRLHXSVE
+
+AlgoDEV TestNet:
+Admin: https://testnet-api.algonode.cloud/address/OY2ODY3GTMEKDN74NOJKNC2CJPDLVOCJXZOIJIW5CPEU2PVQP4M7NR55MA
+User1: https://testnet-api.algonode.cloud/address/BQGPJ4FJKMGCRFC5VHIZI3MMRMG4FOPEOVP5DMVM6ZD5CVBKZ5YRLHXSVE
+
+FAUCET LINKS:
+https://testnet.algoexplorer.io/dispenser
+https://dispenser.testnet.aws.algodev.network/
+https://bank.testnet.algorand.network/

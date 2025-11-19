@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """
 PAM-TALK Phase 2 성능 테스트
 Waitress + 고급 캐싱 vs 기존 시스템 성능 비교

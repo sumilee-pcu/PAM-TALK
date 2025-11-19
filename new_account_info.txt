@@ -1,0 +1,12 @@
+PAM-TALK New Account Information
+===============================
+
+Address: HFRJPS4VWQEQMWVPKKDYDTVAJQH2MHNIR37HRNQIPXFMI4BCEKK4OX4ZFI
+Mnemonic: fantasy prize inherit wealth mansion also guide drastic hip cart shoot together design between life have love any stairs enrich ritual rural blame absorb follow
+Created: $(date)
+
+Test ALGO Dispenser:
+https://testnet.algoexplorer.io/dispenser
+
+Account Explorer:
+https://testnet.algoexplorer.io/address/HFRJPS4VWQEQMWVPKKDYDTVAJQH2MHNIR37HRNQIPXFMI4BCEKK4OX4ZFI

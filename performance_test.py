@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """
 PAM-TALK 성능 및 부하 테스트 시스템
 MAU 10만명, DAU 3만명 규모 검증을 위한 종합 테스트
