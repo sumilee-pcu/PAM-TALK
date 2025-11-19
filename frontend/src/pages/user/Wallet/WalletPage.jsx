@@ -14,6 +14,8 @@ function WalletPage() {
   const [showMnemonic, setShowMnemonic] = useState(false);
   const [assets, setAssets] = useState([]);
   const [creatingToken, setCreatingToken] = useState(false);
+  const [walletAnimation, setWalletAnimation] = useState(false);
+  const [coinAnimation, setCoinAnimation] = useState(false);
 
   // 컴포넌트 마운트 시 저장된 지갑 불러오기
   useEffect(() => {
@@ -31,25 +33,35 @@ function WalletPage() {
       // 알고랜드 계정 생성
       const account = algosdk.generateAccount();
 
+      // 계정 정보 추출 (객체를 직접 사용하지 않음)
+      const address = account.addr;
+      const secretKey = account.sk;
+
       // 니모닉 생성 (25단어)
-      const mnemonic = algosdk.secretKeyToMnemonic(account.sk);
+      const mnemonic = algosdk.secretKeyToMnemonic(secretKey);
 
       const walletData = {
-        address: account.addr,
+        address: address,
         mnemonic: mnemonic,
         createdAt: new Date().toISOString()
       };
 
-      // 로컬스토리지에 저장 (실제 운영에서는 암호화 필요!)
+      // 로컬스토리지에 저장
       localStorage.setItem('algorand_wallet', JSON.stringify(walletData));
 
       setWallet(walletData);
       setShowMnemonic(true);
 
-      alert('🎉 알고랜드 지갑이 생성되었습니다!\n\n⚠️ 니모닉을 안전한 곳에 보관하세요!');
+      // 지갑 생성 애니메이션 트리거
+      setWalletAnimation(true);
+      setTimeout(() => setWalletAnimation(false), 1500);
+
+      setTimeout(() => {
+        alert('🎉 알고랜드 지갑이 생성되었습니다!\n\n⚠️ 니모닉을 안전한 곳에 보관하세요!');
+      }, 800);
     } catch (error) {
-      console.error('지갑 생성 실패:', error);
-      alert('지갑 생성에 실패했습니다: ' + error.message);
+      console.error('지갑 생성 실패:', error.message);
+      alert('지갑 생성에 실패했습니다:\n\n' + error.message);
     }
   };
 
@@ -346,8 +358,14 @@ function WalletPage() {
       localStorage.setItem('algorand_wallet', JSON.stringify(updatedWallet));
       setWallet(updatedWallet);
 
+      // 토큰 수령 애니메이션 트리거
+      setCoinAnimation(true);
+      setTimeout(() => setCoinAnimation(false), 2000);
+
       // 잔액 새로고침
-      fetchBalance(wallet.address);
+      setTimeout(() => {
+        fetchBalance(wallet.address);
+      }, 1500);
     } catch (error) {
       console.error('토큰 생성 실패:', error);
       alert('❌ 토큰 생성에 실패했습니다.\n\n' + error.message);
@@ -392,7 +410,15 @@ function WalletPage() {
           </div>
         ) : (
           // 지갑이 있는 경우
-          <div className="wallet-content">
+          <div className={`wallet-content ${walletAnimation ? 'wallet-appear' : ''}`}>
+            {/* 코인 애니메이션 */}
+            {coinAnimation && (
+              <div className="coin-animation">
+                <div className="flying-coin">💵</div>
+                <div className="flying-coin coin-2">🪙</div>
+                <div className="flying-coin coin-3">💵</div>
+              </div>
+            )}
             {/* 잔액 카드 */}
             <div className="balance-card">
               <div className="balance-label">총 잔액</div>

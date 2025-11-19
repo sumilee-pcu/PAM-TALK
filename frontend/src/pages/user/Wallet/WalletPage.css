@@ -530,6 +530,134 @@
   margin-bottom: 0;
 }
 
+/* 지갑 생성 애니메이션 */
+@keyframes wallet-appear {
+  0% {
+    opacity: 0;
+    transform: scale(0.5) translateY(-50px);
+  }
+  50% {
+    transform: scale(1.1) translateY(0);
+  }
+  70% {
+    transform: scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes sparkle {
+  0%, 100% {
+    opacity: 0;
+    transform: scale(0);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}
+
+.wallet-content.wallet-appear {
+  animation: wallet-appear 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative;
+}
+
+.wallet-content.wallet-appear::before,
+.wallet-content.wallet-appear::after {
+  content: '✨';
+  position: absolute;
+  font-size: 2rem;
+  animation: sparkle 0.8s ease-out;
+  pointer-events: none;
+}
+
+.wallet-content.wallet-appear::before {
+  top: -20px;
+  left: 20%;
+}
+
+.wallet-content.wallet-appear::after {
+  top: -10px;
+  right: 20%;
+  animation-delay: 0.2s;
+}
+
+/* 코인 애니메이션 */
+.coin-animation {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1000;
+}
+
+@keyframes coin-fall {
+  0% {
+    opacity: 0;
+    transform: translateY(-100px) rotate(0deg) scale(0);
+  }
+  10% {
+    opacity: 1;
+    transform: translateY(-50px) rotate(45deg) scale(1);
+  }
+  80% {
+    opacity: 1;
+    transform: translateY(calc(50vh)) rotate(360deg) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(calc(50vh + 100px)) rotate(405deg) scale(0.5);
+  }
+}
+
+.flying-coin {
+  position: absolute;
+  font-size: 3rem;
+  animation: coin-fall 2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  filter: drop-shadow(0 4px 8px rgba(39, 174, 96, 0.5));
+}
+
+.flying-coin:nth-child(1) {
+  left: 30%;
+  animation-delay: 0s;
+}
+
+.flying-coin.coin-2 {
+  left: 50%;
+  animation-delay: 0.2s;
+  font-size: 2.5rem;
+}
+
+.flying-coin.coin-3 {
+  left: 70%;
+  animation-delay: 0.4s;
+  font-size: 3.5rem;
+}
+
+/* 카드 입금 효과 */
+@keyframes card-receive {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+  }
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 10px 40px rgba(39, 174, 96, 0.4);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+  }
+}
+
+.wallet-content.wallet-appear .balance-card {
+  animation: card-receive 1s ease-in-out 0.5s;
+}
+
 /* 반응형 */
 @media (max-width: 768px) {
   .wallet-header h1 {
@@ -546,5 +674,17 @@
 
   .address-box {
     font-size: 0.75rem;
+  }
+
+  .flying-coin {
+    font-size: 2rem;
+  }
+
+  .flying-coin.coin-2 {
+    font-size: 1.8rem;
+  }
+
+  .flying-coin.coin-3 {
+    font-size: 2.2rem;
   }
 }
