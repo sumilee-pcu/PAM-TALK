@@ -1,0 +1,671 @@
+/* Committee Dashboard Styles */
+
+.committee-dashboard {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+  padding: 2rem;
+}
+
+.committee-header {
+  text-align: center;
+  color: white;
+  margin-bottom: 2rem;
+}
+
+.committee-header h1 {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+}
+
+/* Carbon Stats Grid */
+.carbon-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.carbon-stat-card {
+  background: white;
+  border-radius: 15px;
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+  transition: all 0.3s ease;
+}
+
+.carbon-stat-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+}
+
+.carbon-stat-icon {
+  font-size: 3rem;
+}
+
+.carbon-stat-content {
+  flex: 1;
+}
+
+.carbon-stat-label {
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 0.5rem;
+}
+
+.carbon-stat-value {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #11998e;
+}
+
+.carbon-stat-subtitle {
+  font-size: 0.85rem;
+  color: #999;
+}
+
+/* Tabs */
+.committee-tabs {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  background: white;
+  padding: 1rem;
+  border-radius: 15px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+  flex-wrap: wrap;
+}
+
+.committee-tabs button {
+  flex: 1;
+  min-width: 150px;
+  padding: 1rem 1.5rem;
+  border: none;
+  background: #f5f5f5;
+  color: #666;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.committee-tabs button:hover {
+  background: #e0e0e0;
+}
+
+.committee-tabs button.active {
+  background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+  color: white;
+  box-shadow: 0 5px 15px rgba(17, 153, 142, 0.4);
+}
+
+/* Content Area */
+.committee-content {
+  background: white;
+  border-radius: 15px;
+  padding: 2rem;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+  min-height: 500px;
+}
+
+.committee-content h2 {
+  font-size: 1.8rem;
+  color: #333;
+  margin-bottom: 1.5rem;
+  border-bottom: 2px solid #11998e;
+  padding-bottom: 0.5rem;
+}
+
+/* Overview Section */
+.overview-section {
+  margin-bottom: 2rem;
+}
+
+.recent-items {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.recent-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 10px;
+}
+
+.recent-icon {
+  font-size: 2rem;
+}
+
+.recent-details {
+  flex: 1;
+}
+
+.recent-title {
+  font-weight: 600;
+  color: #333;
+}
+
+.recent-meta {
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.recent-status {
+  font-size: 1.5rem;
+}
+
+/* DC Requests */
+.dc-requests-quick {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1rem;
+}
+
+.dc-request-quick-card {
+  background: #f8f9fa;
+  border-radius: 10px;
+  padding: 1.5rem;
+  border-left: 4px solid #ffc107;
+}
+
+.dc-request-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.dc-request-user {
+  font-weight: 600;
+}
+
+.dc-request-amount {
+  color: #11998e;
+  font-weight: bold;
+}
+
+.dc-request-reason {
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 1rem;
+}
+
+.dc-request-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.btn-approve-small,
+.btn-reject-small,
+.btn-approve,
+.btn-reject {
+  flex: 1;
+  padding: 0.75rem;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-approve-small,
+.btn-approve {
+  background: #4caf50;
+  color: white;
+}
+
+.btn-approve:hover {
+  background: #45a049;
+}
+
+.btn-reject-small,
+.btn-reject {
+  background: #f44336;
+  color: white;
+}
+
+.btn-reject:hover {
+  background: #da190b;
+}
+
+/* Carbon Chart */
+.carbon-chart-section {
+  margin-bottom: 2rem;
+}
+
+.chart-placeholder {
+  background: #f8f9fa;
+  border-radius: 15px;
+  padding: 2rem;
+  text-align: center;
+}
+
+.chart-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.chart-bars {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  align-items: flex-end;
+  height: 200px;
+  margin-top: 2rem;
+}
+
+.chart-bar {
+  flex: 1;
+  max-width: 80px;
+  background: linear-gradient(to top, #11998e, #38ef7d);
+  border-radius: 8px 8px 0 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 0.5rem;
+}
+
+.chart-bar span {
+  font-size: 0.85rem;
+  color: white;
+  font-weight: 600;
+}
+
+/* Carbon Categories */
+.carbon-breakdown h3 {
+  margin-bottom: 1rem;
+}
+
+.carbon-categories {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.carbon-category-item {
+  display: grid;
+  grid-template-columns: 200px 1fr 150px;
+  align-items: center;
+  gap: 1rem;
+}
+
+.category-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.category-icon {
+  font-size: 1.5rem;
+}
+
+.category-bar {
+  background: #e0e0e0;
+  height: 25px;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.category-fill {
+  height: 100%;
+  background: linear-gradient(to right, #11998e, #38ef7d);
+  transition: width 0.5s ease;
+}
+
+.category-value {
+  font-weight: 600;
+  color: #11998e;
+  text-align: right;
+}
+
+/* DC Requests List */
+.dc-requests-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.dc-request-card {
+  background: white;
+  border: 2px solid #e0e0e0;
+  border-radius: 15px;
+  padding: 1.5rem;
+}
+
+.dc-request-card.status-pending {
+  border-left: 5px solid #ffc107;
+}
+
+.dc-request-card.status-approved {
+  border-left: 5px solid #4caf50;
+}
+
+.dc-request-card.status-rejected {
+  border-left: 5px solid #f44336;
+}
+
+.dc-request-card-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.dc-request-amount-large {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #11998e;
+}
+
+.dc-request-field {
+  margin-bottom: 1rem;
+}
+
+.address-mono {
+  font-family: 'Courier New', monospace;
+  font-size: 0.85rem;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.status-badge.pending {
+  background: #fff3e0;
+  color: #ef6c00;
+}
+
+.status-badge.approved,
+.status-badge.verified {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.status-badge.rejected {
+  background: #ffebee;
+  color: #c62828;
+}
+
+/* Verification Cards */
+.verification-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.verification-card {
+  background: white;
+  border: 2px solid #e0e0e0;
+  border-radius: 15px;
+  padding: 1.5rem;
+}
+
+.verification-card.status-pending {
+  border-left: 5px solid #ffc107;
+}
+
+.verification-card-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.verification-card-body {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 1rem;
+}
+
+.verification-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.verification-row {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.verification-label {
+  font-weight: 600;
+}
+
+.verification-image {
+  width: 200px;
+  height: 150px;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.verification-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.btn-verify {
+  width: 100%;
+  padding: 1rem;
+  background: #11998e;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 1rem;
+}
+
+.btn-verify:hover {
+  background: #0d7a72;
+}
+
+/* Modal */
+.verification-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.verification-modal {
+  background: white;
+  border-radius: 20px;
+  width: 90%;
+  max-width: 800px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.verification-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2rem;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.modal-close {
+  font-size: 1.5rem;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: #666;
+}
+
+.verification-modal-body {
+  padding: 2rem;
+}
+
+.verification-modal-section {
+  margin-bottom: 2rem;
+}
+
+.verification-modal-image {
+  width: 100%;
+  border-radius: 10px;
+}
+
+.auto-verification-results {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.auto-verify-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 10px;
+}
+
+.verification-comments {
+  width: 100%;
+  padding: 1rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 10px;
+  font-family: inherit;
+  resize: vertical;
+}
+
+.verification-modal-actions {
+  display: flex;
+  gap: 1rem;
+  padding: 2rem;
+  border-top: 1px solid #e0e0e0;
+}
+
+.btn-verify-approve,
+.btn-verify-reject {
+  flex: 1;
+  padding: 1rem;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-verify-approve {
+  background: #4caf50;
+  color: white;
+}
+
+.btn-verify-reject {
+  background: #f44336;
+  color: white;
+}
+
+/* Reports */
+.report-generator {
+  background: #f8f9fa;
+  border-radius: 15px;
+  padding: 2rem;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.btn-generate-report {
+  padding: 1rem 2rem;
+  background: #11998e;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 1rem;
+}
+
+.reports-list h3 {
+  margin-bottom: 1rem;
+}
+
+.report-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.5rem;
+  background: #f8f9fa;
+  border-radius: 10px;
+  margin-bottom: 1rem;
+}
+
+.report-icon {
+  font-size: 2rem;
+}
+
+.report-details {
+  flex: 1;
+}
+
+.report-details h4 {
+  margin-bottom: 0.5rem;
+}
+
+.report-date {
+  font-size: 0.85rem;
+  color: #999;
+}
+
+.btn-download-report {
+  padding: 0.75rem 1.5rem;
+  background: #11998e;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.empty-message {
+  text-align: center;
+  color: #999;
+  padding: 2rem;
+  font-style: italic;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .committee-dashboard {
+    padding: 1rem;
+  }
+
+  .carbon-stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .committee-tabs {
+    flex-direction: column;
+  }
+
+  .committee-tabs button {
+    width: 100%;
+  }
+
+  .carbon-category-item {
+    grid-template-columns: 1fr;
+  }
+
+  .verification-card-body {
+    grid-template-columns: 1fr;
+  }
+
+  .verification-image {
+    width: 100%;
+  }
+}
