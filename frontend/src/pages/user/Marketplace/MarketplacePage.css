@@ -5,9 +5,9 @@
 
 /* Global Reset */
 .marketplace-page {
-  min-height: 100vh;
   background: #f5f7fa;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  padding-bottom: 2rem;
 }
 
 /* Banner Section */
