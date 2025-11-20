@@ -23,7 +23,7 @@ function CommitteeDashboard() {
     loadDashboardData();
   }, []);
 
-  const loadDashboardData() {
+  const loadDashboardData = () => {
     // 데모 데이터 로드
     const demoCarbon = {
       totalReduced: 2547.8,
