@@ -21,6 +21,7 @@ const CouponsPage = React.lazy(() => import('../pages/user/Coupons/CouponsPage')
 const CommunityPage = React.lazy(() => import('../pages/user/Community/CommunityPage'));
 const ProfilePage = React.lazy(() => import('../pages/user/Profile/ProfilePage'));
 const SettingsPage = React.lazy(() => import('../pages/user/Settings/SettingsPage'));
+const ESGRouter = React.lazy(() => import('../pages/user/ESG'));
 
 function UserRoutes() {
   return (
@@ -61,6 +62,9 @@ function UserRoutes() {
 
           {/* Settings */}
           <Route path="/settings/*" element={<SettingsPage />} />
+
+          {/* ESG Activity Certification */}
+          <Route path="/esg/*" element={<ESGRouter />} />
         </Route>
 
         {/* 404 */}

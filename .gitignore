@@ -64,8 +64,3 @@ frontend/.env.production
 
 # Don't ignore public directory - it's for Vercel deployment
 !public/
-
-# ESG module (work in progress, not ready for production)
-frontend/src/pages/user/ESG/
-frontend/src/utils/aiClassifier.js
-frontend/src/utils/rewardDistributor.js

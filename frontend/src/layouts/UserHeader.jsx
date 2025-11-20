@@ -40,6 +40,7 @@ function UserHeader() {
         {/* Desktop Navigation */}
         <nav className="desktop-nav">
           <Link to="/activities" className="nav-link">활동하기</Link>
+          <Link to="/esg" className="nav-link">ESG 인증</Link>
           <Link to="/marketplace" className="nav-link">마켓</Link>
           <Link to="/challenge" className="nav-link">챌린지</Link>
           <Link to="/community" className="nav-link">커뮤니티</Link>
@@ -89,6 +90,7 @@ function UserHeader() {
       {mobileMenuOpen && (
         <div className="mobile-nav">
           <Link to="/activities" onClick={() => setMobileMenuOpen(false)}>활동하기</Link>
+          <Link to="/esg" onClick={() => setMobileMenuOpen(false)}>ESG 인증</Link>
           <Link to="/marketplace" onClick={() => setMobileMenuOpen(false)}>마켓</Link>
           <Link to="/challenge" onClick={() => setMobileMenuOpen(false)}>챌린지</Link>
           <Link to="/community" onClick={() => setMobileMenuOpen(false)}>커뮤니티</Link>
