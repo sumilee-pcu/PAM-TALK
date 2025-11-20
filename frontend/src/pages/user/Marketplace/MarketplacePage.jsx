@@ -435,6 +435,14 @@ function MarketplacePage() {
 
   return (
     <div className="marketplace-page">
+      {/* 사이트 타이틀 */}
+      <div className="marketplace-title-bar">
+        <div className="title-content">
+          <h1>🌾 PAM 농산물 직거래 장터</h1>
+          <p>농부에게 직접, 신선하고 건강하게</p>
+        </div>
+      </div>
+
       {/* 메인 배너 캐러셀 */}
       <div className="banner-carousel">
         <div className="carousel-container">
