@@ -37,7 +37,7 @@ function WalletPage() {
       const address = account.addr;
       const secretKey = account.sk;
 
-      // 니모닉 생성 (25단어)
+      // 복구 문구 생성 (25단어)
       const mnemonic = algosdk.secretKeyToMnemonic(secretKey);
 
       const walletData = {
@@ -65,9 +65,9 @@ function WalletPage() {
     }
   };
 
-  // 니모닉으로 지갑 복구
+  // 복구 문구로 지갑 복구
   const recoverWallet = () => {
-    const mnemonic = prompt('25단어 니모닉을 입력하세요 (공백으로 구분):');
+    const mnemonic = prompt('25단어 복구 문구를 입력하세요 (공백으로 구분):');
 
     if (!mnemonic) return;
 
@@ -87,7 +87,7 @@ function WalletPage() {
       fetchBalance(account.addr);
     } catch (error) {
       console.error('지갑 복구 실패:', error);
-      alert('❌ 올바른 니모닉이 아닙니다: ' + error.message);
+      alert('❌ 올바른 복구 문구가 아닙니다: ' + error.message);
     }
   };
 
@@ -104,7 +104,7 @@ function WalletPage() {
 
       const accountInfo = await algodClient.accountInformation(address).do();
 
-      // microAlgos를 ALGO로 변환 (1 ALGO = 1,000,000 microAlgos)
+      // microAlgos를 DC로 변환 (1 DC = 1,000,000 microAlgos)
       const algoBalance = accountInfo.amount / 1000000;
 
       setBalance(algoBalance);
@@ -145,7 +145,7 @@ function WalletPage() {
 
   // 지갑 삭제
   const deleteWallet = () => {
-    if (window.confirm('⚠️ 정말로 지갑을 삭제하시겠습니까?\n\n니모닉을 백업하지 않으면 복구할 수 없습니다!')) {
+    if (window.confirm('⚠️ 정말로 지갑을 삭제하시겠습니까?\n\n복구 문구를 백업하지 않으면 복구할 수 없습니다!')) {
       localStorage.removeItem('algorand_wallet');
       setWallet(null);
       setBalance(null);
@@ -160,10 +160,10 @@ function WalletPage() {
     alert('✅ 주소가 복사되었습니다!');
   };
 
-  // 니모닉 복사
+  // 복구 문구 복사
   const copyMnemonic = () => {
     navigator.clipboard.writeText(wallet.mnemonic);
-    alert('✅ 니모닉이 복사되었습니다!');
+    alert('✅ 복구 문구가 복사되었습니다!');
   };
 
   // 토큰 Opt-in (다른 사용자가 토큰을 받기 위해 필요)
@@ -294,11 +294,11 @@ function WalletPage() {
 
     // 잔액 확인
     if (balance < 0.2) {
-      alert('❌ 토큰 생성을 위해 최소 0.2 ALGO가 필요합니다.\n\n현재 잔액: ' + balance.toFixed(6) + ' ALGO\n\nTestNet Dispenser에서 ALGO를 받아주세요.');
+      alert('❌ 토큰 생성을 위해 최소 0.2 DC가 필요합니다.\n\n현재 잔액: ' + balance.toFixed(6) + ' DC\n\n아래 테스트 DC 받기에서 DC를 받아주세요.');
       return;
     }
 
-    if (!window.confirm('🪙 ESG-GOLD 토큰을 생성하시겠습니까?\n\n토큰명: ESG-GOLD\n총 발행량: 1,000,000 ESGOLD\n\n약 0.1 ALGO의 수수료가 발생합니다.')) {
+    if (!window.confirm('🪙 ESG-GOLD 토큰을 생성하시겠습니까?\n\n토큰명: ESG-GOLD\n총 발행량: 1,000,000 ESG-GOLD\n\n약 0.1 DC의 수수료가 발생합니다.')) {
       return;
     }
 
@@ -428,7 +428,7 @@ function WalletPage() {
                 ) : (
                   <>
                     <span className="amount">{balance !== null ? balance.toFixed(6) : '---'}</span>
-                    <span className="currency">ALGO</span>
+                    <span className="currency">DC</span>
                   </>
                 )}
               </div>
@@ -520,14 +520,14 @@ function WalletPage() {
                 {wallet.address}
               </div>
               <div className="address-qr">
-                <p>💡 이 주소로 ALGO를 받을 수 있습니다</p>
+                <p>💡 이 주소로 DC를 받을 수 있습니다</p>
               </div>
             </div>
 
-            {/* 테스트 ALGO 받기 */}
+            {/* 테스트 DC 받기 */}
             <div className="faucet-card">
-              <h3>🚰 테스트 ALGO 받기</h3>
-              <p>테스트넷에서 무료로 ALGO를 받아보세요</p>
+              <h3>🚰 테스트 DC 받기</h3>
+              <p>테스트 환경에서 무료로 DC를 받아보세요</p>
               <a
                 href="https://bank.testnet.algorand.network/"
                 target="_blank"
@@ -546,10 +546,10 @@ function WalletPage() {
               </div>
             </div>
 
-            {/* 니모닉 카드 */}
+            {/* 복구 문구 카드 */}
             <div className="mnemonic-card">
               <div className="card-header">
-                <h3>🔑 복구 니모닉</h3>
+                <h3>🔑 복구 문구</h3>
                 <button
                   className="btn-toggle"
                   onClick={() => setShowMnemonic(!showMnemonic)}
@@ -567,7 +567,7 @@ function WalletPage() {
                     {wallet.mnemonic}
                   </div>
                   <button className="btn-copy-mnemonic" onClick={copyMnemonic}>
-                    📋 니모닉 복사
+                    📋 복구 문구 복사
                   </button>
                 </>
               )}
@@ -576,7 +576,7 @@ function WalletPage() {
             {/* 지갑 정보 */}
             <div className="wallet-meta">
               <p>생성일: {new Date(wallet.createdAt).toLocaleString('ko-KR')}</p>
-              <p>네트워크: Algorand TestNet</p>
+              <p>네트워크: TestNet</p>
               <p>상태: 🟢 활성</p>
             </div>
 
@@ -587,7 +587,7 @@ function WalletPage() {
                 🗑️ 지갑 삭제
               </button>
               <p className="danger-warning">
-                지갑을 삭제하면 니모닉 없이는 복구할 수 없습니다!
+                지갑을 삭제하면 복구 문구 없이는 복구할 수 없습니다!
               </p>
             </div>
           </div>
