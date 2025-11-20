@@ -93,3 +93,4 @@ git push origin main  # 또는 master
 
 ---
 필요한 다른 화면/기능(페이지, 컴포넌트, API 연동 등)이 있다면 `frontend/src` 하위에 바로 추가하고 `npm run build` → `vercel --prod` 순서로 배포하면 됩니다.
+# Vercel deployment trigger
