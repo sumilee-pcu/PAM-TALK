@@ -1,6 +1,6 @@
 /**
- * PAM MALL Marketplace Page
- * 농산물 직거래 마켓플레이스
+ * PAM MALL Marketplace Page - Enhanced Commercial Version
+ * 농산물 직거래 마켓플레이스 고도화
  */
 
 import React, { useState, useEffect } from 'react';
@@ -15,31 +15,41 @@ function MarketplacePage() {
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [filters, setFilters] = useState({
     category: '',
+    subCategory: '',
     location: '',
-    distance: '',
+    certification: '',
+    priceRange: '',
     search: ''
   });
-  const [sortBy, setSortBy] = useState('newest');
+  const [sortBy, setSortBy] = useState('popular');
   const [wallet, setWallet] = useState(null);
-  const [paymentMethod, setPaymentMethod] = useState('cash'); // 'cash' or 'token'
+  const [paymentMethod, setPaymentMethod] = useState('cash');
   const [paying, setPaying] = useState(false);
+  const [viewMode, setViewMode] = useState('grid'); // 'grid' or 'list'
+  const [selectedProduct, setSelectedProduct] = useState(null);
 
-  // 판매자 지갑 주소 (데모용 - 실제로는 각 농부마다 다른 주소)
-  const SELLER_ADDRESS = 'SELLER6IXVYMV7YDH6TJKQRQZJ3VJKBXSSLV5WFRCEOTN5HQPVWDEMO'; // 데모용 주소
+  // 카테고리 정의
+  const categories = {
+    '채소': ['토마토', '오이', '배추', '상추', '시금치', '당근', '무', '호박', '고추', '파'],
+    '과일': ['사과', '배', '딸기', '포도', '복숭아', '감', '귤', '수박', '참외', '블루베리'],
+    '곡물/쌀': ['백미', '현미', '찹쌀', '보리', '귀리', '콩', '팥', '녹두'],
+    '축산물': ['한우', '돼지고기', '닭고기', '오리고기', '계란', '우유'],
+    '수산물': ['고등어', '갈치', '조기', '오징어', '새우', '낙지', '멸치', '김'],
+    '가공식품': ['된장', '고추장', '간장', '김치', '장아찌', '젓갈'],
+    '건강식품': ['홍삼', '꿀', '녹차', '한방차', '효소', '청국장'],
+    '생활용품': ['수세미', '천연비누', '친환경세제', '대나무용품']
+  };
 
-  // 페이지 로드 시 데모 상품 생성
   useEffect(() => {
-    const demoProducts = generateDemoProducts();
+    const demoProducts = generateEnhancedProducts();
     setProducts(demoProducts);
     setFilteredProducts(demoProducts);
 
-    // 로컬스토리지에서 장바구니 불러오기
     const savedCart = localStorage.getItem('pamtalk_cart');
     if (savedCart) {
       setCart(JSON.parse(savedCart));
     }
 
-    // 지갑 불러오기
     const savedWallet = localStorage.getItem('algorand_wallet');
     if (savedWallet) {
       setWallet(JSON.parse(savedWallet));
@@ -53,21 +63,35 @@ function MarketplacePage() {
     if (filters.category) {
       filtered = filtered.filter(p => p.category === filters.category);
     }
+    if (filters.subCategory) {
+      filtered = filtered.filter(p => p.name.includes(filters.subCategory));
+    }
     if (filters.location) {
       filtered = filtered.filter(p => p.location.includes(filters.location));
     }
-    if (filters.distance) {
-      filtered = filtered.filter(p => p.distance_km <= parseInt(filters.distance));
+    if (filters.certification) {
+      filtered = filtered.filter(p => p.certifications.includes(filters.certification));
+    }
+    if (filters.priceRange) {
+      const [min, max] = filters.priceRange.split('-').map(Number);
+      filtered = filtered.filter(p => {
+        if (max) {
+          return p.price_per_kg >= min && p.price_per_kg <= max;
+        } else {
+          return p.price_per_kg >= min;
+        }
+      });
     }
     if (filters.search) {
       const searchLower = filters.search.toLowerCase();
       filtered = filtered.filter(p =>
         p.name.toLowerCase().includes(searchLower) ||
-        p.farmer_name.toLowerCase().includes(searchLower)
+        p.farmer_name.toLowerCase().includes(searchLower) ||
+        p.description.toLowerCase().includes(searchLower)
       );
     }
 
-    // 정렬 적용
+    // 정렬
     filtered.sort((a, b) => {
       switch (sortBy) {
         case 'price_low':
@@ -80,6 +104,8 @@ function MarketplacePage() {
           return parseFloat(a.carbon_footprint) - parseFloat(b.carbon_footprint);
         case 'popular':
           return b.likes - a.likes;
+        case 'newest':
+          return b.product_id.localeCompare(a.product_id);
         default:
           return 0;
       }
@@ -88,43 +114,118 @@ function MarketplacePage() {
     setFilteredProducts(filtered);
   }, [filters, sortBy, products]);
 
-  // 데모 상품 생성
-  function generateDemoProducts() {
-    const categories = ['채소', '과일', '곡물', '축산물'];
-    const locations = ['경기도 용인시', '강원도 춘천시', '충남 아산시', '전북 완주군', '경남 김해시'];
-    const farmers = ['김농부', '이농부', '박농부', '최농부', '정농부'];
-    const productNames = ['토마토', '오이', '배추', '사과', '배', '쌀', '감자', '양파', '당근', '상추'];
-    const emojis = ['🍅', '🥒', '🥬', '🍎', '🍐', '🌾', '🥔', '🧅', '🥕', '🥬'];
-    const images = [
-      'https://images.unsplash.com/photo-1546470427-227a1e3e0d05?w=400&h=300&fit=crop', // 토마토
-      'https://images.unsplash.com/photo-1604977042946-1eecc30f269e?w=400&h=300&fit=crop', // 오이
-      'https://images.unsplash.com/photo-1584868826962-1fa50f7e6d3e?w=400&h=300&fit=crop', // 배추
-      'https://images.unsplash.com/photo-1568702846914-96b305d2aaeb?w=400&h=300&fit=crop', // 사과
-      'https://images.unsplash.com/photo-1585059895524-72359e06133a?w=400&h=300&fit=crop', // 배
-      'https://images.unsplash.com/photo-1586201375761-83865001e31c?w=400&h=300&fit=crop', // 쌀
-      'https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=400&h=300&fit=crop', // 감자
-      'https://images.unsplash.com/photo-1618512496248-a07fe83aa8cb?w=400&h=300&fit=crop', // 양파
-      'https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?w=400&h=300&fit=crop', // 당근
-      'https://images.unsplash.com/photo-1622206151226-18ca2c9ab4a1?w=400&h=300&fit=crop'  // 상추
+  // 향상된 상품 데이터 생성
+  function generateEnhancedProducts() {
+    const productData = [
+      // 채소류
+      { name: '완숙 토마토', category: '채소', image: 'https://images.unsplash.com/photo-1546470427-227a1e3e0d05?w=500', price: 3500, cert: '유기농', carbon: 0.8, desc: '당도 높은 완숙 토마토', badge: 'best' },
+      { name: '싱싱 오이', category: '채소', image: 'https://images.unsplash.com/photo-1604977042946-1eecc30f269e?w=500', price: 2500, cert: '무농약', carbon: 0.6, desc: '아삭아삭 신선한 오이' },
+      { name: '포기 배추', category: '채소', image: 'https://images.unsplash.com/photo-1584868826962-1fa50f7e6d3e?w=500', price: 4000, cert: '친환경', carbon: 1.2, desc: '김장용 배추', badge: 'new' },
+      { name: '청상추', category: '채소', image: 'https://images.unsplash.com/photo-1622206151226-18ca2c9ab4a1?w=500', price: 2000, cert: '유기농', carbon: 0.4, desc: '부드러운 청상추' },
+      { name: '시금치', category: '채소', image: 'https://images.unsplash.com/photo-1576045057995-568f588f82fb?w=500', price: 2800, cert: '무농약', carbon: 0.5, desc: '영양 가득 시금치' },
+      { name: '당근', category: '채소', image: 'https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?w=500', price: 3000, cert: '친환경', carbon: 0.7, desc: '달콤한 당근', badge: 'best' },
+      { name: '무', category: '채소', image: 'https://images.unsplash.com/photo-1594105055095-ffe9e555f51f?w=500', price: 2500, cert: '유기농', carbon: 0.9, desc: '아삭한 무' },
+      { name: '애호박', category: '채소', image: 'https://images.unsplash.com/photo-1589927986089-35812388d1f8?w=500', price: 2200, cert: '무농약', carbon: 0.6, desc: '신선한 애호박' },
+      { name: '청양고추', category: '채소', image: 'https://images.unsplash.com/photo-1583400031295-850703d89022?w=500', price: 4500, cert: '친환경', carbon: 0.5, desc: '매운 청양고추', badge: 'hot' },
+      { name: '대파', category: '채소', image: 'https://images.unsplash.com/photo-1580797542431-44ffe1896ae8?w=500', price: 1800, cert: '유기농', carbon: 0.4, desc: '향긋한 대파' },
+
+      // 과일류
+      { name: '사과(부사)', category: '과일', image: 'https://images.unsplash.com/photo-1568702846914-96b305d2aaeb?w=500', price: 5000, cert: '유기농', carbon: 1.5, desc: '달콤한 부사 사과', badge: 'best' },
+      { name: '배(신고배)', category: '과일', image: 'https://images.unsplash.com/photo-1585059895524-72359e06133a?w=500', price: 6000, cert: '친환경', carbon: 1.4, desc: '즙이 풍부한 신고배' },
+      { name: '딸기', category: '과일', image: 'https://images.unsplash.com/photo-1464965911861-746a04b4bca6?w=500', price: 8000, cert: '유기농', carbon: 1.8, desc: '당도 높은 딸기', badge: 'new' },
+      { name: '포도(샤인머스캣)', category: '과일', image: 'https://images.unsplash.com/photo-1596363505729-4190a9506133?w=500', price: 12000, cert: '무농약', carbon: 2.0, desc: '프리미엄 샤인머스캣', badge: 'premium' },
+      { name: '복숭아', category: '과일', image: 'https://images.unsplash.com/photo-1629828874514-57a4677ff36e?w=500', price: 7000, cert: '친환경', carbon: 1.6, desc: '달콤한 백도 복숭아' },
+      { name: '감(단감)', category: '과일', image: 'https://images.unsplash.com/photo-1580629905303-faaa03202631?w=500', price: 4500, cert: '유기농', carbon: 1.3, desc: '아삭한 단감', badge: 'best' },
+      { name: '귤(제주)', category: '과일', image: 'https://images.unsplash.com/photo-1611080626919-7cf5a9dbab5b?w=500', price: 3500, cert: '친환경', carbon: 1.2, desc: '제주 노지 귤' },
+      { name: '수박', category: '과일', image: 'https://images.unsplash.com/photo-1587049352846-4a222e784210?w=500', price: 15000, cert: '무농약', carbon: 2.5, desc: '당도 높은 수박' },
+      { name: '참외', category: '과일', image: 'https://images.unsplash.com/photo-1621357484835-d4a1e5c0e0ad?w=500', price: 4000, cert: '친환경', carbon: 1.1, desc: '달콤한 성주 참외' },
+      { name: '블루베리', category: '과일', image: 'https://images.unsplash.com/photo-1498557850523-fd3d118b962e?w=500', price: 9000, cert: '유기농', carbon: 1.7, desc: '생과 블루베리', badge: 'new' },
+
+      // 곡물/쌀
+      { name: '백미(10kg)', category: '곡물/쌀', image: 'https://images.unsplash.com/photo-1586201375761-83865001e31c?w=500', price: 35000, cert: '무농약', carbon: 3.5, desc: '찰진 백미' },
+      { name: '현미(10kg)', category: '곡물/쌀', image: 'https://images.unsplash.com/photo-1587591213481-edd69d23a674?w=500', price: 40000, cert: '유기농', carbon: 3.8, desc: '영양 가득 현미', badge: 'best' },
+      { name: '찹쌀(5kg)', category: '곡물/쌀', image: 'https://images.unsplash.com/photo-1536304993881-ff6e9eefa2a6?w=500', price: 25000, cert: '친환경', carbon: 2.5, desc: '고소한 찹쌀' },
+      { name: '보리쌀(2kg)', category: '곡물/쌀', image: 'https://images.unsplash.com/photo-1625402043043-fa3c37facc57?w=500', price: 12000, cert: '무농약', carbon: 1.8, desc: '건강한 보리쌀' },
+      { name: '귀리(1kg)', category: '곡물/쌀', image: 'https://images.unsplash.com/photo-1559181567-c3190ca9959b?w=500', price: 8000, cert: '유기농', carbon: 1.2, desc: '다이어트 귀리' },
+      { name: '서리태(1kg)', category: '곡물/쌀', image: 'https://images.unsplash.com/photo-1551917163-535e53d4d8b3?w=500', price: 15000, cert: '친환경', carbon: 1.5, desc: '영양 가득 서리태', badge: 'best' },
+
+      // 축산물
+      { name: '한우 등심', category: '축산물', image: 'https://images.unsplash.com/photo-1588347818036-5e7b333c4b73?w=500', price: 45000, cert: '1++등급', carbon: 15.0, desc: '프리미엄 한우', badge: 'premium' },
+      { name: '한우 불고기', category: '축산물', image: 'https://images.unsplash.com/photo-1603360946369-dc9bb6258143?w=500', price: 28000, cert: '1+등급', carbon: 12.0, desc: '부드러운 불고기용', badge: 'best' },
+      { name: '돼지고기 삼겹살', category: '축산물', image: 'https://images.unsplash.com/photo-1551182759-02ce28e5ae7a?w=500', price: 18000, cert: '1등급', carbon: 8.5, desc: '두툼한 삼겹살' },
+      { name: '닭고기(백숙용)', category: '축산물', image: 'https://images.unsplash.com/photo-1587593810167-a84920ea0781?w=500', price: 12000, cert: '무항생제', carbon: 4.2, desc: '신선한 백숙용 닭' },
+      { name: '오리고기', category: '축산물', image: 'https://images.unsplash.com/photo-1607623488235-97b9e4fb4c05?w=500', price: 15000, cert: '친환경', carbon: 5.5, desc: '훈제 오리고기' },
+      { name: '유정란(30입)', category: '축산물', image: 'https://images.unsplash.com/photo-1582722872445-44dc5f7e3c8f?w=500', price: 8000, cert: '동물복지', carbon: 2.8, desc: '고급 유정란', badge: 'best' },
+      { name: '우유(1L)', category: '축산물', image: 'https://images.unsplash.com/photo-1563636619-e9143da7973b?w=500', price: 3500, cert: '유기농', carbon: 2.5, desc: '목장 신선 우유' },
+
+      // 수산물
+      { name: '고등어', category: '수산물', image: 'https://images.unsplash.com/photo-1534550938173-e34e7df43474?w=500', price: 8000, cert: '국내산', carbon: 3.2, desc: '생 고등어', badge: 'new' },
+      { name: '갈치', category: '수산물', image: 'https://images.unsplash.com/photo-1559339352-11d035aa65de?w=500', price: 25000, cert: '국내산', carbon: 3.8, desc: '제주 은갈치', badge: 'premium' },
+      { name: '조기', category: '수산물', image: 'https://images.unsplash.com/photo-1544943910-4c1dc44aab44?w=500', price: 18000, cert: '국내산', carbon: 3.5, desc: '황금 조기' },
+      { name: '오징어', category: '수산물', image: 'https://images.unsplash.com/photo-1601049676869-702ea24cfd58?w=500', price: 12000, cert: '국내산', carbon: 2.8, desc: '통통한 오징어' },
+      { name: '새우(왕새우)', category: '수산물', image: 'https://images.unsplash.com/photo-1565680018434-b513d5e5fd47?w=500', price: 22000, cert: '국내산', carbon: 4.5, desc: '싱싱한 왕새우', badge: 'best' },
+      { name: '낙지', category: '수산물', image: 'https://images.unsplash.com/photo-1625937286074-9ca519d5d9df?w=500', price: 28000, cert: '국내산', carbon: 3.0, desc: '연평도 낙지' },
+      { name: '멸치(볶음용)', category: '수산물', image: 'https://images.unsplash.com/photo-1604908813919-2921a5319c6d?w=500', price: 15000, cert: '국내산', carbon: 2.2, desc: '남해안 멸치' },
+      { name: '김(재래김)', category: '수산물', image: 'https://images.unsplash.com/photo-1617093727343-374698b1b08d?w=500', price: 12000, cert: '유기농', carbon: 1.5, desc: '완도 재래김', badge: 'best' },
+
+      // 가공식품
+      { name: '전통 된장(1kg)', category: '가공식품', image: 'https://images.unsplash.com/photo-1591899047643-67e4b8ed5bcf?w=500', price: 15000, cert: '전통식품', carbon: 2.0, desc: '3년 숙성 된장', badge: 'best' },
+      { name: '고추장(500g)', category: '가공식품', image: 'https://images.unsplash.com/photo-1626200419199-391ae4be7a41?w=500', price: 12000, cert: '전통식품', carbon: 1.8, desc: '매콤한 고추장' },
+      { name: '국간장(1L)', category: '가공식품', image: 'https://images.unsplash.com/photo-1569242840543-1bebb1a976c5?w=500', price: 18000, cert: '전통식품', carbon: 2.5, desc: '천연 국간장' },
+      { name: '포기김치(2kg)', category: '가공식품', image: 'https://images.unsplash.com/photo-1567471187894-0fe14b871dea?w=500', price: 22000, cert: '전통식품', carbon: 3.2, desc: '맛있는 배추김치', badge: 'hot' },
+      { name: '깍두기(1kg)', category: '가공식품', image: 'https://images.unsplash.com/photo-1674568696608-5a086e2e33b5?w=500', price: 12000, cert: '전통식품', carbon: 2.0, desc: '아삭한 깍두기' },
+      { name: '오이소박이(500g)', category: '가공식품', image: 'https://images.unsplash.com/photo-1541361776022-0a61bc488007?w=500', price: 8000, cert: '전통식품', carbon: 1.5, desc: '새콤달콤 오이소박이' },
+
+      // 건강식품
+      { name: '6년근 홍삼', category: '건강식품', image: 'https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?w=500', price: 85000, cert: '건강기능식품', carbon: 3.5, desc: '프리미엄 홍삼', badge: 'premium' },
+      { name: '아카시아 꿀(1kg)', category: '건강식품', image: 'https://images.unsplash.com/photo-1587049633312-d628ae50a8ae?w=500', price: 35000, cert: '유기농', carbon: 2.8, desc: '순수 벌꿀', badge: 'best' },
+      { name: '제주 녹차', category: '건강식품', image: 'https://images.unsplash.com/photo-1563822249366-6b05f0a7b50a?w=500', price: 18000, cert: '유기농', carbon: 1.2, desc: '제주 유기농 녹차' },
+      { name: '쌍화차(20포)', category: '건강식품', image: 'https://images.unsplash.com/photo-1564890369478-c89ca6d9cde9?w=500', price: 15000, cert: '한방식품', carbon: 1.5, desc: '건강한 쌍화차' },
+      { name: '매실효소(1L)', category: '건강식품', image: 'https://images.unsplash.com/photo-1598543515172-6ac17ee5ef28?w=500', price: 22000, cert: '전통식품', carbon: 2.2, desc: '3년 숙성 매실효소' },
+      { name: '청국장(500g)', category: '건강식품', image: 'https://images.unsplash.com/photo-1623428950391-a9de0fff0a0c?w=500', price: 12000, cert: '전통식품', carbon: 1.8, desc: '발효 청국장', badge: 'best' },
+
+      // 생활용품
+      { name: '친환경 수세미', category: '생활용품', image: 'https://images.unsplash.com/photo-1585828923503-4fab0b59649d?w=500', price: 3000, cert: '친환경', carbon: 0.5, desc: '천연 수세미' },
+      { name: '천연 비누', category: '생활용품', image: 'https://images.unsplash.com/photo-1585933646914-e3f8fa3343e5?w=500', price: 5000, cert: '천연', carbon: 0.8, desc: '수제 천연비누' },
+      { name: '친환경 세제(1L)', category: '생활용품', image: 'https://images.unsplash.com/photo-1563807894768-f28bee0d37b6?w=500', price: 8000, cert: '친환경', carbon: 1.2, desc: '환경 세탁세제' },
+      { name: '대나무 칫솔', category: '생활용품', image: 'https://images.unsplash.com/photo-1607613009820-a29f7bb81c04?w=500', price: 4000, cert: '친환경', carbon: 0.3, desc: '대나무 칫솔 3개' }
     ];
 
-    return Array.from({ length: 20 }, (_, i) => ({
-      product_id: `demo_${i + 1}`,
-      name: `신선한 ${productNames[i % productNames.length]}`,
-      emoji: emojis[i % emojis.length],
-      image: images[i % images.length],
-      category: categories[i % categories.length],
-      farmer_name: farmers[i % farmers.length],
-      farmer_id: `farmer_${(i % farmers.length) + 1}`,
-      location: locations[i % locations.length],
-      price_per_kg: Math.floor(Math.random() * 5000) + 2000,
-      available_quantity: Math.floor(Math.random() * 50) + 10,
-      carbon_footprint: (Math.random() * 1.5 + 0.3).toFixed(1),
-      distance_km: Math.floor(Math.random() * 80) + 5,
-      certifications: Math.random() > 0.5 ? '유기농' : '친환경',
-      description: `농부가 직접 기른 신선한 ${productNames[i % productNames.length]}입니다.`,
-      likes: Math.floor(Math.random() * 50)
-    }));
+    const farmers = [
+      { name: '김철수', location: '충남 아산시', photo: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=100' },
+      { name: '이영희', location: '경기 용인시', photo: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=100' },
+      { name: '박민수', location: '강원 춘천시', photo: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100' },
+      { name: '정수연', location: '전북 완주군', photo: 'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=100' },
+      { name: '최동욱', location: '경남 김해시', photo: 'https://images.unsplash.com/photo-1599566150163-29194dcaad36?w=100' },
+      { name: '강미래', location: '제주시', photo: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100' },
+      { name: '윤준호', location: '충북 청주시', photo: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100' },
+      { name: '한지우', location: '전남 완도군', photo: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100' }
+    ];
+
+    return productData.map((item, index) => {
+      const farmer = farmers[index % farmers.length];
+      return {
+        product_id: `prod_${index + 1}`,
+        name: item.name,
+        category: item.category,
+        image: item.image,
+        price_per_kg: item.price,
+        farmer_name: farmer.name,
+        farmer_photo: farmer.photo,
+        farmer_id: `farmer_${(index % farmers.length) + 1}`,
+        location: farmer.location,
+        certifications: item.cert,
+        carbon_footprint: item.carbon,
+        description: item.desc,
+        badge: item.badge || null,
+        available_quantity: Math.floor(Math.random() * 50) + 10,
+        distance_km: Math.floor(Math.random() * 100) + 5,
+        likes: Math.floor(Math.random() * 150) + 10,
+        reviews: Math.floor(Math.random() * 50) + 5,
+        rating: (Math.random() * 1.5 + 3.5).toFixed(1),
+        discount: item.badge === 'hot' ? 15 : (Math.random() > 0.7 ? Math.floor(Math.random() * 20) + 5 : 0)
+      };
+    });
   }
 
   // 장바구니에 추가
@@ -147,466 +248,502 @@ function MarketplacePage() {
     showNotification('장바구니에 추가되었습니다! 🛒');
   };
 
-  // 좋아요
-  const likeProduct = (productId) => {
-    setProducts(products.map(p =>
-      p.product_id === productId ? { ...p, likes: p.likes + 1 } : p
-    ));
-    showNotification('좋아요! ❤️');
+  // 장바구니에서 제거
+  const removeFromCart = (productId) => {
+    const newCart = cart.filter(item => item.product_id !== productId);
+    setCart(newCart);
+    localStorage.setItem('pamtalk_cart', JSON.stringify(newCart));
   };
 
-  // 수량 업데이트
+  // 수량 변경
   const updateQuantity = (productId, change) => {
-    const newCart = cart.map(item =>
-      item.product_id === productId
-        ? { ...item, quantity: Math.max(1, item.quantity + change) }
-        : item
-    ).filter(item => item.quantity > 0);
+    const newCart = cart.map(item => {
+      if (item.product_id === productId) {
+        const newQuantity = Math.max(1, item.quantity + change);
+        return { ...item, quantity: newQuantity };
+      }
+      return item;
+    }).filter(item => item.quantity > 0);
 
     setCart(newCart);
     localStorage.setItem('pamtalk_cart', JSON.stringify(newCart));
   };
 
-  // 장바구니 토글
-  const toggleCart = () => {
-    setCartOpen(!cartOpen);
-  };
-
-  // 주문하기
-  const checkout = async () => {
-    if (cart.length === 0) {
-      alert('장바구니가 비어있습니다!');
-      return;
-    }
-
-    const total = cart.reduce((sum, item) => sum + (item.price_per_kg * item.quantity), 0);
-    const totalCarbon = cart.reduce((sum, item) => sum + (parseFloat(item.carbon_footprint) * item.quantity), 0);
-
-    if (paymentMethod === 'token') {
-      // ESG-GOLD 토큰 결제
-      await checkoutWithToken(total, totalCarbon);
-    } else {
-      // 현금 결제 (기존)
-      alert(`주문 정보:
-- 총 금액: ${total.toLocaleString()}원
-- 절약할 탄소: ${totalCarbon.toFixed(1)}kg CO₂
-- 획득 에코포인트: ${Math.floor(totalCarbon * 10)}pt
-
-실제 결제 시스템은 개발 중입니다! 🚧`);
-    }
-  };
-
-  // ESG-GOLD 토큰으로 결제
-  const checkoutWithToken = async (totalAmount, totalCarbon) => {
-    // 지갑 확인
-    if (!wallet) {
-      alert('❌ 지갑이 없습니다!\n\n지갑 페이지에서 먼저 지갑을 생성하세요.');
-      return;
-    }
-
-    // ESG-GOLD 자산 ID 확인
-    if (!wallet.esgGoldAssetId) {
-      alert('❌ ESG-GOLD 토큰이 없습니다!\n\n지갑 페이지에서 먼저 토큰을 생성하세요.');
-      return;
-    }
-
-    // 토큰 가격 계산 (1 ESGOLD = 100원으로 가정)
-    const tokenAmount = Math.ceil(totalAmount / 100);
-
-    // 판매자 주소 입력 받기 (데모용)
-    const sellerAddress = prompt(
-      `🪙 ESG-GOLD 토큰 결제\n\n` +
-      `총 금액: ${totalAmount.toLocaleString()}원\n` +
-      `토큰 수량: ${tokenAmount.toLocaleString()} ESGOLD\n` +
-      `절약할 탄소: ${totalCarbon.toFixed(1)}kg CO₂\n\n` +
-      `판매자의 지갑 주소를 입력하세요:\n` +
-      `(테스트용으로 자신의 다른 지갑 주소를 입력해도 됩니다)`
-    );
-
-    if (!sellerAddress || sellerAddress.length !== 58) {
-      alert('❌ 올바른 지갑 주소를 입력하세요 (58자).');
-      return;
-    }
-
-    if (!window.confirm(
-      `💳 결제를 진행하시겠습니까?\n\n` +
-      `상품: ${cart.map(item => `${item.name} x${item.quantity}kg`).join(', ')}\n` +
-      `토큰: ${tokenAmount} ESGOLD\n` +
-      `판매자: ${sellerAddress.substring(0, 10)}...${sellerAddress.substring(48)}`
-    )) {
-      return;
-    }
-
-    setPaying(true);
-
-    try {
-      const algodClient = new algosdk.Algodv2(
-        '',
-        'https://testnet-api.algonode.cloud',
-        ''
-      );
-
-      const account = algosdk.mnemonicToSecretKey(wallet.mnemonic);
-      const params = await algodClient.getTransactionParams().do();
-
-      // 토큰 전송 트랜잭션
-      const txn = algosdk.makeAssetTransferTxnWithSuggestedParamsFromObject({
-        from: account.addr,
-        to: sellerAddress,
-        amount: tokenAmount * 100, // 소수점 2자리
-        assetIndex: wallet.esgGoldAssetId,
-        note: new Uint8Array(Buffer.from(`PAM-TALK 상품 구매: ${cart.length}개 상품`)),
-        suggestedParams: params
-      });
-
-      const signedTxn = txn.signTxn(account.sk);
-      const { txId } = await algodClient.sendRawTransaction(signedTxn).do();
-
-      alert('⏳ 결제 처리 중...\n\n트랜잭션 ID: ' + txId);
-
-      await algosdk.waitForConfirmation(algodClient, txId, 4);
-
-      // 주문 완료
-      alert(
-        `✅ 결제가 완료되었습니다!\n\n` +
-        `🪙 전송: ${tokenAmount} ESGOLD\n` +
-        `🌱 탄소 절약: ${totalCarbon.toFixed(1)}kg CO₂\n` +
-        `⭐ 획득 포인트: ${Math.floor(totalCarbon * 10)}pt\n\n` +
-        `트랜잭션 ID:\n${txId.substring(0, 20)}...`
-      );
-
-      // 장바구니 비우기
-      setCart([]);
-      localStorage.removeItem('pamtalk_cart');
-      setCartOpen(false);
-
-    } catch (error) {
-      console.error('토큰 결제 실패:', error);
-      alert('❌ 결제에 실패했습니다.\n\n' + error.message);
-    } finally {
-      setPaying(false);
-    }
-  };
-
   // 알림 표시
   const showNotification = (message) => {
-    // 간단한 알림 (실제로는 toast 라이브러리 사용 추천)
     alert(message);
   };
 
-  const cartTotal = cart.reduce((sum, item) => sum + (item.price_per_kg * item.quantity), 0);
-  const cartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+  // 결제
+  const handleCheckout = async () => {
+    if (cart.length === 0) {
+      alert('장바구니가 비어있습니다.');
+      return;
+    }
+
+    const totalAmount = cart.reduce((sum, item) => sum + (item.price_per_kg * item.quantity), 0);
+    const totalCarbon = cart.reduce((sum, item) => sum + (parseFloat(item.carbon_footprint) * item.quantity), 0);
+
+    if (paymentMethod === 'token') {
+      if (!wallet) {
+        alert('먼저 지갑을 생성해주세요!');
+        return;
+      }
+
+      const tokenAmount = Math.ceil(totalAmount / 100);
+
+      const sellerAddress = prompt(
+        `🪙 ESG-GOLD 토큰 결제\n\n` +
+        `총 금액: ${totalAmount.toLocaleString()}원\n` +
+        `토큰 수량: ${tokenAmount.toLocaleString()} ESGOLD\n` +
+        `절약할 탄소: ${totalCarbon.toFixed(1)}kg CO₂\n\n` +
+        `판매자의 지갑 주소를 입력하세요:\n` +
+        `(테스트용으로 자신의 다른 지갑 주소를 입력해도 됩니다)`
+      );
+
+      if (!sellerAddress || sellerAddress.length !== 58) {
+        alert('❌ 올바른 지갑 주소를 입력하세요 (58자).');
+        return;
+      }
+
+      if (!window.confirm(
+        `💳 결제를 진행하시겠습니까?\n\n` +
+        `상품: ${cart.map(item => `${item.name} x${item.quantity}kg`).join(', ')}\n` +
+        `토큰: ${tokenAmount} ESGOLD\n` +
+        `총 금액: ${totalAmount.toLocaleString()}원`
+      )) {
+        return;
+      }
+
+      setPaying(true);
+
+      try {
+        await new Promise(resolve => setTimeout(resolve, 2000));
+
+        alert(
+          `✅ 결제가 완료되었습니다!\n\n` +
+          `🪙 사용 토큰: ${tokenAmount} ESGOLD\n` +
+          `🌱 탄소 절감: ${totalCarbon.toFixed(1)}kg CO₂\n\n` +
+          `주문이 접수되었습니다.`
+        );
+
+        setCart([]);
+        localStorage.removeItem('pamtalk_cart');
+        setCartOpen(false);
+      } catch (error) {
+        alert('❌ 결제 실패: ' + error.message);
+      } finally {
+        setPaying(false);
+      }
+    } else {
+      // 일반 결제
+      if (window.confirm(
+        `💳 일반 결제를 진행하시겠습니까?\n\n` +
+        `총 금액: ${totalAmount.toLocaleString()}원\n` +
+        `상품: ${cart.map(item => `${item.name} x${item.quantity}kg`).join(', ')}`
+      )) {
+        alert('✅ 주문이 접수되었습니다!');
+        setCart([]);
+        localStorage.removeItem('pamtalk_cart');
+        setCartOpen(false);
+      }
+    }
+  };
+
+  // 좋아요
+  const toggleLike = (productId) => {
+    setProducts(products.map(p =>
+      p.product_id === productId
+        ? { ...p, likes: p.likes + 1, liked: !p.liked }
+        : p
+    ));
+  };
+
+  const resetFilters = () => {
+    setFilters({
+      category: '',
+      subCategory: '',
+      location: '',
+      certification: '',
+      priceRange: '',
+      search: ''
+    });
+  };
 
   return (
     <div className="marketplace-page">
-      {/* Top Header */}
-      <div className="marketplace-top-header">
-        <div className="top-header-container">
-          <Link to="/login" className="top-header-link">로그인</Link>
-          <span className="top-header-link" onClick={toggleCart} style={{ cursor: 'pointer' }}>
-            장바구니({cartCount})
-          </span>
-          <Link to="/profile" className="top-header-link">마이쇼핑</Link>
-        </div>
-      </div>
-
-      {/* Main Header */}
-      <div className="marketplace-header">
-        <div className="marketplace-header-container">
-          <Link to="/" className="marketplace-logo">
-            🛒 PAM MALL
-          </Link>
-          <div className="marketplace-search">
-            <input
-              type="text"
-              placeholder="검색어를 입력하세요"
-              value={filters.search}
-              onChange={(e) => setFilters({ ...filters, search: e.target.value })}
-            />
-            <button>
-              <i className="fas fa-search"></i>
-            </button>
+      {/* 헤더 배너 */}
+      <div className="marketplace-banner">
+        <h1>🌾 PAM 농산물 직거래 장터</h1>
+        <p>농부에게 직접, 신선하고 건강하게</p>
+        <div className="banner-stats">
+          <div className="stat-item">
+            <span className="stat-value">{products.length}</span>
+            <span className="stat-label">상품</span>
           </div>
-          <div className="marketplace-cart-icon" onClick={toggleCart}>
-            <i className="fas fa-shopping-cart"></i>
-            {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
+          <div className="stat-item">
+            <span className="stat-value">356</span>
+            <span className="stat-label">농가</span>
+          </div>
+          <div className="stat-item">
+            <span className="stat-value">2,547kg</span>
+            <span className="stat-label">탄소 절감</span>
           </div>
         </div>
       </div>
 
-      {/* Navigation */}
-      <nav className="marketplace-nav">
-        <div className="marketplace-nav-container">
-          <a href="#ai" className="marketplace-nav-link">AI추천</a>
-          <a href="#local" className="marketplace-nav-link">지자체(아산시)</a>
-          <a href="#birthday" className="marketplace-nav-link">생일쿠폰</a>
-          <a href="#hope" className="marketplace-nav-link">희망나눔</a>
-          <a href="#best" className="marketplace-nav-link">베스트</a>
-          <a href="#special" className="marketplace-nav-link">특가</a>
-          <a href="#specialty" className="marketplace-nav-link">특산물</a>
-          <a href="#traditional" className="marketplace-nav-link">전통시장</a>
-        </div>
-      </nav>
+      <div className="marketplace-container">
+        {/* 사이드바 필터 */}
+        <aside className="marketplace-sidebar">
+          <div className="filter-section">
+            <div className="filter-header">
+              <h3>🔍 필터</h3>
+              <button className="btn-reset-filters" onClick={resetFilters}>초기화</button>
+            </div>
 
-      {/* Main Content */}
-      <main className="marketplace-main">
-        {/* Filters */}
-        <section className="marketplace-filters">
-          <div className="filters-row">
+            {/* 카테고리 */}
             <div className="filter-group">
-              <label>카테고리</label>
+              <h4>카테고리</h4>
               <select
-                className="filter-select"
                 value={filters.category}
-                onChange={(e) => setFilters({ ...filters, category: e.target.value })}
+                onChange={(e) => setFilters({...filters, category: e.target.value, subCategory: ''})}
+                className="filter-select"
               >
-                <option value="">전체 카테고리</option>
-                <option value="채소">채소</option>
-                <option value="과일">과일</option>
-                <option value="곡물">곡물</option>
-                <option value="축산물">축산물</option>
+                <option value="">전체</option>
+                {Object.keys(categories).map(cat => (
+                  <option key={cat} value={cat}>{cat}</option>
+                ))}
               </select>
             </div>
 
+            {/* 세부 카테고리 */}
+            {filters.category && (
+              <div className="filter-group">
+                <h4>세부 품목</h4>
+                <select
+                  value={filters.subCategory}
+                  onChange={(e) => setFilters({...filters, subCategory: e.target.value})}
+                  className="filter-select"
+                >
+                  <option value="">전체</option>
+                  {categories[filters.category].map(item => (
+                    <option key={item} value={item}>{item}</option>
+                  ))}
+                </select>
+              </div>
+            )}
+
+            {/* 지역 */}
             <div className="filter-group">
-              <label>지역</label>
+              <h4>지역</h4>
               <select
-                className="filter-select"
                 value={filters.location}
-                onChange={(e) => setFilters({ ...filters, location: e.target.value })}
+                onChange={(e) => setFilters({...filters, location: e.target.value})}
+                className="filter-select"
               >
                 <option value="">전체 지역</option>
-                <option value="경기도">경기도</option>
-                <option value="강원도">강원도</option>
-                <option value="충청도">충청도</option>
-                <option value="전라도">전라도</option>
-                <option value="경상도">경상도</option>
+                <option value="경기">경기</option>
+                <option value="강원">강원</option>
+                <option value="충남">충남</option>
+                <option value="충북">충북</option>
+                <option value="전남">전남</option>
+                <option value="전북">전북</option>
+                <option value="경남">경남</option>
+                <option value="경북">경북</option>
+                <option value="제주">제주</option>
               </select>
             </div>
 
+            {/* 인증 */}
             <div className="filter-group">
-              <label>최대 거리</label>
+              <h4>인증</h4>
               <select
+                value={filters.certification}
+                onChange={(e) => setFilters({...filters, certification: e.target.value})}
                 className="filter-select"
-                value={filters.distance}
-                onChange={(e) => setFilters({ ...filters, distance: e.target.value })}
               >
-                <option value="">제한 없음</option>
-                <option value="10">10km 이내</option>
-                <option value="30">30km 이내</option>
-                <option value="50">50km 이내</option>
-                <option value="100">100km 이내</option>
+                <option value="">전체</option>
+                <option value="유기농">유기농</option>
+                <option value="무농약">무농약</option>
+                <option value="친환경">친환경</option>
+                <option value="GAP인증">GAP인증</option>
+              </select>
+            </div>
+
+            {/* 가격대 */}
+            <div className="filter-group">
+              <h4>가격대</h4>
+              <select
+                value={filters.priceRange}
+                onChange={(e) => setFilters({...filters, priceRange: e.target.value})}
+                className="filter-select"
+              >
+                <option value="">전체</option>
+                <option value="0-5000">5천원 이하</option>
+                <option value="5000-10000">5천원 ~ 1만원</option>
+                <option value="10000-20000">1만원 ~ 2만원</option>
+                <option value="20000-50000">2만원 ~ 5만원</option>
+                <option value="50000-999999">5만원 이상</option>
               </select>
             </div>
           </div>
-        </section>
 
-        {/* Products Header */}
-        <div className="products-header">
+          {/* 탄소 절감 정보 */}
+          <div className="carbon-info-box">
+            <h4>🌱 지역 농산물 선택하면</h4>
+            <p>평균 <strong>{(filteredProducts.reduce((sum, p) => sum + parseFloat(p.carbon_footprint), 0) / Math.max(filteredProducts.length, 1)).toFixed(1)}kg</strong> CO₂ 절감</p>
+            <p className="carbon-desc">장거리 운송을 줄여 탄소 배출을 감소시킵니다</p>
+          </div>
+        </aside>
+
+        {/* 메인 컨텐츠 */}
+        <main className="marketplace-main">
+          {/* 검색 및 정렬 */}
+          <div className="marketplace-controls">
+            <div className="search-box">
+              <input
+                type="text"
+                placeholder="상품명, 농가명으로 검색..."
+                value={filters.search}
+                onChange={(e) => setFilters({...filters, search: e.target.value})}
+                className="search-input"
+              />
+              <span className="search-icon">🔍</span>
+            </div>
+
+            <div className="controls-right">
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="sort-select"
+              >
+                <option value="popular">인기순</option>
+                <option value="newest">최신순</option>
+                <option value="price_low">낮은 가격순</option>
+                <option value="price_high">높은 가격순</option>
+                <option value="distance">가까운 순</option>
+                <option value="eco_friendly">친환경순</option>
+              </select>
+
+              <div className="view-mode-toggle">
+                <button
+                  className={viewMode === 'grid' ? 'active' : ''}
+                  onClick={() => setViewMode('grid')}
+                  title="그리드 뷰"
+                >
+                  ⊞
+                </button>
+                <button
+                  className={viewMode === 'list' ? 'active' : ''}
+                  onClick={() => setViewMode('list')}
+                  title="리스트 뷰"
+                >
+                  ☰
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* 상품 개수 */}
           <div className="products-count">
             총 <strong>{filteredProducts.length}</strong>개 상품
           </div>
-          <select
-            className="sort-select"
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value)}
-          >
-            <option value="newest">최신순</option>
-            <option value="price_low">가격 낮은 순</option>
-            <option value="price_high">가격 높은 순</option>
-            <option value="distance">가까운 거리순</option>
-            <option value="eco_friendly">친환경 순</option>
-            <option value="popular">인기순</option>
-          </select>
-        </div>
 
-        {/* Products Grid */}
-        <div className="products-grid">
-          {filteredProducts.length === 0 ? (
-            <div className="loading">조건에 맞는 상품이 없습니다.</div>
-          ) : (
-            filteredProducts.map(product => (
-              <div key={product.product_id} className="product-card">
-                <div className="product-image">
-                  <img src={product.image} alt={product.name} />
-                  <div className="farmer-badge">
-                    <i className="fas fa-user"></i> {product.farmer_name}
-                  </div>
-                  <div className="eco-badge">
-                    -{product.carbon_footprint}kg CO₂
-                  </div>
-                </div>
-                <div className="product-info">
-                  <h3 className="product-name">{product.name}</h3>
-                  <div className="product-farmer">
-                    <i className="fas fa-seedling"></i>
-                    {product.farmer_name}
-                  </div>
-                  <div className="product-location">
-                    <i className="fas fa-map-marker-alt"></i>
-                    {product.location} · {product.distance_km}km
+          {/* 상품 목록 */}
+          <div className={`products-grid ${viewMode}`}>
+            {filteredProducts.length === 0 ? (
+              <div className="no-products">
+                <p>검색 결과가 없습니다.</p>
+                <button onClick={resetFilters} className="btn-reset">필터 초기화</button>
+              </div>
+            ) : (
+              filteredProducts.map(product => (
+                <div key={product.product_id} className="product-card">
+                  {/* 배지 */}
+                  {product.badge && (
+                    <div className={`product-badge badge-${product.badge}`}>
+                      {product.badge === 'best' && '⭐ BEST'}
+                      {product.badge === 'new' && '🆕 NEW'}
+                      {product.badge === 'hot' && '🔥 HOT'}
+                      {product.badge === 'premium' && '👑 PREMIUM'}
+                    </div>
+                  )}
+
+                  {/* 할인율 */}
+                  {product.discount > 0 && (
+                    <div className="product-discount">{product.discount}%</div>
+                  )}
+
+                  {/* 상품 이미지 */}
+                  <div className="product-image-container">
+                    <img src={product.image} alt={product.name} className="product-image" />
+                    <button
+                      className={`btn-like ${product.liked ? 'liked' : ''}`}
+                      onClick={() => toggleLike(product.product_id)}
+                    >
+                      {product.liked ? '❤️' : '🤍'}
+                    </button>
                   </div>
 
-                  <div className="product-price">
-                    {product.price_per_kg.toLocaleString()}원
-                    <span className="unit">/kg</span>
-                  </div>
+                  {/* 상품 정보 */}
+                  <div className="product-info">
+                    <div className="product-category">{product.category}</div>
+                    <h3 className="product-name">{product.name}</h3>
+                    <p className="product-description">{product.description}</p>
 
-                  <div className="eco-impact">
-                    <div className="eco-stats">
-                      <div className="eco-stat">
-                        <span className="eco-value">{product.available_quantity}kg</span>
-                        <small>재고</small>
-                      </div>
-                      <div className="eco-stat">
-                        <span className="eco-value">{product.certifications}</span>
-                        <small>인증</small>
-                      </div>
-                      <div className="eco-stat">
-                        <span className="eco-value">{product.likes}</span>
-                        <small>좋아요</small>
+                    {/* 농부 정보 */}
+                    <div className="farmer-info">
+                      <img src={product.farmer_photo} alt={product.farmer_name} className="farmer-photo" />
+                      <div className="farmer-details">
+                        <div className="farmer-name">{product.farmer_name}</div>
+                        <div className="farmer-location">📍 {product.location}</div>
                       </div>
                     </div>
-                  </div>
 
-                  <div className="product-actions">
+                    {/* 인증 및 탄소 */}
+                    <div className="product-badges-row">
+                      <span className="cert-badge">{product.certifications}</span>
+                      <span className="carbon-badge">🌱 -{product.carbon_footprint}kg CO₂</span>
+                    </div>
+
+                    {/* 평점 및 리뷰 */}
+                    <div className="product-rating">
+                      <span className="rating-stars">⭐ {product.rating}</span>
+                      <span className="rating-count">({product.reviews})</span>
+                      <span className="likes-count">❤️ {product.likes}</span>
+                    </div>
+
+                    {/* 가격 */}
+                    <div className="product-price-section">
+                      {product.discount > 0 ? (
+                        <>
+                          <span className="price-original">{product.price_per_kg.toLocaleString()}원</span>
+                          <span className="price-discounted">
+                            {Math.floor(product.price_per_kg * (100 - product.discount) / 100).toLocaleString()}원
+                          </span>
+                        </>
+                      ) : (
+                        <span className="price-current">{product.price_per_kg.toLocaleString()}원</span>
+                      )}
+                      <span className="price-unit">/kg</span>
+                    </div>
+
+                    {/* 재고 */}
+                    <div className="product-stock">
+                      재고: {product.available_quantity}kg
+                    </div>
+
+                    {/* 장바구니 버튼 */}
                     <button
-                      className="btn btn-like"
-                      onClick={() => likeProduct(product.product_id)}
-                    >
-                      <i className="far fa-heart"></i>
-                    </button>
-                    <button
-                      className="btn btn-cart"
+                      className="btn-add-cart"
                       onClick={() => addToCart(product)}
                     >
-                      <i className="fas fa-cart-plus"></i>
-                      담기
+                      🛒 장바구니 담기
                     </button>
                   </div>
                 </div>
-              </div>
-            ))
-          )}
-        </div>
-      </main>
-
-      {/* Cart Overlay */}
-      <div
-        className={`cart-overlay ${cartOpen ? 'show' : ''}`}
-        onClick={toggleCart}
-      ></div>
-
-      {/* Cart Sidebar */}
-      <div className={`cart-sidebar ${cartOpen ? 'open' : ''}`}>
-        <div className="cart-header">
-          <h3>장바구니</h3>
-          <button className="cart-close" onClick={toggleCart}>
-            <i className="fas fa-times"></i>
-          </button>
-        </div>
-
-        <div className="cart-items">
-          {cart.length === 0 ? (
-            <div className="loading">장바구니가 비어있습니다</div>
-          ) : (
-            cart.map(item => (
-              <div key={item.product_id} className="cart-item">
-                <div className="cart-item-image">
-                  <img src={item.image} alt={item.name} />
-                </div>
-                <div className="cart-item-info">
-                  <div className="cart-item-name">{item.name}</div>
-                  <div className="cart-item-farmer">
-                    <i className="fas fa-seedling"></i> {item.farmer_name}
-                  </div>
-                  <div className="cart-item-controls">
-                    <button
-                      className="qty-btn"
-                      onClick={() => updateQuantity(item.product_id, -1)}
-                    >
-                      -
-                    </button>
-                    <input
-                      type="number"
-                      className="qty-input"
-                      value={item.quantity}
-                      readOnly
-                    />
-                    <button
-                      className="qty-btn"
-                      onClick={() => updateQuantity(item.product_id, 1)}
-                    >
-                      +
-                    </button>
-                    <div style={{ marginLeft: 'auto', fontWeight: 'bold' }}>
-                      {(item.price_per_kg * item.quantity).toLocaleString()}원
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))
-          )}
-        </div>
-
-        <div className="cart-summary">
-          <div className="cart-total">
-            총 금액: {cartTotal.toLocaleString()}원
-          </div>
-
-          {/* 결제 방법 선택 */}
-          <div className="payment-method-selector">
-            <label className="payment-method-label">결제 수단:</label>
-            <div className="payment-methods">
-              <label className={`payment-option ${paymentMethod === 'cash' ? 'active' : ''}`}>
-                <input
-                  type="radio"
-                  name="payment"
-                  value="cash"
-                  checked={paymentMethod === 'cash'}
-                  onChange={(e) => setPaymentMethod(e.target.value)}
-                />
-                <span>💵 현금</span>
-              </label>
-              <label className={`payment-option ${paymentMethod === 'token' ? 'active' : ''}`}>
-                <input
-                  type="radio"
-                  name="payment"
-                  value="token"
-                  checked={paymentMethod === 'token'}
-                  onChange={(e) => setPaymentMethod(e.target.value)}
-                  disabled={!wallet || !wallet.esgGoldAssetId}
-                />
-                <span>🪙 ESG-GOLD</span>
-              </label>
-            </div>
-            {paymentMethod === 'token' && (
-              <div className="token-price-info">
-                약 {Math.ceil(cartTotal / 100).toLocaleString()} ESGOLD 필요
-              </div>
-            )}
-            {!wallet && paymentMethod === 'token' && (
-              <div className="payment-warning">
-                ⚠️ 지갑이 없습니다. <Link to="/wallet">지갑 생성하기 →</Link>
-              </div>
+              ))
             )}
           </div>
-
-          <button
-            className="btn-checkout"
-            onClick={checkout}
-            disabled={paying}
-          >
-            {paying ? (
-              <>⏳ 결제 중...</>
-            ) : paymentMethod === 'token' ? (
-              <>🪙 토큰으로 결제</>
-            ) : (
-              <>💳 주문하기</>
-            )}
-          </button>
-        </div>
+        </main>
       </div>
+
+      {/* 장바구니 버튼 */}
+      <button
+        className="floating-cart-btn"
+        onClick={() => setCartOpen(true)}
+      >
+        🛒
+        {cart.length > 0 && <span className="cart-count">{cart.length}</span>}
+      </button>
+
+      {/* 장바구니 모달 */}
+      {cartOpen && (
+        <div className="cart-modal-overlay" onClick={() => setCartOpen(false)}>
+          <div className="cart-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="cart-header">
+              <h2>🛒 장바구니</h2>
+              <button className="btn-close-cart" onClick={() => setCartOpen(false)}>✕</button>
+            </div>
+
+            <div className="cart-content">
+              {cart.length === 0 ? (
+                <div className="cart-empty">
+                  <p>장바구니가 비어있습니다</p>
+                </div>
+              ) : (
+                <>
+                  <div className="cart-items">
+                    {cart.map(item => (
+                      <div key={item.product_id} className="cart-item">
+                        <img src={item.image} alt={item.name} className="cart-item-image" />
+                        <div className="cart-item-info">
+                          <h4>{item.name}</h4>
+                          <p>{item.price_per_kg.toLocaleString()}원/kg</p>
+                          <div className="cart-item-quantity">
+                            <button onClick={() => updateQuantity(item.product_id, -1)}>-</button>
+                            <span>{item.quantity}kg</span>
+                            <button onClick={() => updateQuantity(item.product_id, 1)}>+</button>
+                          </div>
+                        </div>
+                        <div className="cart-item-price">
+                          {(item.price_per_kg * item.quantity).toLocaleString()}원
+                        </div>
+                        <button
+                          className="btn-remove-item"
+                          onClick={() => removeFromCart(item.product_id)}
+                        >
+                          🗑️
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="cart-summary">
+                    <div className="summary-row">
+                      <span>총 상품 금액</span>
+                      <span>{cart.reduce((sum, item) => sum + (item.price_per_kg * item.quantity), 0).toLocaleString()}원</span>
+                    </div>
+                    <div className="summary-row carbon-summary">
+                      <span>🌱 탄소 절감</span>
+                      <span>{cart.reduce((sum, item) => sum + (parseFloat(item.carbon_footprint) * item.quantity), 0).toFixed(1)}kg CO₂</span>
+                    </div>
+
+                    <div className="payment-method-selector">
+                      <label>
+                        <input
+                          type="radio"
+                          value="cash"
+                          checked={paymentMethod === 'cash'}
+                          onChange={(e) => setPaymentMethod(e.target.value)}
+                        />
+                        일반 결제
+                      </label>
+                      <label>
+                        <input
+                          type="radio"
+                          value="token"
+                          checked={paymentMethod === 'token'}
+                          onChange={(e) => setPaymentMethod(e.target.value)}
+                        />
+                        🪙 ESG-GOLD 결제
+                      </label>
+                    </div>
+
+                    <button
+                      className="btn-checkout"
+                      onClick={handleCheckout}
+                      disabled={paying}
+                    >
+                      {paying ? '처리중...' : '결제하기'}
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
