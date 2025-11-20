@@ -1,0 +1,27 @@
+{
+  "report_title": "PAM-TALK Anomaly Detection Analysis Report",
+  "generated_at": "2025-09-25T04:21:05.002766",
+  "analysis_period": "1000 simulated transactions",
+  "summary": {
+    "total_transactions": 1000,
+    "anomalies_detected": 1000,
+    "average_anomaly_score": 0.6428599999999999,
+    "high_risk_transactions": 998
+  },
+  "risk_analysis": {
+    "HIGH": 917,
+    "CRITICAL": 81,
+    "LOW": 2
+  },
+  "anomaly_types": {
+    "timing_manipulation": 1000,
+    "general_suspicious": 1000,
+    "quality_fraud": 188,
+    "price_manipulation": 60,
+    "wash_trading": 43
+  },
+  "recommendations": [
+    "URGENT: 998 high-risk transactions require immediate investigation",
+    "High anomaly rate detected - consider enhancing monitoring systems"
+  ]
+}

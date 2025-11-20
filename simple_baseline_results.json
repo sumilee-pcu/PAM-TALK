@@ -1,0 +1,9 @@
+{
+  "timestamp": "2025-09-25T20:27:48.846006",
+  "single_request_avg": 2.7458497881889343,
+  "sustained_rps": 0.4,
+  "sustained_success_rate": 100.0,
+  "cpu_usage": 15.6,
+  "memory_usage": 49.9,
+  "achievement_percent": 0.8
+}

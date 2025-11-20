@@ -1,0 +1,70 @@
+{
+  "product_name": "cabbage",
+  "prediction_period": "7 days",
+  "predictions": [
+    {
+      "date": "2025-09-26",
+      "predicted_demand": 907,
+      "lower_bound": 698,
+      "upper_bound": 1138,
+      "confidence_interval": 440
+    },
+    {
+      "date": "2025-09-27",
+      "predicted_demand": 1010,
+      "lower_bound": 792,
+      "upper_bound": 1222,
+      "confidence_interval": 429
+    },
+    {
+      "date": "2025-09-28",
+      "predicted_demand": 640,
+      "lower_bound": 418,
+      "upper_bound": 864,
+      "confidence_interval": 446
+    },
+    {
+      "date": "2025-09-29",
+      "predicted_demand": 707,
+      "lower_bound": 496,
+      "upper_bound": 929,
+      "confidence_interval": 433
+    },
+    {
+      "date": "2025-09-30",
+      "predicted_demand": 710,
+      "lower_bound": 492,
+      "upper_bound": 947,
+      "confidence_interval": 454
+    },
+    {
+      "date": "2025-10-01",
+      "predicted_demand": 832,
+      "lower_bound": 609,
+      "upper_bound": 1040,
+      "confidence_interval": 431
+    },
+    {
+      "date": "2025-10-02",
+      "predicted_demand": 827,
+      "lower_bound": 593,
+      "upper_bound": 1042,
+      "confidence_interval": 449
+    }
+  ],
+  "total_predicted_demand": 5635,
+  "avg_daily_demand": 805,
+  "accuracy_metrics": {
+    "mae": 89.61,
+    "mape": 12.51,
+    "rmse": 106.02,
+    "confidence_score": 0.875
+  },
+  "model_components": {
+    "trend_strength": "moderate",
+    "seasonal_strength": "strong",
+    "weekly_pattern": "detected",
+    "yearly_pattern": "detected"
+  },
+  "recommendation": "Demand is decreasing with high confidence. Monitor inventory levels and adjust procurement accordingly."
+}

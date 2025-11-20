@@ -1,0 +1,70 @@
+{
+  "product_name": "rice",
+  "prediction_period": "7 days",
+  "predictions": [
+    {
+      "date": "2025-09-26",
+      "predicted_demand": 2316,
+      "lower_bound": 1955,
+      "upper_bound": 2721,
+      "confidence_interval": 765
+    },
+    {
+      "date": "2025-09-27",
+      "predicted_demand": 2693,
+      "lower_bound": 2273,
+      "upper_bound": 3116,
+      "confidence_interval": 842
+    },
+    {
+      "date": "2025-09-28",
+      "predicted_demand": 2047,
+      "lower_bound": 1651,
+      "upper_bound": 2463,
+      "confidence_interval": 811
+    },
+    {
+      "date": "2025-09-29",
+      "predicted_demand": 2404,
+      "lower_bound": 1975,
+      "upper_bound": 2810,
+      "confidence_interval": 834
+    },
+    {
+      "date": "2025-09-30",
+      "predicted_demand": 2458,
+      "lower_bound": 2070,
+      "upper_bound": 2864,
+      "confidence_interval": 793
+    },
+    {
+      "date": "2025-10-01",
+      "predicted_demand": 2367,
+      "lower_bound": 1964,
+      "upper_bound": 2746,
+      "confidence_interval": 781
+    },
+    {
+      "date": "2025-10-02",
+      "predicted_demand": 2404,
+      "lower_bound": 1962,
+      "upper_bound": 2803,
+      "confidence_interval": 840
+    }
+  ],
+  "total_predicted_demand": 16692,
+  "avg_daily_demand": 2384,
+  "accuracy_metrics": {
+    "mae": 346.6,
+    "mape": 11.67,
+    "rmse": 606.7,
+    "confidence_score": 0.883
+  },
+  "model_components": {
+    "trend_strength": "moderate",
+    "seasonal_strength": "strong",
+    "weekly_pattern": "detected",
+    "yearly_pattern": "detected"
+  },
+  "recommendation": "Demand is increasing with high confidence. Consider increasing inventory and production planning."
+}

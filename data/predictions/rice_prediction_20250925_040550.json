@@ -1,0 +1,70 @@
+{
+  "product_name": "rice",
+  "prediction_period": "7 days",
+  "predictions": [
+    {
+      "date": "2025-09-26",
+      "predicted_demand": 2262,
+      "lower_bound": 1839,
+      "upper_bound": 2703,
+      "confidence_interval": 864
+    },
+    {
+      "date": "2025-09-27",
+      "predicted_demand": 2391,
+      "lower_bound": 1962,
+      "upper_bound": 2837,
+      "confidence_interval": 875
+    },
+    {
+      "date": "2025-09-28",
+      "predicted_demand": 1949,
+      "lower_bound": 1468,
+      "upper_bound": 2399,
+      "confidence_interval": 930
+    },
+    {
+      "date": "2025-09-29",
+      "predicted_demand": 2119,
+      "lower_bound": 1672,
+      "upper_bound": 2553,
+      "confidence_interval": 880
+    },
+    {
+      "date": "2025-09-30",
+      "predicted_demand": 2108,
+      "lower_bound": 1658,
+      "upper_bound": 2542,
+      "confidence_interval": 884
+    },
+    {
+      "date": "2025-10-01",
+      "predicted_demand": 2090,
+      "lower_bound": 1647,
+      "upper_bound": 2536,
+      "confidence_interval": 888
+    },
+    {
+      "date": "2025-10-02",
+      "predicted_demand": 2075,
+      "lower_bound": 1641,
+      "upper_bound": 2513,
+      "confidence_interval": 871
+    }
+  ],
+  "total_predicted_demand": 14997,
+  "avg_daily_demand": 2142,
+  "accuracy_metrics": {
+    "mae": 239.19,
+    "mape": 11.68,
+    "rmse": 328.22,
+    "confidence_score": 0.883
+  },
+  "model_components": {
+    "trend_strength": "moderate",
+    "seasonal_strength": "strong",
+    "weekly_pattern": "detected",
+    "yearly_pattern": "detected"
+  },
+  "recommendation": "Demand is decreasing with high confidence. Monitor inventory levels and adjust procurement accordingly."
+}

@@ -1,0 +1,34 @@
+[
+  {
+    "producer_id": "FARM_DEMO_001",
+    "consumer_id": "CONSUMER_001",
+    "product_type": "tomatoes",
+    "quantity": 500,
+    "price_per_unit": 5000,
+    "total_value": 2500000,
+    "quality_score": 85,
+    "esg_score": 80,
+    "location": "Seoul",
+    "payment_method": "PAMT_TRANSFER",
+    "transaction_id": "TXN_1758742060",
+    "timestamp": "2025-09-25T04:27:40.864713"
+  },
+  {
+    "producer_id": "FARM_DEMO_002",
+    "consumer_id": "CONSUMER_002",
+    "product_type": "rice",
+    "quantity": 1000,
+    "price_per_unit": 3000,
+    "total_value": 3000000,
+    "quality_score": 90,
+    "esg_score": 70,
+    "location": "Busan",
+    "payment_method": "CRYPTO",
+    "transaction_id": "TXN_1758742060",
+    "timestamp": "2025-09-25T04:27:40.881127"
+  },
+  {
+    "transaction_id": "TXN_1758742065",
+    "timestamp": "2025-09-25T04:27:45.886538"
+  }
+]

@@ -1,0 +1,33 @@
+{
+  "token": {
+    "token_id": "SIM746418487",
+    "name": "PAM-TALK ESG Token (Simulated)",
+    "symbol": "PAM-SIM",
+    "total_supply": 1000000000,
+    "decimals": 3,
+    "creator_address": "SIMULATION_MODE_CREATOR",
+    "created_at": "2025-09-28T00:42:19.429568",
+    "description": "Simulated PAM-TALK ESG token for testing"
+  },
+  "accounts": {
+    "committee": {
+      "balance": 100000000,
+      "role": "Committee"
+    },
+    "supplier1": {
+      "balance": 50000000,
+      "role": "Supplier"
+    },
+    "consumer1": {
+      "balance": 10000000,
+      "role": "Consumer"
+    },
+    "farmer1": {
+      "balance": 25000000,
+      "role": "Farmer"
+    }
+  },
+  "transactions": [],
+  "last_updated": "2025-09-28T00:42:19.429630",
+  "mode": "simulation"
+}

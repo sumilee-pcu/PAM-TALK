@@ -1,0 +1,70 @@
+{
+  "product_name": "lettuce",
+  "prediction_period": "7 days",
+  "predictions": [
+    {
+      "date": "2025-09-26",
+      "predicted_demand": 826,
+      "lower_bound": 604,
+      "upper_bound": 1053,
+      "confidence_interval": 448
+    },
+    {
+      "date": "2025-09-27",
+      "predicted_demand": 680,
+      "lower_bound": 454,
+      "upper_bound": 877,
+      "confidence_interval": 422
+    },
+    {
+      "date": "2025-09-28",
+      "predicted_demand": 376,
+      "lower_bound": 171,
+      "upper_bound": 590,
+      "confidence_interval": 418
+    },
+    {
+      "date": "2025-09-29",
+      "predicted_demand": 523,
+      "lower_bound": 290,
+      "upper_bound": 739,
+      "confidence_interval": 448
+    },
+    {
+      "date": "2025-09-30",
+      "predicted_demand": 531,
+      "lower_bound": 307,
+      "upper_bound": 742,
+      "confidence_interval": 434
+    },
+    {
+      "date": "2025-10-01",
+      "predicted_demand": 638,
+      "lower_bound": 421,
+      "upper_bound": 867,
+      "confidence_interval": 445
+    },
+    {
+      "date": "2025-10-02",
+      "predicted_demand": 714,
+      "lower_bound": 507,
+      "upper_bound": 930,
+      "confidence_interval": 423
+    }
+  ],
+  "total_predicted_demand": 4291,
+  "avg_daily_demand": 613,
+  "accuracy_metrics": {
+    "mae": 71.73,
+    "mape": 11.86,
+    "rmse": 93.58,
+    "confidence_score": 0.881
+  },
+  "model_components": {
+    "trend_strength": "moderate",
+    "seasonal_strength": "strong",
+    "weekly_pattern": "detected",
+    "yearly_pattern": "detected"
+  },
+  "recommendation": "Demand is decreasing with high confidence. Monitor inventory levels and adjust procurement accordingly."
+}

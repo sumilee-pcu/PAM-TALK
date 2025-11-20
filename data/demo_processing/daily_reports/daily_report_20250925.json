@@ -1,0 +1,21 @@
+{
+  "process_date": "2025-09-25T04:27:45.907309",
+  "farms_processed": 0,
+  "predictions_generated": 0,
+  "esg_scores_updated": 0,
+  "anomalies_detected": 2,
+  "blockchain_records": 0,
+  "processing_time_seconds": 0.449148,
+  "errors": [],
+  "summary": {
+    "status": "completed",
+    "farms_processed": 0,
+    "predictions_generated": 0,
+    "esg_scores_updated": 0,
+    "anomalies_detected": 2,
+    "blockchain_records_synced": 0,
+    "processing_time_minutes": 0.01,
+    "total_predicted_demand": 0,
+    "total_esg_tokens": 0
+  }
+}

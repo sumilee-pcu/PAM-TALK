@@ -1,0 +1,34 @@
+{
+  "transactions_checked": 2,
+  "anomalies_detected": 2,
+  "high_risk_transactions": 2,
+  "anomalous_transactions": [
+    {
+      "transaction_id": "TXN_1758742060",
+      "risk_level": "HIGH",
+      "anomaly_score": 0.6000000000000001,
+      "anomaly_types": [
+        "timing_manipulation",
+        "general_suspicious"
+      ],
+      "recommendations": [
+        "Review trading time patterns for coordination",
+        "Verify delivery schedules and logistics"
+      ]
+    },
+    {
+      "transaction_id": "TXN_1758742060",
+      "risk_level": "HIGH",
+      "anomaly_score": 0.6000000000000001,
+      "anomaly_types": [
+        "timing_manipulation",
+        "general_suspicious"
+      ],
+      "recommendations": [
+        "Review trading time patterns for coordination",
+        "Verify delivery schedules and logistics"
+      ]
+    }
+  ],
+  "errors": []
+}

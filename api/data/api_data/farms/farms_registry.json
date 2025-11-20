@@ -1,0 +1,91 @@
+{
+  "FARM_DEMO_001": {
+    "farm_id": "FARM_DEMO_001",
+    "farm_name": "Green Valley Organic Farm",
+    "owner_name": "Kim Min-jun",
+    "location": "Gyeonggi-do, South Korea",
+    "size_hectares": 25.5,
+    "established_date": "2015-03-15",
+    "contact_info": {
+      "phone": "+82-31-123-4567",
+      "email": "info@greenvalley.co.kr"
+    },
+    "certifications": [
+      "organic",
+      "fair_trade",
+      "carbon_neutral"
+    ],
+    "products": [
+      "tomatoes",
+      "lettuce",
+      "carrots"
+    ],
+    "esg_data": {
+      "organic_certified": true,
+      "water_usage_per_hectare": 4000,
+      "carbon_emissions": 1.8,
+      "renewable_energy_percentage": 75.0,
+      "biodiversity_score": 8,
+      "soil_health_score": 9,
+      "waste_management_score": 8,
+      "fair_wage_certification": true,
+      "community_investment_percentage": 3.2,
+      "worker_safety_score": 9,
+      "local_employment_percentage": 85.0,
+      "training_programs": true,
+      "healthcare_provided": true,
+      "transparency_score": 8,
+      "record_keeping_score": 9,
+      "stakeholder_engagement_score": 8,
+      "ethical_practices_score": 9,
+      "supply_chain_traceability": true
+    },
+    "blockchain_address": "ALGO_ADDR_001",
+    "status": "active",
+    "created_at": "2025-09-25T10:09:31.082246",
+    "updated_at": "2025-09-25T10:09:31.082248"
+  },
+  "FARM_DEMO_002": {
+    "farm_id": "FARM_DEMO_002",
+    "farm_name": "Sunrise Agricultural Cooperative",
+    "owner_name": "Park So-young",
+    "location": "Jeolla-do, South Korea",
+    "size_hectares": 45.0,
+    "established_date": "2010-08-20",
+    "contact_info": {
+      "phone": "+82-61-987-6543",
+      "email": "contact@sunrise-coop.kr"
+    },
+    "certifications": [
+      "global_gap"
+    ],
+    "products": [
+      "rice",
+      "cabbage"
+    ],
+    "esg_data": {
+      "organic_certified": false,
+      "water_usage_per_hectare": 11000,
+      "carbon_emissions": 4.2,
+      "renewable_energy_percentage": 30.0,
+      "biodiversity_score": 5,
+      "soil_health_score": 6,
+      "waste_management_score": 7,
+      "fair_wage_certification": false,
+      "community_investment_percentage": 1.5,
+      "worker_safety_score": 7,
+      "local_employment_percentage": 65.0,
+      "training_programs": true,
+      "healthcare_provided": false,
+      "transparency_score": 6,
+      "record_keeping_score": 7,
+      "stakeholder_engagement_score": 5,
+      "ethical_practices_score": 6,
+      "supply_chain_traceability": false
+    },
+    "blockchain_address": "ALGO_ADDR_002",
+    "status": "active",
+    "created_at": "2025-09-25T10:09:31.100396",
+    "updated_at": "2025-09-25T10:09:31.100407"
+  }
+}

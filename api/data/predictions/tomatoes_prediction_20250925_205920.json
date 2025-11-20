@@ -1,0 +1,70 @@
+{
+  "product_name": "tomatoes",
+  "prediction_period": "7 days",
+  "predictions": [
+    {
+      "date": "2025-09-26",
+      "predicted_demand": 1263,
+      "lower_bound": 913,
+      "upper_bound": 1597,
+      "confidence_interval": 683
+    },
+    {
+      "date": "2025-09-27",
+      "predicted_demand": 1431,
+      "lower_bound": 1097,
+      "upper_bound": 1725,
+      "confidence_interval": 627
+    },
+    {
+      "date": "2025-09-28",
+      "predicted_demand": 888,
+      "lower_bound": 541,
+      "upper_bound": 1223,
+      "confidence_interval": 682
+    },
+    {
+      "date": "2025-09-29",
+      "predicted_demand": 630,
+      "lower_bound": 286,
+      "upper_bound": 987,
+      "confidence_interval": 701
+    },
+    {
+      "date": "2025-09-30",
+      "predicted_demand": 844,
+      "lower_bound": 520,
+      "upper_bound": 1190,
+      "confidence_interval": 669
+    },
+    {
+      "date": "2025-10-01",
+      "predicted_demand": 924,
+      "lower_bound": 593,
+      "upper_bound": 1245,
+      "confidence_interval": 651
+    },
+    {
+      "date": "2025-10-02",
+      "predicted_demand": 1054,
+      "lower_bound": 739,
+      "upper_bound": 1373,
+      "confidence_interval": 634
+    }
+  ],
+  "total_predicted_demand": 7037,
+  "avg_daily_demand": 1005,
+  "accuracy_metrics": {
+    "mae": 136.68,
+    "mape": 13.42,
+    "rmse": 155.71,
+    "confidence_score": 0.866
+  },
+  "model_components": {
+    "trend_strength": "moderate",
+    "seasonal_strength": "strong",
+    "weekly_pattern": "detected",
+    "yearly_pattern": "detected"
+  },
+  "recommendation": "Demand is decreasing with high confidence. Monitor inventory levels and adjust procurement accordingly."
+}

@@ -1,0 +1,62 @@
+{
+  "report_title": "PAM-TALK ESG Assessment Report",
+  "generated_at": "2025-09-25T04:11:25.926036",
+  "executive_summary": {
+    "farms_assessed": 3,
+    "average_esg_score": 48.67666666666667,
+    "total_esg_tokens": 349177,
+    "certification_distribution": {
+      "ESG Candidate": 2,
+      "ESG Gold": 1
+    }
+  },
+  "detailed_assessments": [
+    {
+      "farm_id": "FARM_001",
+      "farm_name": "Green Valley Organic Farm",
+      "overall_score": 87.04,
+      "certification_level": "ESG Gold",
+      "component_scores": {
+        "environmental": 95.0,
+        "social": 82.25,
+        "governance": 81.0
+      },
+      "esg_gold_tokens": 281759,
+      "priority_recommendations": []
+    },
+    {
+      "farm_id": "FARM_002",
+      "farm_name": "Sunrise Agricultural Co.",
+      "overall_score": 41.04,
+      "certification_level": "ESG Candidate",
+      "component_scores": {
+        "environmental": 40.75,
+        "social": 36.4,
+        "governance": 48.0
+      },
+      "esg_gold_tokens": 49843,
+      "priority_recommendations": [
+        "Water efficiency improvement - High impact",
+        "Carbon footprint reduction - High impact",
+        "Fair wage certification - Medium impact"
+      ]
+    },
+    {
+      "farm_id": "FARM_003",
+      "farm_name": "Traditional Farming Enterprise",
+      "overall_score": 17.95,
+      "certification_level": "ESG Candidate",
+      "component_scores": {
+        "environmental": 13.75,
+        "social": 17.0,
+        "governance": 26.0
+      },
+      "esg_gold_tokens": 17575,
+      "priority_recommendations": [
+        "Water efficiency improvement - High impact",
+        "Carbon footprint reduction - High impact",
+        "Fair wage certification - Medium impact"
+      ]
+    }
+  ]
+}

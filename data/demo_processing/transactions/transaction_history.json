@@ -1,0 +1,26 @@
+[
+  {
+    "producer_id": "FARM_DEMO_001",
+    "consumer_id": "CONSUMER_001",
+    "product_type": "tomatoes",
+    "quantity": 750,
+    "price_per_unit": 5500,
+    "total_value": 4125000,
+    "quality_score": 92,
+    "esg_score": 85,
+    "transaction_id": "TXN_1758742065",
+    "timestamp": "2025-09-25T04:27:45.892297"
+  },
+  {
+    "producer_id": "FARM_DEMO_002",
+    "consumer_id": "CONSUMER_002",
+    "product_type": "rice",
+    "quantity": 2000,
+    "price_per_unit": 2800,
+    "total_value": 5600000,
+    "quality_score": 88,
+    "esg_score": 75,
+    "transaction_id": "TXN_1758742065",
+    "timestamp": "2025-09-25T04:27:45.906035"
+  }
+]

@@ -1,0 +1,13 @@
+{
+  "mode": "blockchain",
+  "token_id": "",
+  "token_name": "PAM-TALK ESG Token",
+  "token_symbol": "PAM",
+  "total_supply": 1000000000,
+  "decimals": 3,
+  "creator_account": "PWYGE2GDCEOD5LUHBVACTVJVN7KB6XTPSPARBKHBCHVIYXGRY6SNHDRZXE",
+  "network": "mainnet",
+  "algod_endpoint": "https://mainnet-api.algonode.cloud",
+  "indexer_endpoint": "https://mainnet-idx.algonode.cloud",
+  "updated_at": "2025-11-16T18:20:00.000000"
+}

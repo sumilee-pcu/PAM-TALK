@@ -1,0 +1,37 @@
+{
+  "mode": "blockchain",
+  "token_id": null,
+  "token_name": "ESG-Gold Digital Carbon Credit",
+  "token_symbol": "ESG-GOLD",
+  "unit_name": "DC",
+  "total_supply": 10000000000,
+  "decimals": 6,
+  "network": "testnet",
+  "algod_endpoint": "https://testnet-api.algonode.cloud",
+  "description": "Digital Carbon Credit token - 1 ESG-GOLD = 1 DC (Digital Carbon) = 1kg CO2 reduction",
+  "url": "https://pam-talk.com/esg-gold",
+  "conversion_rate": {
+    "dc_per_kg_co2": 1,
+    "esg_gold_per_dc": 1000000,
+    "description": "1 DC = 1kg CO2 reduction = 1,000,000 micro ESG-GOLD (with 6 decimals)"
+  },
+  "reward_multipliers": {
+    "organic_farming": 1.5,
+    "renewable_energy": 2.0,
+    "local_sourcing": 1.2,
+    "zero_waste": 1.8,
+    "sustainable_packaging": 1.3
+  },
+  "burn_mechanisms": {
+    "marketplace_discount": {
+      "enabled": true,
+      "burn_rate": 0.1,
+      "description": "10% of ESG-GOLD used for discounts is burned"
+    },
+    "offset_retirement": {
+      "enabled": true,
+      "burn_rate": 1.0,
+      "description": "100% burned when permanently retiring carbon credits"
+    }
+  }
+}

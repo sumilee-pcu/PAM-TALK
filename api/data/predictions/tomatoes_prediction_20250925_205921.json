@@ -1,0 +1,119 @@
+{
+  "product_name": "tomatoes",
+  "prediction_period": "14 days",
+  "predictions": [
+    {
+      "date": "2025-09-26",
+      "predicted_demand": 1261,
+      "lower_bound": 921,
+      "upper_bound": 1583,
+      "confidence_interval": 662
+    },
+    {
+      "date": "2025-09-27",
+      "predicted_demand": 1431,
+      "lower_bound": 1125,
+      "upper_bound": 1768,
+      "confidence_interval": 643
+    },
+    {
+      "date": "2025-09-28",
+      "predicted_demand": 887,
+      "lower_bound": 568,
+      "upper_bound": 1201,
+      "confidence_interval": 633
+    },
+    {
+      "date": "2025-09-29",
+      "predicted_demand": 631,
+      "lower_bound": 313,
+      "upper_bound": 978,
+      "confidence_interval": 664
+    },
+    {
+      "date": "2025-09-30",
+      "predicted_demand": 845,
+      "lower_bound": 528,
+      "upper_bound": 1182,
+      "confidence_interval": 653
+    },
+    {
+      "date": "2025-10-01",
+      "predicted_demand": 923,
+      "lower_bound": 611,
+      "upper_bound": 1236,
+      "confidence_interval": 624
+    },
+    {
+      "date": "2025-10-02",
+      "predicted_demand": 1053,
+      "lower_bound": 716,
+      "upper_bound": 1388,
+      "confidence_interval": 672
+    },
+    {
+      "date": "2025-10-03",
+      "predicted_demand": 1232,
+      "lower_bound": 898,
+      "upper_bound": 1566,
+      "confidence_interval": 668
+    },
+    {
+      "date": "2025-10-04",
+      "predicted_demand": 1409,
+      "lower_bound": 1092,
+      "upper_bound": 1721,
+      "confidence_interval": 628
+    },
+    {
+      "date": "2025-10-05",
+      "predicted_demand": 865,
+      "lower_bound": 548,
+      "upper_bound": 1183,
+      "confidence_interval": 634
+    },
+    {
+      "date": "2025-10-06",
+      "predicted_demand": 606,
+      "lower_bound": 276,
+      "upper_bound": 954,
+      "confidence_interval": 677
+    },
+    {
+      "date": "2025-10-07",
+      "predicted_demand": 832,
+      "lower_bound": 517,
+      "upper_bound": 1164,
+      "confidence_interval": 646
+    },
+    {
+      "date": "2025-10-08",
+      "predicted_demand": 919,
+      "lower_bound": 587,
+      "upper_bound": 1250,
+      "confidence_interval": 663
+    },
+    {
+      "date": "2025-10-09",
+      "predicted_demand": 1052,
+      "lower_bound": 723,
+      "upper_bound": 1347,
+      "confidence_interval": 624
+    }
+  ],
+  "total_predicted_demand": 13950,
+  "avg_daily_demand": 996,
+  "accuracy_metrics": {
+    "mae": 109.57,
+    "mape": 10.14,
+    "rmse": 140.9,
+    "confidence_score": 0.899
+  },
+  "model_components": {
+    "trend_strength": "moderate",
+    "seasonal_strength": "strong",
+    "weekly_pattern": "detected",
+    "yearly_pattern": "detected"
+  },
+  "recommendation": "Demand is decreasing with high confidence. Monitor inventory levels and adjust procurement accordingly."
+}

@@ -1,0 +1,129 @@
+{
+  "farm_id": "FARM_001",
+  "environmental_score": 95.0,
+  "social_score": 82.25,
+  "governance_score": 81.0,
+  "overall_score": 87.04,
+  "score_breakdown": {
+    "environmental": {
+      "score": 95.0,
+      "weight": 0.4,
+      "weighted_contribution": 38.0,
+      "breakdown": {
+        "organic_certification": {
+          "score": 100,
+          "criteria": "Organic certified",
+          "impact": "High positive impact on soil and ecosystem health"
+        },
+        "water_efficiency": {
+          "score": 100,
+          "usage": "4,000 L/ha/year",
+          "benchmark": "Excellent (<5000), Good (5000-12000), Poor (>20000)",
+          "recommendation": "Water usage is efficient"
+        },
+        "carbon_footprint": {
+          "score": 100,
+          "emissions": "1.5 tons CO2/ha/year",
+          "benchmark": "Excellent (<2), Good (2-5), Poor (>8)",
+          "recommendation": "Carbon footprint is well managed"
+        },
+        "renewable_energy": {
+          "score": 80.0,
+          "percentage": "80.0% renewable energy",
+          "recommendation": "Good renewable energy adoption"
+        },
+        "biodiversity": {
+          "score": 90,
+          "raw_score": "9/10",
+          "recommendation": "Biodiversity is well supported"
+        },
+        "soil_health": {
+          "score": 90,
+          "raw_score": "9/10",
+          "recommendation": "Soil health is well maintained"
+        }
+      }
+    },
+    "social": {
+      "score": 82.25,
+      "weight": 0.35,
+      "weighted_contribution": 28.79,
+      "breakdown": {
+        "fair_wage": {
+          "score": 100,
+          "certified": true,
+          "recommendation": "Fair wage practices certified"
+        },
+        "community_investment": {
+          "score": 35.0,
+          "percentage": "3.5% of revenue",
+          "recommendation": "Increase community investment"
+        },
+        "worker_safety": {
+          "score": 90,
+          "raw_score": "9/10",
+          "recommendation": "Worker safety is well managed"
+        },
+        "local_employment": {
+          "score": 85.0,
+          "percentage": "85.0% local workers",
+          "recommendation": "Strong local employment"
+        },
+        "training_healthcare": {
+          "score": 100,
+          "training": true,
+          "healthcare": true,
+          "recommendation": "Comprehensive worker benefits"
+        }
+      }
+    },
+    "governance": {
+      "score": 81.0,
+      "weight": 0.25,
+      "weighted_contribution": 20.25,
+      "breakdown": {
+        "transparency": {
+          "score": 90,
+          "raw_score": "9/10",
+          "recommendation": "Excellent transparency practices"
+        },
+        "certifications": {
+          "score": 60,
+          "count": 3,
+          "details": [
+            "organic: 25 points",
+            "fair_trade: 20 points",
+            "rainforest_alliance: 15 points"
+          ],
+          "recommendation": "Obtain additional certifications (Organic, Fair Trade, etc.)"
+        },
+        "record_keeping": {
+          "score": 90,
+          "raw_score": "9/10",
+          "recommendation": "Excellent record management"
+        },
+        "stakeholder_engagement": {
+          "score": 80,
+          "raw_score": "8/10",
+          "recommendation": "Strong stakeholder relationships"
+        },
+        "ethical_practices": {
+          "score": 90,
+          "raw_score": "9/10",
+          "traceability": true,
+          "recommendation": "Strong ethical practices"
+        }
+      }
+    },
+    "calculation_details": {
+      "base_tokens": 87037.5,
+      "farm_size_factor": 25.0,
+      "trade_volume_bonus": 500000,
+      "final_token_calculation": "87.04 \u00d7 1000 \u00d7 multipliers = 234799"
+    }
+  },
+  "esg_gold_tokens": 234799,
+  "calculated_at": "2025-09-25T04:11:25.901476",
+  "valid_until": "2026-09-25T04:11:25.901476",
+  "certification_level": "ESG Gold"
+}
