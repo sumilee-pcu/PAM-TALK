@@ -392,6 +392,32 @@ function MarketplacePage() {
         </div>
       </div>
 
+      {/* 카테고리 네비게이션 */}
+      <div className="category-nav-wrapper">
+        <div className="category-nav">
+          <button
+            className={`category-nav-item ${!filters.category ? 'active' : ''}`}
+            onClick={() => setFilters({...filters, category: '', subCategory: ''})}
+          >
+            전체
+          </button>
+          <button className="category-nav-item">AI추천</button>
+          <button className="category-nav-item special">상생페이백🌟</button>
+          <button className="category-nav-item">베스트</button>
+          <button className="category-nav-item">특가</button>
+          <button className="category-nav-item">이달의 맛</button>
+          {Object.keys(categories).map(cat => (
+            <button
+              key={cat}
+              className={`category-nav-item ${filters.category === cat ? 'active' : ''}`}
+              onClick={() => setFilters({...filters, category: cat, subCategory: ''})}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
+      </div>
+
       <div className="marketplace-container">
         {/* 사이드바 필터 */}
         <aside className="marketplace-sidebar">
