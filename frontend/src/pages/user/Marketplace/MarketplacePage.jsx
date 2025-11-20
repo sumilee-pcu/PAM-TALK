@@ -38,7 +38,7 @@ function MarketplacePage() {
       subtitle: '농부에게 직접! 100% 국내산',
       description: '오늘 수확한 신선함을 그대로',
       badge: '무료배송',
-      color: '#ff6b6b'
+      color: '#4CAF50'
     },
     {
       id: 2,
@@ -47,7 +47,7 @@ function MarketplacePage() {
       subtitle: '건강한 밥상의 시작',
       description: '친환경 인증 농산물 최대 30% 할인',
       badge: '최대 30% 할인',
-      color: '#51cf66'
+      color: '#FF9800'
     },
     {
       id: 3,
@@ -56,7 +56,7 @@ function MarketplacePage() {
       subtitle: '지금이 제철! 맛과 영양이 가득',
       description: 'DC 포인트 2배 적립 이벤트',
       badge: 'DC 2배 적립',
-      color: '#ffd43b'
+      color: '#2E7D32'
     },
     {
       id: 4,
@@ -65,7 +65,7 @@ function MarketplacePage() {
       subtitle: '우리 동네 신선 농산물',
       description: '탄소발자국 ZERO, 지역경제 살리기',
       badge: '친환경',
-      color: '#339af0'
+      color: '#8D6E63'
     }
   ];
 

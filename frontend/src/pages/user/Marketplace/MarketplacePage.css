@@ -3,16 +3,27 @@
  * 상업용 마켓플레이스 스타일
  */
 
+/* Color Variables */
+:root {
+  --primary-green: #4CAF50;
+  --primary-dark: #2E7D32;
+  --secondary-orange: #FF9800;
+  --accent-brown: #8D6E63;
+  --bg-cream: #FFF8E1;
+  --bg-light: #FAFAFA;
+  --text-dark: #2c3e50;
+}
+
 /* Global Reset */
 .marketplace-page {
-  background: #f5f7fa;
+  background: var(--bg-light);
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   padding-bottom: 2rem;
 }
 
 /* Title Bar */
 .marketplace-title-bar {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--primary-green) 0%, var(--primary-dark) 100%);
   padding: 2rem 2rem 1.5rem;
   text-align: center;
   box-shadow: 0 2px 10px rgba(0,0,0,0.1);
@@ -266,18 +277,18 @@
 }
 
 .category-nav-item:hover {
-  background: #f5f7fa;
-  color: #333;
+  background: var(--bg-cream);
+  color: var(--primary-dark);
 }
 
 .category-nav-item.active {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--primary-green) 0%, var(--primary-dark) 100%);
   color: white;
   font-weight: 600;
 }
 
 .category-nav-item.special {
-  color: #ff6b6b;
+  color: var(--secondary-orange);
   font-weight: 600;
 }
 
@@ -774,7 +785,7 @@
 .btn-add-cart {
   width: 100%;
   padding: 1rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--primary-green) 0%, var(--primary-dark) 100%);
   color: white;
   border: none;
   border-radius: 10px;
@@ -787,7 +798,7 @@
 
 .btn-add-cart:hover {
   transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
 }
 
 .btn-add-cart:active {
@@ -831,7 +842,7 @@
   right: 30px;
   width: 60px;
   height: 60px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--primary-green) 0%, var(--primary-dark) 100%);
   color: white;
   border: none;
   border-radius: 50%;
@@ -851,7 +862,7 @@
   position: absolute;
   top: -5px;
   right: -5px;
-  background: #f44336;
+  background: var(--secondary-orange);
   color: white;
   width: 24px;
   height: 24px;
@@ -1098,7 +1109,7 @@
 .btn-checkout {
   width: 100%;
   padding: 1.25rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--primary-green) 0%, var(--primary-dark) 100%);
   color: white;
   border: none;
   border-radius: 10px;
@@ -1111,7 +1122,7 @@
 
 .btn-checkout:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
 }
 
 .btn-checkout:disabled {
