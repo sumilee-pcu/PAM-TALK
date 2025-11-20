@@ -1,6 +1,6 @@
 /**
- * Wallet Page - Algorand Wallet
- * 알고랜드 지갑 페이지
+ * Wallet Page - ESG-GOLD Digital Wallet
+ * ESG-GOLD 디지털 지갑 페이지
  */
 
 import React, { useState, useEffect } from 'react';
@@ -30,7 +30,7 @@ function WalletPage() {
   // 새 지갑 생성
   const createWallet = () => {
     try {
-      // 알고랜드 계정 생성
+      // ESG-GOLD 지갑 생성
       const account = algosdk.generateAccount();
 
       // 계정 정보 추출 (객체를 직접 사용하지 않음)
@@ -57,7 +57,7 @@ function WalletPage() {
       setTimeout(() => setWalletAnimation(false), 1500);
 
       setTimeout(() => {
-        alert('🎉 알고랜드 지갑이 생성되었습니다!\n\n⚠️ 니모닉을 안전한 곳에 보관하세요!');
+        alert('🎉 ESG-GOLD 지갑이 생성되었습니다!\n\n⚠️ 복구 문구(니모닉)를 안전한 곳에 보관하세요!');
       }, 800);
     } catch (error) {
       console.error('지갑 생성 실패:', error.message);
@@ -229,9 +229,9 @@ function WalletPage() {
       return;
     }
 
-    const recipient = prompt('받는 사람의 알고랜드 주소를 입력하세요:');
+    const recipient = prompt('받는 사람의 지갑 주소를 입력하세요:');
     if (!recipient || recipient.length !== 58) {
-      alert('❌ 올바른 알고랜드 주소를 입력하세요 (58자).');
+      alert('❌ 올바른 지갑 주소를 입력하세요 (58자).');
       return;
     }
 
@@ -305,7 +305,7 @@ function WalletPage() {
     setCreatingToken(true);
 
     try {
-      // 알고랜드 클라이언트 설정
+      // 블록체인 클라이언트 설정
       const algodClient = new algosdk.Algodv2(
         '',
         'https://testnet-api.algonode.cloud',
@@ -378,8 +378,8 @@ function WalletPage() {
     <div className="wallet-page">
       <div className="wallet-container">
         <div className="wallet-header">
-          <h1>🔐 알고랜드 지갑</h1>
-          <p>블록체인 기반 디지털 쿠폰 지갑</p>
+          <h1>🔐 ESG-GOLD 지갑</h1>
+          <p>친환경 활동 보상 디지털 쿠폰 지갑</p>
         </div>
 
         {!wallet ? (
@@ -399,12 +399,12 @@ function WalletPage() {
             </div>
 
             <div className="wallet-info">
-              <h3>📘 알고랜드 지갑이란?</h3>
+              <h3>📘 ESG-GOLD 지갑이란?</h3>
               <ul>
-                <li>블록체인 기반 디지털 지갑</li>
-                <li>ESG-GOLD 토큰(디지털 쿠폰) 보관</li>
-                <li>25단어 니모닉으로 안전하게 복구 가능</li>
-                <li>즉시 완결성 (4.5초 이내 거래 확정)</li>
+                <li>ESG-GOLD 디지털 쿠폰 보관 지갑</li>
+                <li>친환경 활동 보상을 안전하게 관리</li>
+                <li>25단어 복구 문구로 언제든 복구 가능</li>
+                <li>즉시 사용 가능 (몇 초 안에 거래 완료)</li>
               </ul>
             </div>
           </div>
