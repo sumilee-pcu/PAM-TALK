@@ -27,6 +27,47 @@ function MarketplacePage() {
   const [paying, setPaying] = useState(false);
   const [viewMode, setViewMode] = useState('grid'); // 'grid' or 'list'
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  // 메인 배너 슬라이드
+  const bannerSlides = [
+    {
+      id: 1,
+      image: 'https://images.unsplash.com/photo-1464226184884-fa280b87c399?w=1200',
+      title: '신선한 제철 과일',
+      subtitle: '농부에게 직접! 100% 국내산',
+      description: '오늘 수확한 신선함을 그대로',
+      badge: '무료배송',
+      color: '#ff6b6b'
+    },
+    {
+      id: 2,
+      image: 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=1200',
+      title: '유기농 채소 특가',
+      subtitle: '건강한 밥상의 시작',
+      description: '친환경 인증 농산물 최대 30% 할인',
+      badge: '최대 30% 할인',
+      color: '#51cf66'
+    },
+    {
+      id: 3,
+      image: 'https://images.unsplash.com/photo-1560493676-04071c5f467b?w=1200',
+      title: '이달의 신선 상품',
+      subtitle: '지금이 제철! 맛과 영양이 가득',
+      description: 'DC 포인트 2배 적립 이벤트',
+      badge: 'DC 2배 적립',
+      color: '#ffd43b'
+    },
+    {
+      id: 4,
+      image: 'https://images.unsplash.com/photo-1595855759920-86582396756a?w=1200',
+      title: '로컬푸드 직거래',
+      subtitle: '우리 동네 신선 농산물',
+      description: '탄소발자국 ZERO, 지역경제 살리기',
+      badge: '친환경',
+      color: '#339af0'
+    }
+  ];
 
   // 카테고리 정의
   const categories = {
@@ -39,6 +80,15 @@ function MarketplacePage() {
     '건강식품': ['홍삼', '꿀', '녹차', '한방차', '효소', '청국장'],
     '생활용품': ['수세미', '천연비누', '친환경세제', '대나무용품']
   };
+
+  // 배너 자동 슬라이드
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % bannerSlides.length);
+    }, 5000); // 5초마다 자동 슬라이드
+
+    return () => clearInterval(timer);
+  }, [bannerSlides.length]);
 
   useEffect(() => {
     const demoProducts = generateEnhancedProducts();
@@ -228,6 +278,19 @@ function MarketplacePage() {
     });
   }
 
+  // 배너 슬라이드 네비게이션
+  const nextSlide = () => {
+    setCurrentSlide((prev) => (prev + 1) % bannerSlides.length);
+  };
+
+  const prevSlide = () => {
+    setCurrentSlide((prev) => (prev - 1 + bannerSlides.length) % bannerSlides.length);
+  };
+
+  const goToSlide = (index) => {
+    setCurrentSlide(index);
+  };
+
   // 장바구니에 추가
   const addToCart = (product) => {
     const existingItem = cart.find(item => item.product_id === product.product_id);
@@ -372,23 +435,59 @@ function MarketplacePage() {
 
   return (
     <div className="marketplace-page">
-      {/* 헤더 배너 */}
-      <div className="marketplace-banner">
-        <h1>🌾 PAM 농산물 직거래 장터</h1>
-        <p>농부에게 직접, 신선하고 건강하게</p>
-        <div className="banner-stats">
-          <div className="stat-item">
-            <span className="stat-value">{products.length}</span>
-            <span className="stat-label">상품</span>
-          </div>
-          <div className="stat-item">
-            <span className="stat-value">356</span>
-            <span className="stat-label">농가</span>
-          </div>
-          <div className="stat-item">
-            <span className="stat-value">2,547kg</span>
-            <span className="stat-label">탄소 절감</span>
-          </div>
+      {/* 메인 배너 캐러셀 */}
+      <div className="banner-carousel">
+        <div className="carousel-container">
+          {bannerSlides.map((slide, index) => (
+            <div
+              key={slide.id}
+              className={`carousel-slide ${index === currentSlide ? 'active' : ''} ${index === currentSlide - 1 || (currentSlide === 0 && index === bannerSlides.length - 1) ? 'prev' : ''} ${index === currentSlide + 1 || (currentSlide === bannerSlides.length - 1 && index === 0) ? 'next' : ''}`}
+              style={{ backgroundImage: `url(${slide.image})` }}
+            >
+              <div className="carousel-overlay"></div>
+              <div className="carousel-content">
+                <span className="carousel-badge" style={{ background: slide.color }}>
+                  {slide.badge}
+                </span>
+                <h2 className="carousel-title">{slide.title}</h2>
+                <p className="carousel-subtitle">{slide.subtitle}</p>
+                <p className="carousel-description">{slide.description}</p>
+                <div className="carousel-stats">
+                  <div className="stat-item">
+                    <span className="stat-value">{products.length}</span>
+                    <span className="stat-label">상품</span>
+                  </div>
+                  <div className="stat-item">
+                    <span className="stat-value">356</span>
+                    <span className="stat-label">농가</span>
+                  </div>
+                  <div className="stat-item">
+                    <span className="stat-value">2,547kg</span>
+                    <span className="stat-label">탄소 절감</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* 네비게이션 버튼 */}
+        <button className="carousel-btn carousel-btn-prev" onClick={prevSlide}>
+          ❮
+        </button>
+        <button className="carousel-btn carousel-btn-next" onClick={nextSlide}>
+          ❯
+        </button>
+
+        {/* 인디케이터 */}
+        <div className="carousel-indicators">
+          {bannerSlides.map((_, index) => (
+            <button
+              key={index}
+              className={`indicator ${index === currentSlide ? 'active' : ''}`}
+              onClick={() => goToSlide(index)}
+            />
+          ))}
         </div>
       </div>
 

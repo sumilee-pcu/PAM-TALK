@@ -10,52 +10,185 @@
   padding-bottom: 2rem;
 }
 
-/* Banner Section */
-.marketplace-banner {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+/* Banner Carousel */
+.banner-carousel {
+  position: relative;
+  height: 500px;
+  overflow: hidden;
+  margin-bottom: 2rem;
+}
+
+.carousel-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.carousel-slide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  opacity: 0;
+  transition: opacity 0.8s ease-in-out, transform 0.8s ease-in-out;
+  transform: scale(1.1);
+}
+
+.carousel-slide.active {
+  opacity: 1;
+  transform: scale(1);
+  z-index: 2;
+}
+
+.carousel-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to right, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0.5) 100%);
+  z-index: 1;
+}
+
+.carousel-content {
+  position: relative;
+  z-index: 2;
   color: white;
-  padding: 4rem 2rem;
-  text-align: center;
-  margin-bottom: 2rem;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-}
-
-.marketplace-banner h1 {
-  font-size: 3rem;
-  margin-bottom: 0.5rem;
-  font-weight: bold;
-  text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
-}
-
-.marketplace-banner p {
-  font-size: 1.3rem;
-  opacity: 0.95;
-  margin-bottom: 2rem;
-}
-
-.banner-stats {
-  display: flex;
-  justify-content: center;
-  gap: 3rem;
-  margin-top: 2rem;
-}
-
-.stat-item {
+  padding: 4rem;
+  max-width: 800px;
+  height: 100%;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  justify-content: center;
 }
 
-.stat-value {
+.carousel-badge {
+  display: inline-block;
+  padding: 0.5rem 1.5rem;
+  border-radius: 30px;
+  font-size: 0.9rem;
+  font-weight: bold;
+  margin-bottom: 1.5rem;
+  width: fit-content;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.carousel-title {
+  font-size: 3.5rem;
+  font-weight: 900;
+  margin-bottom: 1rem;
+  text-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+  line-height: 1.2;
+}
+
+.carousel-subtitle {
+  font-size: 1.5rem;
+  margin-bottom: 0.75rem;
+  font-weight: 600;
+  text-shadow: 1px 1px 4px rgba(0,0,0,0.3);
+}
+
+.carousel-description {
+  font-size: 1.1rem;
+  margin-bottom: 2rem;
+  opacity: 0.95;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+}
+
+.carousel-stats {
+  display: flex;
+  gap: 3rem;
+  margin-top: 1rem;
+}
+
+.carousel-stats .stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.carousel-stats .stat-value {
   font-size: 2.5rem;
   font-weight: bold;
   display: block;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
 }
 
-.stat-label {
+.carousel-stats .stat-label {
   font-size: 0.9rem;
   opacity: 0.9;
   margin-top: 0.25rem;
+}
+
+/* Carousel Navigation Buttons */
+.carousel-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  background: rgba(255,255,255,0.9);
+  border: none;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: #333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.carousel-btn:hover {
+  background: white;
+  transform: translateY(-50%) scale(1.1);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+}
+
+.carousel-btn-prev {
+  left: 2rem;
+}
+
+.carousel-btn-next {
+  right: 2rem;
+}
+
+/* Carousel Indicators */
+.carousel-indicators {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  display: flex;
+  gap: 0.75rem;
+}
+
+.carousel-indicators .indicator {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.5);
+  border: 2px solid rgba(255,255,255,0.8);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 0;
+}
+
+.carousel-indicators .indicator:hover {
+  background: rgba(255,255,255,0.8);
+  transform: scale(1.2);
+}
+
+.carousel-indicators .indicator.active {
+  background: white;
+  width: 30px;
+  border-radius: 6px;
 }
 
 /* Category Navigation */
@@ -972,20 +1105,46 @@
 }
 
 @media (max-width: 768px) {
-  .marketplace-banner h1 {
+  .banner-carousel {
+    height: 400px;
+  }
+
+  .carousel-content {
+    padding: 2rem 1.5rem;
+  }
+
+  .carousel-title {
     font-size: 2rem;
   }
 
-  .marketplace-banner p {
-    font-size: 1rem;
+  .carousel-subtitle {
+    font-size: 1.1rem;
   }
 
-  .banner-stats {
+  .carousel-description {
+    font-size: 0.95rem;
+  }
+
+  .carousel-stats {
     gap: 1.5rem;
   }
 
-  .stat-value {
+  .carousel-stats .stat-value {
     font-size: 1.8rem;
+  }
+
+  .carousel-btn {
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+  }
+
+  .carousel-btn-prev {
+    left: 1rem;
+  }
+
+  .carousel-btn-next {
+    right: 1rem;
   }
 
   .marketplace-container {
