@@ -645,20 +645,77 @@
     padding: 1rem;
   }
 
-  .carbon-stats-grid {
-    grid-template-columns: 1fr;
+  .committee-header {
+    margin-bottom: 1.5rem;
   }
 
+  .committee-header h1 {
+    font-size: 1.8rem;
+  }
+
+  /* Carbon Stats */
+  .carbon-stats-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .carbon-stat-card {
+    padding: 1.25rem;
+  }
+
+  .carbon-stat-icon {
+    font-size: 2.5rem;
+  }
+
+  .carbon-stat-value {
+    font-size: 1.5rem;
+  }
+
+  /* Tabs */
   .committee-tabs {
     flex-direction: column;
+    padding: 0.75rem;
+    gap: 0.5rem;
   }
 
   .committee-tabs button {
     width: 100%;
+    min-width: auto;
+    padding: 0.85rem 1rem;
   }
 
+  /* Content */
+  .committee-content {
+    padding: 1.25rem;
+  }
+
+  .committee-content h2 {
+    font-size: 1.6rem;
+  }
+
+  /* Carbon Categories */
   .carbon-category-item {
     grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  .category-bar {
+    order: 2;
+  }
+
+  .category-value {
+    order: 3;
+    text-align: left;
+  }
+
+  /* DC Requests */
+  .dc-requests-quick {
+    grid-template-columns: 1fr;
+  }
+
+  /* Verification */
+  .verification-card {
+    padding: 1.25rem;
   }
 
   .verification-card-body {
@@ -667,5 +724,153 @@
 
   .verification-image {
     width: 100%;
+    height: 200px;
+  }
+
+  /* Modal */
+  .verification-modal {
+    width: 95%;
+    max-width: 95%;
+  }
+
+  .verification-modal-header,
+  .verification-modal-body,
+  .verification-modal-actions {
+    padding: 1.25rem;
+  }
+
+  /* Buttons */
+  .btn-approve,
+  .btn-reject,
+  .btn-approve-small,
+  .btn-reject-small {
+    padding: 0.85rem;
+    font-size: 0.95rem;
+  }
+}
+
+/* Extra Small Devices */
+@media (max-width: 480px) {
+  .committee-dashboard {
+    padding: 0.75rem;
+  }
+
+  .committee-header h1 {
+    font-size: 1.5rem;
+  }
+
+  /* Stats */
+  .carbon-stat-card {
+    padding: 1rem;
+  }
+
+  .carbon-stat-icon {
+    font-size: 2rem;
+  }
+
+  .carbon-stat-value {
+    font-size: 1.3rem;
+  }
+
+  .carbon-stat-label {
+    font-size: 0.85rem;
+  }
+
+  /* Tabs */
+  .committee-tabs {
+    padding: 0.5rem;
+  }
+
+  .committee-tabs button {
+    padding: 0.75rem;
+    font-size: 0.9rem;
+  }
+
+  /* Content */
+  .committee-content {
+    padding: 1rem;
+  }
+
+  .committee-content h2 {
+    font-size: 1.4rem;
+  }
+
+  /* Chart */
+  .chart-bars {
+    height: 150px;
+    gap: 0.5rem;
+  }
+
+  .chart-bar {
+    max-width: 60px;
+  }
+
+  /* DC Requests */
+  .dc-request-quick-card,
+  .dc-request-card {
+    padding: 1rem;
+  }
+
+  .dc-request-amount,
+  .dc-request-amount-large {
+    font-size: 1.2rem;
+  }
+
+  /* Verification */
+  .verification-card {
+    padding: 1rem;
+  }
+
+  .verification-image {
+    height: 180px;
+  }
+
+  /* Modal */
+  .verification-modal {
+    width: 100%;
+    max-width: 100%;
+    border-radius: 15px 15px 0 0;
+  }
+
+  .verification-modal-header,
+  .verification-modal-body,
+  .verification-modal-actions {
+    padding: 1rem;
+  }
+
+  .verification-modal-header h2 {
+    font-size: 1.3rem;
+  }
+
+  /* Buttons */
+  .btn-approve,
+  .btn-reject,
+  .btn-verify {
+    padding: 0.75rem;
+    font-size: 0.9rem;
+  }
+
+  /* Report Generator */
+  .report-generator {
+    padding: 1.5rem 1rem;
+  }
+
+  .btn-generate-report {
+    padding: 0.85rem 1.5rem;
+    font-size: 0.95rem;
+  }
+
+  .report-card {
+    padding: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .report-icon {
+    font-size: 1.5rem;
+  }
+
+  .btn-download-report {
+    width: 100%;
+    margin-top: 0.75rem;
   }
 }
