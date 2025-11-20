@@ -5,7 +5,7 @@ import './CouponButton.css';
  * PAM 디지털 쿠폰 받기 버튼 컴포넌트
  *
  * Props:
- *   - userAddress: 사용자 알고랜드 주소
+ *   - userAddress: 사용자 지갑 주소
  *   - amount: 지급할 포인트 (100 = 1.00 포인트, decimals=2)
  *   - apiUrl: API 서버 URL (기본값: http://localhost:5000)
  *   - onSuccess: 성공 시 콜백
@@ -42,7 +42,7 @@ const CouponButton = ({
 
   const receiveCoupon = async () => {
     if (!userAddress) {
-      setStatus('❌ 알고랜드 주소를 입력해주세요');
+      setStatus('❌ 지갑 주소를 입력해주세요');
       return;
     }
 

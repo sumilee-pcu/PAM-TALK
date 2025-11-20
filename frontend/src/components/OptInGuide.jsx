@@ -56,7 +56,7 @@ const OptInGuide = ({ assetId = 3330375002, onClose }) => {
                   <li>페라 월렛 열기</li>
                   <li>"Add Asset" 또는 "+" 버튼 탭</li>
                   <li>Asset ID 입력: <code className="asset-id">{assetId}</code></li>
-                  <li>"Add" 버튼 탭 (수수료: 0.001 ALGO)</li>
+                  <li>"Add" 버튼 탭 (수수료: 0.001 DC)</li>
                 </ol>
               </div>
             </div>
@@ -66,7 +66,7 @@ const OptInGuide = ({ assetId = 3330375002, onClose }) => {
             <div className="step-number">4</div>
             <div className="step-content">
               <h3>주소 복사</h3>
-              <p>페라 월렛에서 내 알고랜드 주소 복사하여 입력</p>
+              <p>페라 월렛에서 내 지갑 주소 복사하여 입력</p>
             </div>
           </div>
         </div>

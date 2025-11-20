@@ -88,10 +88,6 @@ function UserFooter() {
             </p>
           </div>
           <div className="footer-bottom-right">
-            <div className="blockchain-badge">
-              <img src="https://algorand.foundation/static/algorand-logo.svg" alt="Algorand" />
-              <span>Powered by Algorand</span>
-            </div>
           </div>
         </div>
       </div>

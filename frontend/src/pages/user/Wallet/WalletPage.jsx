@@ -57,7 +57,7 @@ function WalletPage() {
       setTimeout(() => setWalletAnimation(false), 1500);
 
       setTimeout(() => {
-        alert('🎉 ESG-GOLD 지갑이 생성되었습니다!\n\n⚠️ 복구 문구(니모닉)를 안전한 곳에 보관하세요!');
+        alert('🎉 ESG-GOLD 지갑이 생성되었습니다!\n\n⚠️ 복구 문구를 안전한 곳에 보관하세요!');
       }, 800);
     } catch (error) {
       console.error('지갑 생성 실패:', error.message);
@@ -534,7 +534,7 @@ function WalletPage() {
                 rel="noopener noreferrer"
                 className="btn-faucet"
               >
-                TestNet Dispenser 열기 →
+                DC 받기 →
               </a>
               <div className="faucet-info">
                 <small>
@@ -576,7 +576,6 @@ function WalletPage() {
             {/* 지갑 정보 */}
             <div className="wallet-meta">
               <p>생성일: {new Date(wallet.createdAt).toLocaleString('ko-KR')}</p>
-              <p>네트워크: TestNet</p>
               <p>상태: 🟢 활성</p>
             </div>
 

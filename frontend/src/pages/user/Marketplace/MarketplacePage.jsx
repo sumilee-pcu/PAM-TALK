@@ -219,12 +219,12 @@ function MarketplacePage() {
       `총 금액: ${totalAmount.toLocaleString()}원\n` +
       `토큰 수량: ${tokenAmount.toLocaleString()} ESGOLD\n` +
       `절약할 탄소: ${totalCarbon.toFixed(1)}kg CO₂\n\n` +
-      `판매자의 알고랜드 주소를 입력하세요:\n` +
+      `판매자의 지갑 주소를 입력하세요:\n` +
       `(테스트용으로 자신의 다른 지갑 주소를 입력해도 됩니다)`
     );
 
     if (!sellerAddress || sellerAddress.length !== 58) {
-      alert('❌ 올바른 알고랜드 주소를 입력하세요 (58자).');
+      alert('❌ 올바른 지갑 주소를 입력하세요 (58자).');
       return;
     }
 
