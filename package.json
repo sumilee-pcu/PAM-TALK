@@ -2,8 +2,7 @@
   "name": "pam-talk",
   "version": "1.0.0",
   "scripts": {
-    "postinstall": "cd frontend && npm install",
-    "build": "cd frontend && npm run build",
+    "build": "cd frontend && npm install && npm run build",
     "start": "cd frontend && npm start"
   }
 }
