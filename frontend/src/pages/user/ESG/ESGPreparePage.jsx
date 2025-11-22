@@ -19,16 +19,24 @@ function ESGPreparePage() {
   const [activityHistory, setActivityHistory] = useState([]);
 
   useEffect(() => {
+    console.log('ESGPreparePage mounted');
     loadActivity();
     checkWallet();
     loadPoints();
   }, []);
 
+  console.log('ESGPreparePage render - loading:', loading, 'currentActivity:', currentActivity);
+
   const loadActivity = () => {
+    console.log('Loading activity from localStorage...');
     const savedActivity = localStorage.getItem('esg_current_activity');
+    console.log('Saved activity:', savedActivity);
     if (savedActivity) {
-      setCurrentActivity(JSON.parse(savedActivity));
+      const parsed = JSON.parse(savedActivity);
+      console.log('Parsed activity:', parsed);
+      setCurrentActivity(parsed);
     } else {
+      console.log('No activity found, redirecting to /esg');
       navigate('/esg');
     }
   };
