@@ -91,25 +91,42 @@ function ESGPage() {
 
   // Handle activity type selection
   const handleActivitySelect = (activity) => {
+    console.log('Activity selected:', activity);
     setSelectedActivity(activity);
   };
 
   // Start activity certification (will redirect to prepare page)
-  const startCertification = () => {
+  const startCertification = (e) => {
+    console.log('Start certification clicked');
+    console.log('Selected activity:', selectedActivity);
+
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+
     if (!selectedActivity) {
       alert('❌ 활동을 선택해주세요!');
       return;
     }
 
-    // Store selected activity for prepare page
-    localStorage.setItem('esg_current_activity', JSON.stringify({
-      category: selectedCategory,
-      activity: selectedActivity,
-      timestamp: new Date().toISOString()
-    }));
+    try {
+      // Store selected activity for prepare page
+      const activityData = {
+        category: selectedCategory,
+        activity: selectedActivity,
+        timestamp: new Date().toISOString()
+      };
+      console.log('Saving to localStorage:', activityData);
+      localStorage.setItem('esg_current_activity', JSON.stringify(activityData));
 
-    // Navigate to prepare page (wallet check, points view, etc.)
-    navigate('/esg/prepare');
+      // Navigate to prepare page (wallet check, points view, etc.)
+      console.log('Navigating to /esg/prepare');
+      navigate('/esg/prepare');
+    } catch (error) {
+      console.error('Error in startCertification:', error);
+      alert('오류가 발생했습니다: ' + error.message);
+    }
   };
 
   // Back to category selection
@@ -208,6 +225,7 @@ function ESGPage() {
               ))}
             </div>
             <button
+              type="button"
               className="btn-start-certification"
               onClick={startCertification}
               disabled={!selectedActivity}
