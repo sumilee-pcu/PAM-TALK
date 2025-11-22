@@ -69,6 +69,11 @@ function ESGPage() {
 
   // Load wallet and activity history
   useEffect(() => {
+    console.log('ESGPage mounted!');
+    console.log('ESG_ACTIVITIES:', ESG_ACTIVITIES);
+    console.log('selectedCategory:', selectedCategory);
+    console.log('Total categories:', Object.values(ESG_ACTIVITIES).length);
+
     const savedWallet = localStorage.getItem('algorand_wallet');
     if (savedWallet) {
       setWallet(JSON.parse(savedWallet));
@@ -135,6 +140,8 @@ function ESGPage() {
     setSelectedActivity(null);
   };
 
+  console.log('ESGPage render - selectedCategory:', selectedCategory);
+
   return (
     <div className="esg-page">
       <div className="esg-container">
@@ -142,6 +149,10 @@ function ESGPage() {
         <div className="esg-header">
           <h1>🌱 ESG 활동 인증</h1>
           <p>환경을 지키고 ESG-GOLD 토큰을 받으세요!</p>
+          <p style={{fontSize: '0.8rem', color: 'red'}}>
+            DEBUG: selectedCategory = {String(selectedCategory)},
+            Categories = {Object.values(ESG_ACTIVITIES).length}
+          </p>
         </div>
 
         {/* Rewards Summary */}
