@@ -94,28 +94,22 @@ function ESGPage() {
     setSelectedActivity(activity);
   };
 
-  // Start activity certification (will redirect to capture page)
+  // Start activity certification (will redirect to prepare page)
   const startCertification = () => {
-    if (!wallet) {
-      alert('❌ 먼저 지갑을 생성해주세요!');
-      navigate('/wallet');
-      return;
-    }
-
     if (!selectedActivity) {
       alert('❌ 활동을 선택해주세요!');
       return;
     }
 
-    // Store selected activity for capture page
+    // Store selected activity for prepare page
     localStorage.setItem('esg_current_activity', JSON.stringify({
       category: selectedCategory,
       activity: selectedActivity,
       timestamp: new Date().toISOString()
     }));
 
-    // Navigate to capture page
-    navigate('/esg/capture');
+    // Navigate to prepare page (wallet check, points view, etc.)
+    navigate('/esg/prepare');
   };
 
   // Back to category selection
@@ -134,31 +128,29 @@ function ESGPage() {
         </div>
 
         {/* Rewards Summary */}
-        {wallet && (
-          <div className="esg-summary">
-            <div className="summary-card">
-              <div className="summary-label">누적 보상</div>
-              <div className="summary-value">
-                <span className="amount">{totalRewards}</span>
-                <span className="currency">ESG-GOLD</span>
-              </div>
-            </div>
-            <div className="summary-card">
-              <div className="summary-label">완료한 활동</div>
-              <div className="summary-value">
-                <span className="amount">{activityHistory.length}</span>
-                <span className="currency">회</span>
-              </div>
+        <div className="esg-summary">
+          <div className="summary-card">
+            <div className="summary-label">누적 보상</div>
+            <div className="summary-value">
+              <span className="amount">{totalRewards}</span>
+              <span className="currency">포인트</span>
             </div>
           </div>
-        )}
+          <div className="summary-card">
+            <div className="summary-label">완료한 활동</div>
+            <div className="summary-value">
+              <span className="amount">{activityHistory.length}</span>
+              <span className="currency">회</span>
+            </div>
+          </div>
+        </div>
 
         {!wallet && (
           <div className="wallet-warning">
-            <p>⚠️ 보상을 받으려면 먼저 지갑을 생성해주세요!</p>
-            <button className="btn-create-wallet" onClick={() => navigate('/wallet')}>
-              지갑 생성하기
-            </button>
+            <p>💡 활동을 시작하면 자동으로 디지털 지갑이 생성됩니다!</p>
+            <p style={{fontSize: '0.9rem', marginTop: '0.5rem', opacity: 0.8}}>
+              지갑 없이도 활동을 선택할 수 있습니다
+            </p>
           </div>
         )}
 
@@ -166,6 +158,9 @@ function ESGPage() {
         {!selectedCategory && (
           <div className="esg-content">
             <h2 className="section-title">활동 카테고리를 선택하세요</h2>
+            <p style={{textAlign: 'center', color: '#666', marginBottom: '1rem'}}>
+              카테고리 개수: {Object.values(ESG_ACTIVITIES).length}개
+            </p>
             <div className="category-grid">
               {Object.values(ESG_ACTIVITIES).map((category) => (
                 <div
@@ -189,7 +184,7 @@ function ESGPage() {
         )}
 
         {/* Activity Type Selection */}
-        {selectedCategory && !selectedActivity && (
+        {selectedCategory && (
           <div className="esg-content">
             <button className="btn-back" onClick={backToCategories}>
               ← 카테고리로 돌아가기
