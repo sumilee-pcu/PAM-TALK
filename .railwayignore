@@ -2,7 +2,6 @@
 frontend/
 node_modules/
 package.json.bak
-*.log
 .git/
 .vercel/
 __pycache__/
@@ -11,24 +10,8 @@ __pycache__/
 .env.local
 .DS_Store
 
-# 커뮤니티 API에 필요없는 파일들 제외
-pam_blockchain_adapter.py
-pamtalk_social_platform.py
-*_test.py
-test_*.py
-*dashboard*.py
-*monitor*.py
-simple_*.py
-create_*.py
-deploy_*.py
-verify_*.py
-check_*.py
-quick_*.py
-transfer_*.py
-update_*.py
-get_*.py
-run_*.py
-start_*.py
+# 루트 디렉토리의 모든 Python 파일 제외 (UTF-8 인코딩 문제)
+/*.py
 
 # 문서 및 설정 파일
 *.md
@@ -37,6 +20,7 @@ start_*.py
 *.txt
 !requirements.txt
 !runtime.txt
+!Procfile
 docs/
 k8s/
 contracts/
@@ -46,3 +30,8 @@ pamtalk-esg-chain/
 supabase/
 public/
 static/
+data/demo_processing/
+data/test_processing/
+data/anomaly*/
+data/esg*/
+data/predictions/
