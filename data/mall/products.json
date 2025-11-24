@@ -1,0 +1,35 @@
+[
+  {
+    "product_id": "PRODUCT_APPLE",
+    "name": "사과",
+    "category": "과일",
+    "price": 5000,
+    "stock": 98,
+    "description": "신선한 아산 사과 1kg",
+    "image_url": "/images/apple.jpg",
+    "farm_id": "FARM_001",
+    "created_at": "2025-11-23T17:35:02.274149"
+  },
+  {
+    "product_id": "PRODUCT_CARROT",
+    "name": "당근",
+    "category": "채소",
+    "price": 3000,
+    "stock": 149,
+    "description": "유기농 당근 500g",
+    "image_url": "/images/carrot.jpg",
+    "farm_id": "FARM_002",
+    "created_at": "2025-11-23T17:35:02.274293"
+  },
+  {
+    "product_id": "PRODUCT_ONION",
+    "name": "양파",
+    "category": "채소",
+    "price": 4000,
+    "stock": 120,
+    "description": "국내산 햇양파 1kg",
+    "image_url": "/images/onion.jpg",
+    "farm_id": "FARM_003",
+    "created_at": "2025-11-23T17:35:02.274301"
+  }
+]

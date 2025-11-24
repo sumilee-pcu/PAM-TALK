@@ -1,0 +1,43 @@
+[
+  {
+    "coupon_id": "WELCOME_10",
+    "name": "신규 회원 10% 할인",
+    "discount_type": "percentage",
+    "discount_value": 10,
+    "valid_from": "2025-11-23T17:35:02.279529",
+    "valid_until": "2025-12-23T17:35:02.279539",
+    "usage_limit": 1,
+    "product_ids": [],
+    "used_count": 1,
+    "created_at": "2025-11-23T17:35:02.279559"
+  },
+  {
+    "coupon_id": "FRUIT_5000",
+    "name": "과일 5000원 할인",
+    "discount_type": "fixed",
+    "discount_value": 5000,
+    "valid_from": "2025-11-23T17:35:02.279562",
+    "valid_until": "2025-12-08T17:35:02.279563",
+    "usage_limit": 1,
+    "product_ids": [
+      "PRODUCT_APPLE"
+    ],
+    "used_count": 0,
+    "created_at": "2025-11-23T17:35:02.279571"
+  },
+  {
+    "coupon_id": "VEGGIE_20",
+    "name": "채소 20% 할인",
+    "discount_type": "percentage",
+    "discount_value": 20,
+    "valid_from": "2025-11-23T17:35:02.279574",
+    "valid_until": "2025-12-13T17:35:02.279575",
+    "usage_limit": 2,
+    "product_ids": [
+      "PRODUCT_CARROT",
+      "PRODUCT_ONION"
+    ],
+    "used_count": 0,
+    "created_at": "2025-11-23T17:35:02.279580"
+  }
+]

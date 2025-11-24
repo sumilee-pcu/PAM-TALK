@@ -64,3 +64,4 @@ frontend/.env.production
 
 # Don't ignore public directory - it's for Vercel deployment
 !public/
+.vercel
