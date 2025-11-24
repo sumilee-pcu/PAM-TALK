@@ -1,0 +1,12 @@
+# Railway에서 Python Flask API만 배포하고 프론트엔드는 무시
+frontend/
+node_modules/
+package.json.bak
+*.log
+.git/
+.vercel/
+__pycache__/
+*.pyc
+.pytest_cache/
+.env.local
+.DS_Store
