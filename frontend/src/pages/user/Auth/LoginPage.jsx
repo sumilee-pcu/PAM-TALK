@@ -1,7 +1,12 @@
-import React, { useState } from 'react';
+/**
+ * User Login Page
+ * 사용자 로그인 페이지
+ */
+
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../../hooks/useAuth';
-import '../../../styles/auth.css';
+import './LoginPage.css';
 
 function LoginPage() {
   const navigate = useNavigate();
@@ -10,64 +15,108 @@ function LoginPage() {
   const [formData, setFormData] = useState({
     email: '',
     password: '',
-    role: 'user'
   });
+
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
+  // 컴포넌트 마운트 시 에러 초기화
+  useEffect(() => {
     setError('');
+  }, []);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+    setError(''); // Clear error when user types
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
     setError('');
+    setLoading(true);
 
     try {
-      const result = await login(formData.email, formData.password, formData.role);
+      const result = await login(formData.email, formData.password);
 
       if (result.success) {
-        // 역할에 따라 다른 페이지로 리다이렉트
-        if (formData.role === 'admin') {
-          navigate('/admin/dashboard');
-        } else if (formData.role === 'committee') {
-          navigate('/committee/dashboard');
-        } else {
-          navigate('/dashboard');
+        // Redirect based on user role
+        const role = result.user.role;
+        switch (role) {
+          case 'ADMIN':
+            navigate('/admin/dashboard');
+            break;
+          case 'COMMITTEE':
+            navigate('/committee/dashboard');
+            break;
+          case 'SUPPLIER':
+            navigate('/user/marketplace');
+            break;
+          case 'COMPANY':
+            navigate('/company/dashboard');
+            break;
+          default:
+            navigate('/user/dashboard');
         }
       } else {
         setError(result.error || '로그인에 실패했습니다.');
       }
     } catch (err) {
       setError('로그인 중 오류가 발생했습니다.');
+      console.error('Login error:', err);
     } finally {
       setLoading(false);
     }
   };
 
-  // 데모 계정으로 빠른 로그인
-  const handleDemoLogin = (role) => {
-    setFormData({
-      email: `demo_${role}@pam.com`,
-      password: 'demo123',
-      role: role
-    });
+  // Quick login buttons for demo
+  const quickLogin = async (email, password, label) => {
+    setFormData({ email, password });
+    setLoading(true);
+    try {
+      const result = await login(email, password);
+      if (result.success) {
+        const role = result.user.role;
+        switch (role) {
+          case 'ADMIN':
+            navigate('/admin/dashboard');
+            break;
+          case 'COMMITTEE':
+            navigate('/committee/dashboard');
+            break;
+          case 'SUPPLIER':
+            navigate('/user/marketplace');
+            break;
+          case 'COMPANY':
+            navigate('/company/dashboard');
+            break;
+          default:
+            navigate('/user/dashboard');
+        }
+      }
+    } catch (err) {
+      setError('로그인 실패');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div className="auth-container">
-      <div className="auth-card">
-        <div className="auth-header">
+    <div className="login-page">
+      <div className="login-container">
+        <div className="login-header">
           <h1>PAM-TALK</h1>
           <p>블록체인 기반 탄소 감축 플랫폼</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="auth-form">
+        <form className="login-form" onSubmit={handleSubmit}>
+          <h2>로그인</h2>
+
+          {error && <div className="error-message">{error}</div>}
+
           <div className="form-group">
             <label htmlFor="email">이메일</label>
             <input
@@ -76,8 +125,9 @@ function LoginPage() {
               name="email"
               value={formData.email}
               onChange={handleChange}
-              placeholder="이메일을 입력하세요"
+              placeholder="email@example.com"
               required
+              disabled={loading}
             />
           </div>
 
@@ -91,61 +141,61 @@ function LoginPage() {
               onChange={handleChange}
               placeholder="비밀번호를 입력하세요"
               required
+              disabled={loading}
             />
           </div>
 
-          <div className="form-group">
-            <label htmlFor="role">사용자 유형</label>
-            <select
-              id="role"
-              name="role"
-              value={formData.role}
-              onChange={handleChange}
-            >
-              <option value="user">일반 사용자</option>
-              <option value="committee">MRV 위원회</option>
-              <option value="admin">관리자</option>
-            </select>
-          </div>
-
-          {error && <div className="error-message">{error}</div>}
-
-          <button type="submit" className="btn-primary" disabled={loading}>
+          <button type="submit" className="btn-login" disabled={loading}>
             {loading ? '로그인 중...' : '로그인'}
           </button>
+
+          <div className="login-links">
+            <Link to="/signup">회원가입</Link>
+            <span>|</span>
+            <Link to="/forgot-password">비밀번호 찾기</Link>
+          </div>
         </form>
 
-        <div className="demo-accounts">
-          <p className="demo-title">데모 계정으로 빠른 로그인:</p>
-          <div className="demo-buttons">
+        {/* Quick Login for Demo */}
+        <div className="quick-login">
+          <h3>⚡ 빠른 시연 로그인 - 클릭 한 번으로 입장!</h3>
+          <div className="quick-login-buttons">
             <button
-              type="button"
-              className="btn-demo"
-              onClick={() => handleDemoLogin('user')}
+              onClick={() => quickLogin('consumer@pamtalk.com', 'Consumer123!', '소비자')}
+              disabled={loading}
+              className="btn-quick user"
             >
-              일반 사용자
+              👤 소비자
             </button>
             <button
-              type="button"
-              className="btn-demo"
-              onClick={() => handleDemoLogin('committee')}
+              onClick={() => quickLogin('supplier@pamtalk.com', 'Supplier123!', '공급자')}
+              disabled={loading}
+              className="btn-quick supplier"
             >
-              MRV 위원회
+              🏭 공급자
             </button>
             <button
-              type="button"
-              className="btn-demo"
-              onClick={() => handleDemoLogin('admin')}
+              onClick={() => quickLogin('company@pamtalk.com', 'Company123!', '기업담당자')}
+              disabled={loading}
+              className="btn-quick company"
             >
-              관리자
+              🏢 기업담당자
+            </button>
+            <button
+              onClick={() => quickLogin('committee@pamtalk.com', 'Committee123!', '위원회')}
+              disabled={loading}
+              className="btn-quick committee"
+            >
+              🎯 위원회
+            </button>
+            <button
+              onClick={() => quickLogin('admin@pamtalk.com', 'Admin123!', '관리자')}
+              disabled={loading}
+              className="btn-quick admin"
+            >
+              ⚙️ 관리자
             </button>
           </div>
-        </div>
-
-        <div className="auth-footer">
-          <p>
-            계정이 없으신가요? <Link to="/signup">회원가입</Link>
-          </p>
         </div>
       </div>
     </div>
