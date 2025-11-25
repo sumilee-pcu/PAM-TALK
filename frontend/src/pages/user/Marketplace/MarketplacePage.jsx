@@ -4,8 +4,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import algosdk from 'algosdk';
+import algorandService, { PAM_TOKEN_ASSET_ID } from '../../../services/blockchain/algorandService';
 import './MarketplacePage.css';
 
 function MarketplacePage() {
@@ -353,12 +352,19 @@ function MarketplacePage() {
         return;
       }
 
+      if (!wallet.mnemonic) {
+        alert('❌ 지갑 니모닉이 없습니다. 지갑을 다시 생성해주세요.');
+        return;
+      }
+
+      // PAM 토큰 환산 (100원 = 1 PAM, PAM은 3 decimals이므로 1 PAM = 1000 micro-PAM)
       const tokenAmount = Math.ceil(totalAmount / 100);
+      const microTokenAmount = tokenAmount * 1000; // Convert to micro-PAM
 
       const sellerAddress = prompt(
-        `🪙 ESG-GOLD 토큰 결제\n\n` +
+        `🪙 DC(PAM) 토큰 결제\n\n` +
         `총 금액: ${totalAmount.toLocaleString()}원\n` +
-        `토큰 수량: ${tokenAmount.toLocaleString()} ESGOLD\n` +
+        `토큰 수량: ${tokenAmount.toLocaleString()} DC\n` +
         `절약할 탄소: ${totalCarbon.toFixed(1)}kg CO₂\n\n` +
         `판매자의 지갑 주소를 입력하세요:\n` +
         `(테스트용으로 자신의 다른 지갑 주소를 입력해도 됩니다)`
@@ -372,8 +378,9 @@ function MarketplacePage() {
       if (!window.confirm(
         `💳 결제를 진행하시겠습니까?\n\n` +
         `상품: ${cart.map(item => `${item.name} x${item.quantity}kg`).join(', ')}\n` +
-        `토큰: ${tokenAmount} ESGOLD\n` +
-        `총 금액: ${totalAmount.toLocaleString()}원`
+        `토큰: ${tokenAmount} DC (PAM)\n` +
+        `총 금액: ${totalAmount.toLocaleString()}원\n\n` +
+        `⚠️ 실제 블록체인 트랜잭션이 발생합니다.`
       )) {
         return;
       }
@@ -381,12 +388,44 @@ function MarketplacePage() {
       setPaying(true);
 
       try {
-        await new Promise(resolve => setTimeout(resolve, 2000));
+        // 1. Check if wallet is opted into PAM token
+        const isOptedIn = await algorandService.isOptedIn(wallet.address, PAM_TOKEN_ASSET_ID);
+
+        if (!isOptedIn) {
+          alert('⚠️ PAM 토큰에 옵트인이 필요합니다. 먼저 옵트인을 진행합니다...');
+
+          try {
+            await algorandService.optInToAsset(wallet.address, wallet.mnemonic, PAM_TOKEN_ASSET_ID);
+            alert('✅ PAM 토큰 옵트인 완료!');
+          } catch (optInError) {
+            throw new Error('옵트인 실패: ' + optInError.message);
+          }
+        }
+
+        // 2. Check if wallet has enough PAM tokens
+        const balance = await algorandService.getAssetBalance(wallet.address, PAM_TOKEN_ASSET_ID);
+
+        if (balance < microTokenAmount) {
+          throw new Error(
+            `PAM 토큰이 부족합니다.\n필요: ${tokenAmount} DC\n보유: ${(balance / 1000).toFixed(3)} DC`
+          );
+        }
+
+        // 3. Send PAM token transaction
+        const txId = await algorandService.sendTransaction({
+          from: wallet.address,
+          to: sellerAddress,
+          amount: microTokenAmount,
+          mnemonic: wallet.mnemonic,
+          assetId: PAM_TOKEN_ASSET_ID,
+          note: `PAM-TALK 구매: ${cart.map(item => item.name).join(', ')}`
+        });
 
         alert(
           `✅ 결제가 완료되었습니다!\n\n` +
-          `🪙 사용 토큰: ${tokenAmount} ESGOLD\n` +
-          `🌱 탄소 절감: ${totalCarbon.toFixed(1)}kg CO₂\n\n` +
+          `🪙 사용 토큰: ${tokenAmount} DC (PAM)\n` +
+          `🌱 탄소 절감: ${totalCarbon.toFixed(1)}kg CO₂\n` +
+          `📋 트랜잭션 ID: ${txId.substring(0, 20)}...\n\n` +
           `주문이 접수되었습니다.`
         );
 
@@ -394,7 +433,8 @@ function MarketplacePage() {
         localStorage.removeItem('pamtalk_cart');
         setCartOpen(false);
       } catch (error) {
-        alert('❌ 결제 실패: ' + error.message);
+        console.error('Payment error:', error);
+        alert('❌ 결제 실패: ' + (error.message || '알 수 없는 오류'));
       } finally {
         setPaying(false);
       }
