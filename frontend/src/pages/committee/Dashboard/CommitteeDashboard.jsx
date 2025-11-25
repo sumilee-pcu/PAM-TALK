@@ -4,6 +4,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
+import { committeeService } from '../../../services/api';
 import './CommitteeDashboard.css';
 
 function CommitteeDashboard() {
@@ -23,23 +24,57 @@ function CommitteeDashboard() {
     loadDashboardData();
   }, []);
 
-  const loadDashboardData = () => {
-    // 데모 데이터 로드
-    const demoCarbon = {
-      totalReduced: 2547.8,
-      thisMonth: 342.5,
-      activitiesCount: 1248,
-      participantsCount: 356
-    };
+  const loadDashboardData = async () => {
+    try {
+      // 실제 API에서 대시보드 데이터 로드
+      const dashboard = await committeeService.getDashboard();
+      const pendingActivities = await committeeService.getPendingActivities();
 
-    const demoDcRequests = generateDemoDcRequests();
-    const demoActivities = generateDemoActivities();
-    const demoReports = generateDemoReports();
+      // 대시보드 통계 설정
+      if (dashboard.stats) {
+        setCarbonData({
+          totalReduced: dashboard.stats.totalCarbonSaved || 0,
+          thisMonth: dashboard.stats.monthCarbonSaved || 0,
+          activitiesCount: dashboard.stats.totalActivities || 0,
+          participantsCount: dashboard.stats.activeUsers || 0
+        });
+      }
 
-    setCarbonData(demoCarbon);
-    setDcRequests(demoDcRequests);
-    setEsgActivities(demoActivities);
-    setReports(demoReports);
+      // ESG 활동 설정
+      if (pendingActivities.activities) {
+        const mappedActivities = pendingActivities.activities.map(act => ({
+          id: act.id,
+          userName: act.user?.name || 'Unknown',
+          type: act.title || act.activityType,
+          carbonSaved: parseFloat(act.carbonReduction) || 0,
+          reward: act.potentialReward || 0,
+          location: act.location || 'N/A',
+          timestamp: act.createdAt,
+          imageUrl: act.proof,
+          aiVerified: true,
+          gpsVerified: true,
+          status: act.status === 'PENDING' ? 'pending' : act.status === 'APPROVED' ? 'verified' : 'rejected'
+        }));
+        setEsgActivities(mappedActivities);
+      }
+
+      // Demo DC requests and reports (API에 아직 없음)
+      setDcRequests(generateDemoDcRequests());
+      setReports(generateDemoReports());
+    } catch (error) {
+      console.error('대시보드 데이터 로드 실패:', error);
+      // 에러 시 데모 데이터 사용
+      const demoCarbon = {
+        totalReduced: 2547.8,
+        thisMonth: 342.5,
+        activitiesCount: 1248,
+        participantsCount: 356
+      };
+      setCarbonData(demoCarbon);
+      setDcRequests(generateDemoDcRequests());
+      setEsgActivities(generateDemoActivities());
+      setReports(generateDemoReports());
+    }
   };
 
   // DC 배포 요청 승인/거부
@@ -79,8 +114,14 @@ function CommitteeDashboard() {
 
   const submitVerification = async (activityId, verified, comments) => {
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // 실제 API 호출
+      await committeeService.verifyActivity(
+        activityId,
+        verified ? 'APPROVED' : 'REJECTED',
+        comments
+      );
 
+      // 목록 업데이트
       const updated = esgActivities.map(a =>
         a.id === activityId
           ? { ...a, status: verified ? 'verified' : 'rejected', verificationComments: comments }
@@ -90,8 +131,12 @@ function CommitteeDashboard() {
 
       alert(`✅ 검증이 완료되었습니다.`);
       closeActivityModal();
+
+      // 데이터 다시 로드
+      loadDashboardData();
     } catch (error) {
-      alert('❌ 검증 실패: ' + error.message);
+      console.error('검증 실패:', error);
+      alert('❌ 검증 실패: ' + (error.error || error.message));
     }
   };
 

@@ -33,10 +33,10 @@ function ProtectedRoute({ children, requiredRole }) {
     return <Navigate to={loginPath} state={{ from: location }} replace />;
   }
 
-  // 권한 확인
-  if (requiredRole && user.role !== requiredRole) {
+  // 권한 확인 (대소문자 무시)
+  if (requiredRole && user.role.toUpperCase() !== requiredRole.toUpperCase()) {
     // 관리자가 아니면서 admin 페이지 접근 시도
-    if (requiredRole === 'admin') {
+    if (requiredRole.toLowerCase() === 'admin') {
       return (
         <div className="access-denied">
           <h1>403 - Access Denied</h1>
@@ -47,7 +47,7 @@ function ProtectedRoute({ children, requiredRole }) {
     }
 
     // 위원회 위원이 아니면서 committee 페이지 접근 시도
-    if (requiredRole === 'committee') {
+    if (requiredRole.toLowerCase() === 'committee') {
       return (
         <div className="access-denied">
           <h1>403 - Access Denied</h1>

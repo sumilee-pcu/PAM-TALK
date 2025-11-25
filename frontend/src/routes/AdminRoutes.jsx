@@ -17,6 +17,8 @@ const CouponSystemPage = React.lazy(() => import('../pages/admin/CouponSystem/Co
 const AnalyticsPage = React.lazy(() => import('../pages/admin/Analytics/AnalyticsPage'));
 const SystemPage = React.lazy(() => import('../pages/admin/System/SystemPage'));
 const SupportPage = React.lazy(() => import('../pages/admin/Support/SupportPage'));
+const ESGActivitiesPage = React.lazy(() => import('../pages/admin/ESGActivities/ESGActivitiesPage'));
+const BulkDCPage = React.lazy(() => import('../pages/admin/BulkDC/BulkDCPage'));
 
 function AdminRoutes() {
   return (
@@ -52,6 +54,12 @@ function AdminRoutes() {
 
           {/* Support */}
           <Route path="/support/*" element={<SupportPage />} />
+
+          {/* ESG Activities */}
+          <Route path="/esg-activities/*" element={<ESGActivitiesPage />} />
+
+          {/* Bulk DC Distribution */}
+          <Route path="/bulk-dc/*" element={<BulkDCPage />} />
         </Route>
 
         {/* 404 */}

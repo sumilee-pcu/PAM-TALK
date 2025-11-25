@@ -4,8 +4,28 @@
  */
 
 import * as mobilenet from '@tensorflow-models/mobilenet';
+import * as tf from '@tensorflow/tfjs';
 
 let model = null;
+let backendReady = false;
+
+/**
+ * Initialize TensorFlow.js backend
+ * @returns {Promise<void>}
+ */
+const initializeBackend = async () => {
+  if (backendReady) return;
+
+  try {
+    console.log('Initializing TensorFlow.js backend...');
+    await tf.ready();
+    console.log('TensorFlow.js backend ready:', tf.getBackend());
+    backendReady = true;
+  } catch (error) {
+    console.error('Error initializing TensorFlow.js backend:', error);
+    throw error;
+  }
+};
 
 /**
  * Load MobileNet model
@@ -15,6 +35,9 @@ export const loadModel = async () => {
   if (model) return model;
 
   try {
+    // Ensure backend is ready first
+    await initializeBackend();
+
     console.log('Loading AI model...');
     model = await mobilenet.load();
     console.log('AI model loaded successfully');
@@ -51,24 +74,34 @@ export const classifyImage = async (imageElement) => {
  * Maps ESG activity IDs to expected image classification keywords
  */
 const ACTIVITY_KEYWORDS = {
-  // Recycling
-  plastic: ['bottle', 'container', 'plastic', 'jug', 'waste', 'recycling'],
-  paper: ['paper', 'cardboard', 'box', 'envelope', 'newspaper', 'book'],
-  glass: ['bottle', 'glass', 'jar', 'container', 'wine'],
-  metal: ['can', 'metal', 'aluminum', 'tin', 'container'],
+  // Environment - Recycling
+  recycling: ['bottle', 'container', 'plastic', 'jug', 'waste', 'recycling', 'trash', 'bin'],
 
-  // Green Transport
-  public_transport: ['bus', 'train', 'subway', 'metro', 'tram', 'station'],
-  bicycle: ['bicycle', 'bike', 'cycling', 'wheel', 'mountain bike'],
-  walking: ['shoe', 'sneaker', 'boot', 'street', 'sidewalk', 'pedestrian'],
+  // Environment - Transport
+  public_transport: ['bus', 'train', 'subway', 'metro', 'tram', 'station', 'transit'],
+  bike_sharing: ['bicycle', 'bike', 'cycling', 'wheel', 'mountain bike'],
 
-  // Tree Planting
-  tree: ['tree', 'plant', 'forest', 'oak', 'pine', 'sapling'],
-  plant: ['plant', 'pot', 'flower', 'vase', 'houseplant', 'garden'],
+  // Environment - Food & Products (Manual verification)
+  local_food: ['food', 'market', 'grocery', 'produce', 'vegetable', 'fruit'],
+  low_carbon_product: ['product', 'package', 'eco', 'green', 'sustainable'],
 
-  // Clean Energy
-  solar: ['solar', 'panel', 'roof', 'energy', 'photovoltaic'],
-  led: ['lamp', 'light', 'bulb', 'led', 'fixture', 'chandelier']
+  // Environment - Reusable Items
+  reusable_tumbler: ['cup', 'mug', 'tumbler', 'coffee', 'beverage', 'drink', 'espresso', 'latte'],
+  reusable_basket: ['basket', 'shopping cart', 'cart', 'hamper', 'container'],
+  ecobag_use: ['bag', 'tote', 'shopping bag', 'fabric', 'cloth', 'canvas'],
+
+  // Social - Public Facilities
+  public_facility: ['library', 'building', 'gym', 'center', 'facility', 'museum', 'stadium'],
+
+  // Social - Volunteer & Events (Manual verification primarily)
+  volunteer: ['volunteer', 'helping', 'community', 'service', 'people'],
+  local_event: ['event', 'gathering', 'festival', 'ceremony', 'celebration'],
+  helping_errand: ['coffee', 'delivery', 'package', 'bag', 'helping', 'carrying'],
+
+  // Governance (Primarily digital verification)
+  platform_voting: [],
+  review_writing: [],
+  policy_proposal: []
 };
 
 /**

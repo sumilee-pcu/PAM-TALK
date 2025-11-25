@@ -36,39 +36,35 @@ export function AuthProvider({ children }) {
     loadUser();
   }, []);
 
-  const login = async (email, password, role = 'user') => {
+  const login = async (email, password) => {
     try {
-      // TODO: API 호출로 대체
-      // const response = await authApi.login(email, password);
+      // 실제 API 호출
+      const authService = require('../services/auth/authService').default;
+      const response = await authService.login(email, password);
 
-      // 임시 구현
-      const mockUser = {
-        id: '123',
-        email,
-        role, // 'user', 'committee', 'admin'
-        name: 'Test User',
-      };
-
-      const mockToken = 'mock_jwt_token_' + Date.now();
-
-      localStorage.setItem('pam_user', JSON.stringify(mockUser));
-      localStorage.setItem('pam_token', mockToken);
-
-      setUser(mockUser);
+      setUser(response.user);
       setIsAuthenticated(true);
 
-      return { success: true, user: mockUser };
+      return { success: true, user: response.user };
     } catch (error) {
       console.error('Login failed:', error);
-      return { success: false, error: error.message };
+      return {
+        success: false,
+        error: error.error || error.message || 'Login failed'
+      };
     }
   };
 
-  const logout = () => {
-    localStorage.removeItem('pam_user');
-    localStorage.removeItem('pam_token');
-    setUser(null);
-    setIsAuthenticated(false);
+  const logout = async () => {
+    try {
+      const authService = require('../services/auth/authService').default;
+      await authService.logout();
+    } catch (error) {
+      console.error('Logout error:', error);
+    } finally {
+      setUser(null);
+      setIsAuthenticated(false);
+    }
   };
 
   const updateUser = (updates) => {

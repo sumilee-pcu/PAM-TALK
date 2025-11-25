@@ -14,6 +14,7 @@ const VerificationPage = React.lazy(() => import('../pages/committee/Verificatio
 const CouponIssuancePage = React.lazy(() => import('../pages/committee/CouponIssuance/CouponIssuancePage'));
 const ReportsPage = React.lazy(() => import('../pages/committee/Reports/ReportsPage'));
 const MembersPage = React.lazy(() => import('../pages/committee/Members/MembersPage'));
+const ApproveActivitiesPage = React.lazy(() => import('../pages/committee/ApproveActivities/ApproveActivitiesPage'));
 
 function CommitteeRoutes() {
   return (
@@ -40,6 +41,9 @@ function CommitteeRoutes() {
 
           {/* Members */}
           <Route path="/members/*" element={<MembersPage />} />
+
+          {/* Approve Activities & DC Distribution */}
+          <Route path="/approve-activities/*" element={<ApproveActivitiesPage />} />
         </Route>
 
         {/* 404 */}

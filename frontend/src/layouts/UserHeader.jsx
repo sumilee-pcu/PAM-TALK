@@ -44,9 +44,6 @@ function UserHeader() {
           <Link to="/marketplace" className="nav-link">마켓</Link>
           <Link to="/challenge" className="nav-link">챌린지</Link>
           <Link to="/community" className="nav-link">커뮤니티</Link>
-          {isAuthenticated && (
-            <Link to="/wallet" className="nav-link">지갑</Link>
-          )}
         </nav>
 
         {/* Auth Buttons */}
@@ -61,6 +58,8 @@ function UserHeader() {
                   {user?.name?.charAt(0) || 'U'}
                 </button>
                 <div className="user-dropdown">
+                  <Link to="/dashboard">대시보드</Link>
+                  <Link to="/wallet">디지털 쿠폰함</Link>
                   <Link to="/profile">프로필</Link>
                   <Link to="/settings">설정</Link>
                   <button onClick={handleLogout}>로그아웃</button>
@@ -96,9 +95,10 @@ function UserHeader() {
           <Link to="/community" onClick={() => setMobileMenuOpen(false)}>커뮤니티</Link>
           {isAuthenticated ? (
             <>
-              <Link to="/wallet" onClick={() => setMobileMenuOpen(false)}>지갑</Link>
               <Link to="/dashboard" onClick={() => setMobileMenuOpen(false)}>대시보드</Link>
+              <Link to="/wallet" onClick={() => setMobileMenuOpen(false)}>디지털 쿠폰함</Link>
               <Link to="/profile" onClick={() => setMobileMenuOpen(false)}>프로필</Link>
+              <Link to="/settings" onClick={() => setMobileMenuOpen(false)}>설정</Link>
               <button onClick={handleLogout}>로그아웃</button>
             </>
           ) : (

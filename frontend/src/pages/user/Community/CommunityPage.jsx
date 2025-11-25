@@ -3,10 +3,12 @@
  * 커뮤니티 소셜 피드
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useAuth } from '../../../hooks/useAuth';
 import './CommunityPage.css';
 
 function CommunityPage() {
+  const { user } = useAuth();
   const [posts, setPosts] = useState([
     {
       id: 1,
@@ -50,6 +52,114 @@ function CommunityPage() {
   ]);
 
   const [newPost, setNewPost] = useState('');
+  const [showChatModal, setShowChatModal] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [chatMessages, setChatMessages] = useState([]);
+  const [newChatMessage, setNewChatMessage] = useState('');
+
+  // 사용자 역할에 따른 아바타 매핑
+  const getRoleAvatar = (role) => {
+    const avatars = {
+      'CONSUMER': '👤',
+      'SUPPLIER': '🏭',
+      'COMPANY': '🏢',
+      'COMMITTEE': '🎯',
+      'ADMIN': '⚙️',
+      'FARMER': '👨‍🌾'
+    };
+    return avatars[role] || '👤';
+  };
+
+  // 전체 사용자 목록 (실제로는 API에서 가져와야 함)
+  const allUsers = [
+    { id: 'consumer', email: 'consumer@pamtalk.com', name: '소비자', role: 'CONSUMER', avatar: '👤' },
+    { id: 'supplier', email: 'supplier@pamtalk.com', name: '공급자', role: 'SUPPLIER', avatar: '🏭' },
+    { id: 'company', email: 'company@pamtalk.com', name: '기업담당자', role: 'COMPANY', avatar: '🏢' },
+    { id: 'committee', email: 'committee@pamtalk.com', name: '위원회', role: 'COMMITTEE', avatar: '🎯' },
+    { id: 'farmer1', email: 'farmer@pamtalk.com', name: '농부', role: 'FARMER', avatar: '👨‍🌾' }
+  ];
+
+  // 현재 로그인한 사용자를 제외한 활성 사용자 목록
+  const getActiveUsers = () => {
+    if (!user) return allUsers;
+
+    // 현재 사용자 제외
+    const otherUsers = allUsers.filter(u => u.email !== user.email);
+
+    // 역할에 따라 상대방을 맨 위로
+    if (user.role === 'CONSUMER') {
+      // 소비자가 로그인했으면 공급자를 맨 위로
+      return otherUsers.sort((a, b) => {
+        if (a.role === 'SUPPLIER') return -1;
+        if (b.role === 'SUPPLIER') return 1;
+        return 0;
+      });
+    } else if (user.role === 'SUPPLIER') {
+      // 공급자가 로그인했으면 소비자를 맨 위로
+      return otherUsers.sort((a, b) => {
+        if (a.role === 'CONSUMER') return -1;
+        if (b.role === 'CONSUMER') return 1;
+        return 0;
+      });
+    }
+
+    return otherUsers;
+  };
+
+  const [activeUsers, setActiveUsers] = useState(getActiveUsers());
+
+  // 사용자 변경 시 활성 사용자 목록 업데이트
+  useEffect(() => {
+    setActiveUsers(getActiveUsers());
+  }, [user]);
+
+  // 채팅방 ID 생성 (두 사용자의 이메일을 정렬하여 일관된 ID 생성)
+  const getChatRoomId = (user1Email, user2Email) => {
+    return [user1Email, user2Email].sort().join('_');
+  };
+
+  // localStorage에서 채팅 메시지 로드
+  const loadChatMessages = (roomId) => {
+    const stored = localStorage.getItem(`chat_${roomId}`);
+    return stored ? JSON.parse(stored) : [];
+  };
+
+  // localStorage에 채팅 메시지 저장
+  const saveChatMessages = (roomId, messages) => {
+    localStorage.setItem(`chat_${roomId}`, JSON.stringify(messages));
+    // storage 이벤트 트리거 (같은 탭에서는 발생하지 않으므로 커스텀 이벤트 사용)
+    window.dispatchEvent(new CustomEvent('chatUpdate', { detail: { roomId, messages } }));
+  };
+
+  // 실시간 메시지 수신 (다른 탭/창에서의 메시지)
+  useEffect(() => {
+    const handleStorageChange = (e) => {
+      if (e.key && e.key.startsWith('chat_') && selectedUser) {
+        const roomId = getChatRoomId(user?.email, selectedUser.email);
+        if (e.key === `chat_${roomId}`) {
+          const messages = JSON.parse(e.newValue || '[]');
+          setChatMessages(messages);
+        }
+      }
+    };
+
+    const handleChatUpdate = (e) => {
+      if (selectedUser && user) {
+        const roomId = getChatRoomId(user.email, selectedUser.email);
+        if (e.detail.roomId === roomId) {
+          setChatMessages(e.detail.messages);
+        }
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    window.addEventListener('chatUpdate', handleChatUpdate);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('chatUpdate', handleChatUpdate);
+    };
+  }, [selectedUser, user]);
 
   const handleLike = (postId) => {
     setPosts(posts.map(post =>
@@ -79,6 +189,61 @@ function CommunityPage() {
     setPosts([post, ...posts]);
     setNewPost('');
     alert('게시글이 작성되었습니다! 📝');
+  };
+
+  const handleStartChat = (chatUser) => {
+    if (!user) {
+      alert('로그인이 필요합니다.');
+      return;
+    }
+
+    setSelectedUser(chatUser);
+
+    // 채팅방 ID 생성 및 기존 메시지 로드
+    const roomId = getChatRoomId(user.email, chatUser.email);
+    const existingMessages = loadChatMessages(roomId);
+
+    // 기존 메시지를 현재 사용자 관점으로 변환
+    const messagesWithIsMe = existingMessages.map(msg => ({
+      ...msg,
+      isMe: msg.fromEmail === user.email
+    }));
+
+    setChatMessages(messagesWithIsMe);
+    setShowChatModal(true);
+  };
+
+  const handleSendMessage = () => {
+    if (!newChatMessage.trim() || !user || !selectedUser) return;
+
+    const roomId = getChatRoomId(user.email, selectedUser.email);
+
+    const message = {
+      id: Date.now(),
+      fromEmail: user.email,
+      fromName: user.name || '나',
+      toEmail: selectedUser.email,
+      toName: selectedUser.name,
+      content: newChatMessage,
+      time: new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' }),
+      timestamp: Date.now()
+    };
+
+    // 기존 메시지에 새 메시지 추가
+    const existingMessages = loadChatMessages(roomId);
+    const updatedMessages = [...existingMessages, message];
+
+    // localStorage에 저장
+    saveChatMessages(roomId, updatedMessages);
+
+    // 현재 화면 업데이트
+    const messagesWithIsMe = updatedMessages.map(msg => ({
+      ...msg,
+      isMe: msg.fromEmail === user.email
+    }));
+    setChatMessages(messagesWithIsMe);
+
+    setNewChatMessage('');
   };
 
   return (
@@ -258,6 +423,36 @@ function CommunityPage() {
             </ul>
           </div>
 
+          {/* Active Users */}
+          <div className="sidebar-widget">
+            <h3 className="widget-title">💬 활성 사용자</h3>
+            <ul className="topics-list">
+              {activeUsers.map(user => (
+                <li key={user.id} className="topic-item" style={{ cursor: 'pointer' }} onClick={() => handleStartChat(user)}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span style={{ fontSize: '20px' }}>{user.avatar}</span>
+                    <span className="topic-name">{user.name}</span>
+                    <span style={{
+                      width: '8px',
+                      height: '8px',
+                      borderRadius: '50%',
+                      backgroundColor: '#27ae60',
+                      marginLeft: 'auto'
+                    }}></span>
+                  </div>
+                </li>
+              ))}
+            </ul>
+            <p style={{
+              fontSize: '0.85rem',
+              color: '#666',
+              marginTop: '10px',
+              textAlign: 'center'
+            }}>
+              클릭하여 채팅 시작
+            </p>
+          </div>
+
           {/* Platform Stats */}
           <div className="sidebar-widget">
             <h3 className="widget-title">📊 플랫폼 통계</h3>
@@ -278,6 +473,67 @@ function CommunityPage() {
           </div>
         </aside>
       </div>
+
+      {/* Chat Modal */}
+      {showChatModal && selectedUser && (
+        <div className="chat-modal-overlay" onClick={() => setShowChatModal(false)}>
+          <div className="chat-modal" onClick={(e) => e.stopPropagation()}>
+            {/* Chat Header */}
+            <div className="chat-header">
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <span style={{ fontSize: '24px' }}>{selectedUser.avatar}</span>
+                <div>
+                  <h3>{selectedUser.name}</h3>
+                  <p style={{ fontSize: '0.85rem', color: '#27ae60', margin: 0 }}>● 온라인</p>
+                </div>
+              </div>
+              <button className="chat-close-btn" onClick={() => setShowChatModal(false)}>
+                ✕
+              </button>
+            </div>
+
+            {/* Chat Messages */}
+            <div className="chat-messages">
+              {chatMessages.length === 0 && (
+                <div style={{ textAlign: 'center', color: '#999', padding: '2rem' }}>
+                  <p>채팅을 시작해보세요! 💬</p>
+                  <p style={{ fontSize: '0.85rem', marginTop: '0.5rem' }}>
+                    {selectedUser.name}님과 대화를 나눠보세요
+                  </p>
+                </div>
+              )}
+              {chatMessages.map(message => (
+                <div key={message.id} className={`chat-message ${message.isMe ? 'chat-message-me' : 'chat-message-other'}`}>
+                  {!message.isMe && (
+                    <div style={{ fontSize: '0.75rem', color: '#666', marginBottom: '0.25rem', marginLeft: '0.5rem' }}>
+                      {message.fromName}
+                    </div>
+                  )}
+                  <div className="chat-message-bubble">
+                    <p>{message.content}</p>
+                    <span className="chat-message-time">{message.time}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Chat Input */}
+            <div className="chat-input-container">
+              <input
+                type="text"
+                className="chat-input"
+                placeholder="메시지를 입력하세요..."
+                value={newChatMessage}
+                onChange={(e) => setNewChatMessage(e.target.value)}
+                onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+              />
+              <button className="chat-send-btn" onClick={handleSendMessage}>
+                <i className="fas fa-paper-plane"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

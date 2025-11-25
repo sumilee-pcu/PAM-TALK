@@ -11,52 +11,157 @@ import './ESGPage.css';
 
 // ESG Activity Categories and Rewards
 const ESG_ACTIVITIES = {
-  recycling: {
-    id: 'recycling',
-    name: '재활용',
-    icon: '♻️',
-    description: '재활용품을 분리수거하고 인증받으세요',
+  environment: {
+    id: 'environment',
+    name: '환경 (Environment)',
+    icon: '🌍',
+    description: '환경 보호 활동으로 ESG-GOLD를 받으세요',
     types: [
-      { id: 'plastic', name: '플라스틱', reward: 30 },
-      { id: 'paper', name: '종이', reward: 40 },
-      { id: 'glass', name: '유리', reward: 50 },
-      { id: 'metal', name: '금속', reward: 60 }
-    ],
-    color: '#3498db'
-  },
-  green_transport: {
-    id: 'green_transport',
-    name: '친환경 교통',
-    icon: '🚲',
-    description: '대중교통 또는 자전거 이용을 인증받으세요',
-    types: [
-      { id: 'public_transport', name: '대중교통', reward: 50 },
-      { id: 'bicycle', name: '자전거', reward: 80 },
-      { id: 'walking', name: '도보', reward: 100 }
-    ],
-    color: '#2ecc71'
-  },
-  tree_planting: {
-    id: 'tree_planting',
-    name: '나무 심기',
-    icon: '🌳',
-    description: '나무를 심거나 화분을 가꾸고 인증받으세요',
-    types: [
-      { id: 'tree', name: '나무 심기', reward: 200 },
-      { id: 'plant', name: '화분 가꾸기', reward: 100 }
+      {
+        id: 'local_food',
+        name: '로컬푸드 구매',
+        reward: 0, // 거래액의 5-10%
+        rewardType: 'percentage',
+        rewardRange: '5-10%',
+        verification: '블록체인 거래 내역',
+        icon: '🛒'
+      },
+      {
+        id: 'low_carbon_product',
+        name: '저탄소 제품 선택',
+        reward: 0, // 추가 3-5%
+        rewardType: 'percentage',
+        rewardRange: '3-5%',
+        verification: '블록체인 거래 내역',
+        icon: '🌿'
+      },
+      {
+        id: 'public_transport',
+        name: '대중교통 이용 (버스/지하철)',
+        reward: 0.5,
+        rewardType: 'fixed',
+        verification: '외부 API 연동',
+        icon: '🚇'
+      },
+      {
+        id: 'bike_sharing',
+        name: '공유자전거 이용',
+        reward: 0.7,
+        rewardType: 'fixed',
+        verification: '외부 API 연동',
+        icon: '🚲'
+      },
+      {
+        id: 'recycling',
+        name: '재활용 참여',
+        reward: 0.3,
+        rewardType: 'fixed',
+        verification: 'AI 이미지 인식',
+        icon: '♻️'
+      },
+      {
+        id: 'reusable_tumbler',
+        name: '텀블러 사용 (일회용 컵 대신)',
+        reward: 0.3,
+        rewardType: 'fixed',
+        verification: 'AI 이미지 인식, 카페 영수증',
+        icon: '☕'
+      },
+      {
+        id: 'reusable_basket',
+        name: '재사용 바구니/장바구니 사용',
+        reward: 0.2,
+        rewardType: 'fixed',
+        verification: 'AI 이미지 인식',
+        icon: '🧺'
+      },
+      {
+        id: 'ecobag_use',
+        name: '에코백 사용 (비닐봉투 대신)',
+        reward: 0.2,
+        rewardType: 'fixed',
+        verification: 'AI 이미지 인식',
+        icon: '👜'
+      }
     ],
     color: '#27ae60'
   },
-  clean_energy: {
-    id: 'clean_energy',
-    name: '청정 에너지',
-    icon: '⚡',
-    description: '태양광 패널이나 LED 사용을 인증받으세요',
+  social: {
+    id: 'social',
+    name: '사회 (Social)',
+    icon: '👥',
+    description: '사회 공헌 활동으로 ESG-GOLD를 받으세요',
     types: [
-      { id: 'solar', name: '태양광', reward: 150 },
-      { id: 'led', name: 'LED 전구', reward: 100 }
+      {
+        id: 'public_facility',
+        name: '공공시설 방문 (도서관/문화센터/체육시설)',
+        reward: 1,
+        rewardType: 'fixed',
+        verification: '외부 API, GPS 위치검증, AI 이미지 인식',
+        icon: '🏛️'
+      },
+      {
+        id: 'volunteer',
+        name: '자원봉사 활동',
+        reward: 5,
+        rewardType: 'hourly',
+        rewardUnit: '시간당',
+        verification: '수동 검증',
+        icon: '🤝'
+      },
+      {
+        id: 'local_event',
+        name: '지역행사 참여',
+        reward: 2,
+        rewardType: 'fixed',
+        verification: '수동 검증',
+        icon: '🎉'
+      },
+      {
+        id: 'helping_errand',
+        name: '이웃 돕기 심부름 (커피 배달 등)',
+        reward: 0.5,
+        rewardType: 'fixed',
+        verification: 'AI 이미지 인식, GPS 위치',
+        icon: '🤲'
+      }
     ],
-    color: '#f39c12'
+    color: '#3498db'
+  },
+  governance: {
+    id: 'governance',
+    name: '거버넌스 (Governance)',
+    icon: '⚖️',
+    description: '플랫폼 참여로 ESG-GOLD를 받으세요',
+    types: [
+      {
+        id: 'platform_voting',
+        name: '플랫폼 투표 참여',
+        reward: 0.5,
+        rewardType: 'fixed',
+        verification: '블록체인 거래 내역',
+        icon: '🗳️'
+      },
+      {
+        id: 'review_writing',
+        name: '우수 후기 작성',
+        reward: 1,
+        rewardType: 'conditional',
+        rewardCondition: '채택 시',
+        verification: '수동 검증',
+        icon: '✍️'
+      },
+      {
+        id: 'policy_proposal',
+        name: '정책 제안',
+        reward: 10,
+        rewardType: 'conditional',
+        rewardCondition: '채택 시',
+        verification: '수동 검증',
+        icon: '💡'
+      }
+    ],
+    color: '#9b59b6'
   }
 };
 
@@ -94,28 +199,22 @@ function ESGPage() {
     setSelectedActivity(activity);
   };
 
-  // Start activity certification (will redirect to capture page)
+  // Start activity certification (will redirect to prepare page)
   const startCertification = () => {
-    if (!wallet) {
-      alert('❌ 먼저 지갑을 생성해주세요!');
-      navigate('/wallet');
-      return;
-    }
-
     if (!selectedActivity) {
       alert('❌ 활동을 선택해주세요!');
       return;
     }
 
-    // Store selected activity for capture page
+    // Store selected activity for prepare page
     localStorage.setItem('esg_current_activity', JSON.stringify({
       category: selectedCategory,
       activity: selectedActivity,
       timestamp: new Date().toISOString()
     }));
 
-    // Navigate to capture page
-    navigate('/esg/capture');
+    // Navigate to prepare page (wallet check, points view, etc.)
+    navigate('/esg/prepare');
   };
 
   // Back to category selection
@@ -134,31 +233,29 @@ function ESGPage() {
         </div>
 
         {/* Rewards Summary */}
-        {wallet && (
-          <div className="esg-summary">
-            <div className="summary-card">
-              <div className="summary-label">누적 보상</div>
-              <div className="summary-value">
-                <span className="amount">{totalRewards}</span>
-                <span className="currency">ESG-GOLD</span>
-              </div>
-            </div>
-            <div className="summary-card">
-              <div className="summary-label">완료한 활동</div>
-              <div className="summary-value">
-                <span className="amount">{activityHistory.length}</span>
-                <span className="currency">회</span>
-              </div>
+        <div className="esg-summary">
+          <div className="summary-card">
+            <div className="summary-label">누적 보상</div>
+            <div className="summary-value">
+              <span className="amount">{totalRewards}</span>
+              <span className="currency">포인트</span>
             </div>
           </div>
-        )}
+          <div className="summary-card">
+            <div className="summary-label">완료한 활동</div>
+            <div className="summary-value">
+              <span className="amount">{activityHistory.length}</span>
+              <span className="currency">회</span>
+            </div>
+          </div>
+        </div>
 
         {!wallet && (
           <div className="wallet-warning">
-            <p>⚠️ 보상을 받으려면 먼저 지갑을 생성해주세요!</p>
-            <button className="btn-create-wallet" onClick={() => navigate('/wallet')}>
-              지갑 생성하기
-            </button>
+            <p>💡 활동을 시작하면 자동으로 디지털 지갑이 생성됩니다!</p>
+            <p style={{fontSize: '0.9rem', marginTop: '0.5rem', opacity: 0.8}}>
+              지갑 없이도 활동을 선택할 수 있습니다
+            </p>
           </div>
         )}
 
@@ -166,6 +263,9 @@ function ESGPage() {
         {!selectedCategory && (
           <div className="esg-content">
             <h2 className="section-title">활동 카테고리를 선택하세요</h2>
+            <p style={{textAlign: 'center', color: '#666', marginBottom: '1rem'}}>
+              카테고리 개수: {Object.values(ESG_ACTIVITIES).length}개
+            </p>
             <div className="category-grid">
               {Object.values(ESG_ACTIVITIES).map((category) => (
                 <div
@@ -189,7 +289,7 @@ function ESGPage() {
         )}
 
         {/* Activity Type Selection */}
-        {selectedCategory && !selectedActivity && (
+        {selectedCategory && (
           <div className="esg-content">
             <button className="btn-back" onClick={backToCategories}>
               ← 카테고리로 돌아가기
@@ -204,15 +304,40 @@ function ESGPage() {
                   className={`activity-card ${selectedActivity?.id === activity.id ? 'selected' : ''}`}
                   onClick={() => handleActivitySelect(activity)}
                 >
+                  <div className="activity-icon-small">{activity.icon}</div>
                   <div className="activity-name">{activity.name}</div>
                   <div className="activity-reward">
-                    <span className="reward-amount">{activity.reward}</span>
-                    <span className="reward-unit">ESG-GOLD</span>
+                    {activity.rewardType === 'percentage' ? (
+                      <>
+                        <span className="reward-amount">{activity.rewardRange}</span>
+                        <span className="reward-unit">보상</span>
+                      </>
+                    ) : activity.rewardType === 'hourly' ? (
+                      <>
+                        <span className="reward-amount">{activity.reward}</span>
+                        <span className="reward-unit">ESG-GOLD/{activity.rewardUnit}</span>
+                      </>
+                    ) : activity.rewardType === 'conditional' ? (
+                      <>
+                        <span className="reward-amount">{activity.reward}</span>
+                        <span className="reward-unit">ESG-GOLD</span>
+                        <div className="reward-condition">({activity.rewardCondition})</div>
+                      </>
+                    ) : (
+                      <>
+                        <span className="reward-amount">{activity.reward}</span>
+                        <span className="reward-unit">ESG-GOLD</span>
+                      </>
+                    )}
+                  </div>
+                  <div className="activity-verification">
+                    <small>✓ {activity.verification}</small>
                   </div>
                 </div>
               ))}
             </div>
             <button
+              type="button"
               className="btn-start-certification"
               onClick={startCertification}
               disabled={!selectedActivity}
