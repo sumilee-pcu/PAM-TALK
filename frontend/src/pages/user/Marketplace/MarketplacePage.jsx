@@ -180,7 +180,7 @@ function MarketplacePage() {
 
       // 과일류
       { name: '사과(부사)', category: '과일', image: 'https://images.unsplash.com/photo-1568702846914-96b305d2aaeb?w=500', price: 5000, cert: '유기농', carbon: 1.5, desc: '달콤한 부사 사과', badge: 'best' },
-      { name: '배(신고배)', category: '과일', image: 'https://images.unsplash.com/photo-1585059895524-72359e06133a?w=500', price: 6000, cert: '친환경', carbon: 1.4, desc: '즙이 풍부한 신고배' },
+      { name: '배(신고배)', category: '과일', image: 'https://images.unsplash.com/photo-1568576780903-f2a0c0a17c0b?w=500', price: 6000, cert: '친환경', carbon: 1.4, desc: '즙이 풍부한 신고배' },
       { name: '딸기', category: '과일', image: 'https://images.unsplash.com/photo-1464965911861-746a04b4bca6?w=500', price: 8000, cert: '유기농', carbon: 1.8, desc: '당도 높은 딸기', badge: 'new' },
       { name: '포도(샤인머스캣)', category: '과일', image: 'https://images.unsplash.com/photo-1596363505729-4190a9506133?w=500', price: 12000, cert: '무농약', carbon: 2.0, desc: '프리미엄 샤인머스캣', badge: 'premium' },
       { name: '복숭아', category: '과일', image: 'https://images.unsplash.com/photo-1629828874514-57a4677ff36e?w=500', price: 7000, cert: '친환경', carbon: 1.6, desc: '달콤한 백도 복숭아' },
@@ -227,7 +227,7 @@ function MarketplacePage() {
 
       // 건강식품
       { name: '6년근 홍삼', category: '건강식품', image: 'https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?w=500', price: 85000, cert: '건강기능식품', carbon: 3.5, desc: '프리미엄 홍삼', badge: 'premium' },
-      { name: '아카시아 꿀(1kg)', category: '건강식품', image: 'https://images.unsplash.com/photo-1587049633312-d628ae50a8ae?w=500', price: 35000, cert: '유기농', carbon: 2.8, desc: '순수 벌꿀', badge: 'best' },
+      { name: '아카시아 꿀(1kg)', category: '건강식품', image: 'https://images.unsplash.com/photo-1587735243615-c03f25aaff15?w=500', price: 35000, cert: '유기농', carbon: 2.8, desc: '순수 벌꿀', badge: 'best' },
       { name: '제주 녹차', category: '건강식품', image: 'https://images.unsplash.com/photo-1563822249366-6b05f0a7b50a?w=500', price: 18000, cert: '유기농', carbon: 1.2, desc: '제주 유기농 녹차' },
       { name: '쌍화차(20포)', category: '건강식품', image: 'https://images.unsplash.com/photo-1564890369478-c89ca6d9cde9?w=500', price: 15000, cert: '한방식품', carbon: 1.5, desc: '건강한 쌍화차' },
       { name: '매실효소(1L)', category: '건강식품', image: 'https://images.unsplash.com/photo-1598543515172-6ac17ee5ef28?w=500', price: 22000, cert: '전통식품', carbon: 2.2, desc: '3년 숙성 매실효소' },
