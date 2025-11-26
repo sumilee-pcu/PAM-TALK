@@ -512,6 +512,63 @@ def get_chat_messages(room_id):
         return jsonify(create_error_response(f"메시지 조회 실패: {str(e)}")), 500
 
 
+@app.route('/api/community/chat/private', methods=['POST'])
+def get_or_create_private_chat():
+    """1:1 채팅방 가져오기 또는 생성"""
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify(create_error_response("요청 데이터가 없습니다")), 400
+
+        required_fields = ['user1_email', 'user2_email', 'user1_name', 'user2_name']
+        missing_fields = [field for field in required_fields if field not in data]
+        if missing_fields:
+            return jsonify(create_error_response(
+                f"필수 필드가 누락되었습니다: {', '.join(missing_fields)}"
+            )), 400
+
+        manager = get_community_manager()
+
+        # Generate consistent room ID for 1:1 chat
+        users = sorted([data['user1_email'], data['user2_email']])
+        room_id = f"private_{users[0]}_{users[1]}".replace('@', '_').replace('.', '_')
+
+        # Check if room exists
+        existing_rooms = manager.get_all_chat_rooms()
+        room = None
+        for r in existing_rooms:
+            if r.room_id == room_id:
+                room = r
+                break
+
+        # Create room if it doesn't exist
+        if not room:
+            room_name = f"{data['user1_name']} & {data['user2_name']}"
+            room = manager.create_chat_room(
+                room_name=room_name,
+                created_by=data['user1_email'],
+                room_type='private',
+                members=[data['user1_email'], data['user2_email']]
+            )
+            # Override room_id to be consistent
+            room.room_id = room_id
+
+        # Get messages for this room
+        messages = manager.get_room_messages(room_id, limit=100)
+        messages_data = [m.to_dict() for m in messages]
+
+        response_data = {
+            'room': room.to_dict(),
+            'messages': messages_data
+        }
+
+        return jsonify(create_success_response(response_data))
+
+    except Exception as e:
+        logger.error(f"Get or create private chat error: {e}")
+        return jsonify(create_error_response(f"1:1 채팅방 생성 실패: {str(e)}")), 500
+
+
 # =============================================================================
 # 신고 관리 엔드포인트
 # =============================================================================
