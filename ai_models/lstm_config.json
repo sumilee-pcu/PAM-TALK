@@ -1,0 +1,68 @@
+{
+  "model_parameters": {
+    "lookback_period": 30,
+    "lstm_units": [64, 32],
+    "dropout_rate": 0.2,
+    "dense_units": 16,
+    "activation": "relu",
+    "output_activation": "linear"
+  },
+  "training_parameters": {
+    "batch_size": 32,
+    "epochs": 100,
+    "validation_split": 0.2,
+    "learning_rate": 0.001,
+    "early_stopping_patience": 10,
+    "reduce_lr_patience": 5
+  },
+  "data_parameters": {
+    "training_days": 365,
+    "test_split": 0.2,
+    "features": [
+      "demand",
+      "price",
+      "day_of_week",
+      "month",
+      "is_weekend",
+      "is_holiday"
+    ],
+    "target": "demand"
+  },
+  "products": {
+    "tomatoes": {
+      "base_demand": 1000,
+      "seasonal_amplitude": 300,
+      "growth_rate": 0.0005,
+      "noise_level": 0.15,
+      "description": "토마토 - 여름철 수요 높음"
+    },
+    "cabbage": {
+      "base_demand": 800,
+      "seasonal_amplitude": 200,
+      "growth_rate": 0.0003,
+      "noise_level": 0.12,
+      "description": "양배추 - 겨울철 수요 높음"
+    },
+    "rice": {
+      "base_demand": 2000,
+      "seasonal_amplitude": 100,
+      "growth_rate": 0.0002,
+      "noise_level": 0.08,
+      "description": "쌀 - 안정적 수요"
+    },
+    "lettuce": {
+      "base_demand": 600,
+      "seasonal_amplitude": 150,
+      "growth_rate": 0.0004,
+      "noise_level": 0.18,
+      "description": "상추 - 봄/가을 수요 높음"
+    },
+    "carrots": {
+      "base_demand": 700,
+      "seasonal_amplitude": 120,
+      "growth_rate": 0.0003,
+      "noise_level": 0.13,
+      "description": "당근 - 겨울 저장용 수요"
+    }
+  }
+}
