@@ -10,48 +10,8 @@ import './CommunityPage.css';
 
 function CommunityPage() {
   const { user } = useAuth();
-  const [posts, setPosts] = useState([
-    {
-      id: 1,
-      user: { name: '김농부', avatar: '👨‍🌾', location: '경기 용인' },
-      time: '2시간 전',
-      content: '오늘 첫 토마토 수확! 햇볕 가득 받아 정말 맛있게 자랐어요. 로컬푸드로 탄소발자국도 줄이고 신선한 농산물도 맛보세요 🍅',
-      hashtags: ['#로컬푸드', '#토마토', '#신선함'],
-      image: null,
-      eco: { carbon: 2.1, distance: 15 },
-      likes: 24,
-      comments: 5,
-      shares: 3,
-      liked: false
-    },
-    {
-      id: 2,
-      user: { name: '이소비자', avatar: '👩', location: '서울 강남' },
-      time: '4시간 전',
-      content: '오늘 30일 로컬푸드 챌린지 완료! 한 달 동안 지역 농산물만 구매하니 정말 뿌듯하네요. 농부님들 덕분에 신선한 채소 매일 먹었어요 💚',
-      hashtags: ['#챌린지완료', '#로컬푸드', '#환경보호'],
-      image: null,
-      eco: { carbon: 12.5, distance: 8 },
-      likes: 42,
-      comments: 12,
-      shares: 8,
-      liked: true
-    },
-    {
-      id: 3,
-      user: { name: '박농부', avatar: '👨‍🌾', location: '강원 춘천' },
-      time: '6시간 전',
-      content: '제철 채소가 정말 최고예요! 노지에서 자란 상추는 맛이 다릅니다. 농약 없이 건강하게 키웠습니다 🥬',
-      hashtags: ['#유기농', '#제철채소', '#건강식품'],
-      image: null,
-      eco: { carbon: 1.8, distance: 45 },
-      likes: 18,
-      comments: 3,
-      shares: 2,
-      liked: false
-    }
-  ]);
-
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [newPost, setNewPost] = useState('');
   const [showChatModal, setShowChatModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
@@ -179,34 +139,146 @@ function CommunityPage() {
     }
   }, [showChatModal, currentRoomId, user]);
 
-  const handleLike = (postId) => {
-    setPosts(posts.map(post =>
-      post.id === postId
-        ? { ...post, liked: !post.liked, likes: post.liked ? post.likes - 1 : post.likes + 1 }
-        : post
-    ));
-  };
+  // 게시물 목록 불러오기
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch(`${API_BASE_URL}/api/community/posts`);
+        const result = await response.json();
 
-  const handleCreatePost = () => {
-    if (!newPost.trim()) return;
-
-    const post = {
-      id: Date.now(),
-      user: { name: '나', avatar: '👤', location: '서울' },
-      time: '방금 전',
-      content: newPost,
-      hashtags: [],
-      image: null,
-      eco: { carbon: 0, distance: 0 },
-      likes: 0,
-      comments: 0,
-      shares: 0,
-      liked: false
+        if (result.success && result.data) {
+          // 백엔드 데이터를 프론트엔드 형식으로 변환
+          const formattedPosts = result.data.map(post => ({
+            id: post.post_id,
+            user: {
+              name: post.username,
+              avatar: getRoleAvatar('farmer'),
+              location: '지역'
+            },
+            time: new Date(post.created_at).toLocaleString('ko-KR'),
+            content: post.content,
+            hashtags: post.tags || [],
+            image: post.images?.[0] || null,
+            eco: { carbon: 0, distance: 0 },
+            likes: post.likes_count || 0,
+            comments: post.comments_count || 0,
+            shares: 0,
+            liked: false
+          }));
+          setPosts(formattedPosts);
+        }
+      } catch (error) {
+        console.error('게시물 로딩 실패:', error);
+      } finally {
+        setLoading(false);
+      }
     };
 
-    setPosts([post, ...posts]);
-    setNewPost('');
-    alert('게시글이 작성되었습니다! 📝');
+    fetchPosts();
+  }, []);
+
+  const handleLike = async (postId) => {
+    if (!user) {
+      alert('로그인이 필요합니다.');
+      return;
+    }
+
+    try {
+      const post = posts.find(p => p.id === postId);
+      const isLiked = post.liked;
+
+      if (isLiked) {
+        // 좋아요 취소
+        await fetch(`${API_BASE_URL}/api/community/likes`, {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            user_id: user.email,
+            target_type: 'post',
+            target_id: postId
+          })
+        });
+      } else {
+        // 좋아요 추가
+        await fetch(`${API_BASE_URL}/api/community/likes`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            user_id: user.email,
+            target_type: 'post',
+            target_id: postId
+          })
+        });
+      }
+
+      // UI 업데이트
+      setPosts(posts.map(p =>
+        p.id === postId
+          ? { ...p, liked: !p.liked, likes: p.liked ? p.likes - 1 : p.likes + 1 }
+          : p
+      ));
+    } catch (error) {
+      console.error('좋아요 처리 실패:', error);
+      alert('좋아요 처리 중 오류가 발생했습니다.');
+    }
+  };
+
+  const handleCreatePost = async () => {
+    if (!newPost.trim()) return;
+    if (!user) {
+      alert('로그인이 필요합니다.');
+      return;
+    }
+
+    try {
+      // 해시태그 추출
+      const hashtags = newPost.match(/#[^\s#]+/g) || [];
+
+      const response = await fetch(`${API_BASE_URL}/api/community/posts`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          user_id: user.email,
+          username: user.name || '익명',
+          content: newPost,
+          tags: hashtags,
+          category: 'general'
+        })
+      });
+
+      const result = await response.json();
+
+      if (result.success && result.data) {
+        // 새 게시물을 목록 맨 위에 추가
+        const newPostData = {
+          id: result.data.post_id,
+          user: {
+            name: result.data.username,
+            avatar: getRoleAvatar(user.role),
+            location: '지역'
+          },
+          time: '방금 전',
+          content: result.data.content,
+          hashtags: result.data.tags || [],
+          image: null,
+          eco: { carbon: 0, distance: 0 },
+          likes: 0,
+          comments: 0,
+          shares: 0,
+          liked: false
+        };
+
+        setPosts([newPostData, ...posts]);
+        setNewPost('');
+        alert('게시글이 작성되었습니다! 📝');
+      } else {
+        alert('게시글 작성 실패');
+      }
+    } catch (error) {
+      console.error('게시글 작성 실패:', error);
+      alert('게시글 작성 중 오류가 발생했습니다.');
+    }
   };
 
   const handleStartChat = async (chatUser) => {
@@ -325,7 +397,18 @@ function CommunityPage() {
           </div>
 
           {/* Feed Posts */}
-          {posts.map(post => (
+          {loading ? (
+            <div style={{ textAlign: 'center', padding: '3rem' }}>
+              <p>게시물을 불러오는 중...</p>
+            </div>
+          ) : posts.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: '3rem', background: 'white', borderRadius: '15px' }}>
+              <p style={{ color: '#666' }}>아직 게시물이 없습니다.</p>
+              <p style={{ color: '#666' }}>첫 게시물을 작성해보세요! ✍️</p>
+            </div>
+          ) : null}
+
+          {!loading && posts.map(post => (
             <div key={post.id} className="feed-post">
               <div className="post-header">
                 <div className="post-user-info">
