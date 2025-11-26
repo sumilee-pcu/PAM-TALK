@@ -1,6 +1,6 @@
 /**
  * PAM-TALK 메인 라우터
- * 3-Portal 시스템 라우팅
+ * 6-Portal 시스템 라우팅
  */
 
 import React from 'react';
@@ -9,6 +9,9 @@ import ProtectedRoute from './ProtectedRoute';
 import UserRoutes from './UserRoutes';
 import CommitteeRoutes from './CommitteeRoutes';
 import AdminRoutes from './AdminRoutes';
+import SupplierRoutes from './SupplierRoutes';
+import CompanyRoutes from './CompanyRoutes';
+import FarmerRoutes from './FarmerRoutes';
 
 function AppRouter() {
   return (
@@ -21,7 +24,7 @@ function AppRouter() {
         <Route
           path="/committee/*"
           element={
-            <ProtectedRoute requiredRole="committee">
+            <ProtectedRoute requiredRole="COMMITTEE">
               <CommitteeRoutes />
             </ProtectedRoute>
           }
@@ -31,8 +34,38 @@ function AppRouter() {
         <Route
           path="/admin/*"
           element={
-            <ProtectedRoute requiredRole="admin">
+            <ProtectedRoute requiredRole="ADMIN">
               <AdminRoutes />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* ========== Supplier Portal (Protected) ========== */}
+        <Route
+          path="/supplier/*"
+          element={
+            <ProtectedRoute requiredRole="SUPPLIER">
+              <SupplierRoutes />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* ========== Company Portal (Protected) ========== */}
+        <Route
+          path="/company/*"
+          element={
+            <ProtectedRoute requiredRole="COMPANY">
+              <CompanyRoutes />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* ========== Farmer Portal (Protected) ========== */}
+        <Route
+          path="/farmer/*"
+          element={
+            <ProtectedRoute requiredRole="FARMER">
+              <FarmerRoutes />
             </ProtectedRoute>
           }
         />

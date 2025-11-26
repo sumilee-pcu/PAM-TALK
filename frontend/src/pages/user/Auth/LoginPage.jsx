@@ -53,13 +53,16 @@ function LoginPage() {
             navigate('/committee/dashboard');
             break;
           case 'SUPPLIER':
-            navigate('/user/marketplace');
+            navigate('/supplier');
             break;
           case 'COMPANY':
-            navigate('/company/dashboard');
+            navigate('/company');
+            break;
+          case 'FARMER':
+            navigate('/farmer');
             break;
           default:
-            navigate('/user/dashboard');
+            navigate('/dashboard');
         }
       } else {
         setError(result.error || '로그인에 실패했습니다.');
@@ -91,13 +94,16 @@ function LoginPage() {
             navigate('/committee/dashboard');
             break;
           case 'SUPPLIER':
-            navigate('/user/marketplace');
+            navigate('/supplier');
             break;
           case 'COMPANY':
-            navigate('/company/dashboard');
+            navigate('/company');
+            break;
+          case 'FARMER':
+            navigate('/farmer');
             break;
           default:
-            navigate('/user/dashboard');
+            navigate('/dashboard');
         }
       } else {
         // Only set error if login actually failed
