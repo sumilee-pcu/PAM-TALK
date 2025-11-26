@@ -221,7 +221,7 @@ function ESGPreparePage() {
               ) : (
                 <div style={{textAlign: 'center'}}>
                   <div style={{fontSize: '0.9rem', color: '#155724', marginBottom: '0.25rem'}}>
-                    ESG-GOLD 디지털쿠폰 잔액
+                    디지털쿠폰(DC) 잔액
                   </div>
                   <div style={{fontSize: '1.5rem', fontWeight: 700, color: '#155724'}}>
                     {balance !== null ? balance.toFixed(6) : '---'} DC

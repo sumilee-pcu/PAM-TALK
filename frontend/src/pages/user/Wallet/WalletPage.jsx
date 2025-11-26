@@ -176,7 +176,7 @@ function WalletPage() {
       return;
     }
 
-    if (!window.confirm('🪙 ESG-GOLD 토큰을 생성하시겠습니까?\n\n총 발행량: 1,000,000 ESG-GOLD\n수수료: 약 0.1 DC')) {
+    if (!window.confirm('🪙 ESG-GOLD 토큰을 생성하시겠습니까?\n\n총 발행량: 1,000,000 DC\n수수료: 약 0.1 DC')) {
       return;
     }
 

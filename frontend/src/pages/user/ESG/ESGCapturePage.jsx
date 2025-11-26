@@ -295,8 +295,8 @@ function ESGCapturePage() {
           `✅ 인증 완료!\n\n` +
           `🤖 AI 검증: ${verificationResult.message}\n` +
           `⛓️ 블록체인 기록: Round ${rewardResult.round}\n` +
-          `🪙 보상: +${currentActivity.activity.reward} ESG-GOLD\n` +
-          `💰 새 잔액: ${rewardResult.newBalance} ESG-GOLD\n\n` +
+          `🪙 보상: +${currentActivity.activity.reward} DC\n` +
+          `💰 새 잔액: ${rewardResult.newBalance} DC\n\n` +
           `Transaction ID: ${rewardResult.txId.substring(0, 20)}...`
         );
 
@@ -354,7 +354,7 @@ function ESGCapturePage() {
           </button>
           <div className="capture-title">
             <h2>{currentActivity.activity.name}</h2>
-            <p>+{currentActivity.activity.reward} ESG-GOLD</p>
+            <p>+{currentActivity.activity.reward} DC</p>
           </div>
           <div className="capture-spacer"></div>
         </div>

@@ -4,7 +4,7 @@ import './ESGPage.css';
 
 /**
  * ESG Activity Certification Page
- * - Users select ESG activities to earn ESG-GOLD tokens
+ * - Users select ESG activities to earn Digital Coupons (DC)
  * - Activities: Recycling, Green Transport, Tree Planting, Clean Energy
  * - 30-second target completion time (논문 기준)
  */
@@ -15,7 +15,7 @@ const ESG_ACTIVITIES = {
     id: 'environment',
     name: '환경 (Environment)',
     icon: '🌍',
-    description: '환경 보호 활동으로 ESG-GOLD를 받으세요',
+    description: '환경 보호 활동으로 DC를 받으세요',
     types: [
       {
         id: 'local_food',
@@ -90,7 +90,7 @@ const ESG_ACTIVITIES = {
     id: 'social',
     name: '사회 (Social)',
     icon: '👥',
-    description: '사회 공헌 활동으로 ESG-GOLD를 받으세요',
+    description: '사회 공헌 활동으로 DC를 받으세요',
     types: [
       {
         id: 'public_facility',
@@ -124,7 +124,7 @@ const ESG_ACTIVITIES = {
     id: 'governance',
     name: '거버넌스 (Governance)',
     icon: '⚖️',
-    description: '플랫폼 참여로 ESG-GOLD를 받으세요',
+    description: '플랫폼 참여로 DC를 받으세요',
     types: [
       {
         id: 'platform_voting',
@@ -221,7 +221,7 @@ function ESGPage() {
         {/* Header */}
         <div className="esg-header">
           <h1>🌱 ESG 활동 인증</h1>
-          <p>환경을 지키고 ESG-GOLD 토큰을 받으세요!</p>
+          <p>환경을 지키고 디지털 쿠폰(DC)을 받으세요!</p>
         </div>
 
         {/* Rewards Summary */}
@@ -272,7 +272,7 @@ function ESGPage() {
                   <h3 className="category-name">{category.name}</h3>
                   <p className="category-description">{category.description}</p>
                   <div className="category-reward-range">
-                    {Math.min(...category.types.map(t => t.reward))} - {Math.max(...category.types.map(t => t.reward))} ESG-GOLD
+                    {Math.min(...category.types.map(t => t.reward))} - {Math.max(...category.types.map(t => t.reward))} DC
                   </div>
                 </div>
               ))}
@@ -307,18 +307,18 @@ function ESGPage() {
                     ) : activity.rewardType === 'hourly' ? (
                       <>
                         <span className="reward-amount">{activity.reward}</span>
-                        <span className="reward-unit">ESG-GOLD/{activity.rewardUnit}</span>
+                        <span className="reward-unit">DC/{activity.rewardUnit}</span>
                       </>
                     ) : activity.rewardType === 'conditional' ? (
                       <>
                         <span className="reward-amount">{activity.reward}</span>
-                        <span className="reward-unit">ESG-GOLD</span>
+                        <span className="reward-unit">DC</span>
                         <div className="reward-condition">({activity.rewardCondition})</div>
                       </>
                     ) : (
                       <>
                         <span className="reward-amount">{activity.reward}</span>
-                        <span className="reward-unit">ESG-GOLD</span>
+                        <span className="reward-unit">DC</span>
                       </>
                     )}
                   </div>
@@ -356,7 +356,7 @@ function ESGPage() {
                     </div>
                   </div>
                   <div className="history-reward">
-                    +{activity.reward} ESG-GOLD
+                    +{activity.reward} DC
                   </div>
                 </div>
               ))}
