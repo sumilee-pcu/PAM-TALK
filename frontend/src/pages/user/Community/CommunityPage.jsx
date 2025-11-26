@@ -3,8 +3,9 @@
  * 커뮤니티 소셜 피드
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../../../hooks/useAuth';
+import { io } from 'socket.io-client';
 import './CommunityPage.css';
 
 function CommunityPage() {
@@ -56,6 +57,9 @@ function CommunityPage() {
   const [selectedUser, setSelectedUser] = useState(null);
   const [chatMessages, setChatMessages] = useState([]);
   const [newChatMessage, setNewChatMessage] = useState('');
+  const [currentRoomId, setCurrentRoomId] = useState(null);
+  const socketRef = useRef(null);
+  const API_BASE_URL = 'https://web-production-1b6c.up.railway.app';
 
   // 사용자 역할에 따른 아바타 매핑
   const getRoleAvatar = (role) => {
@@ -113,53 +117,67 @@ function CommunityPage() {
     setActiveUsers(getActiveUsers());
   }, [user]);
 
-  // 채팅방 ID 생성 (두 사용자의 이메일을 정렬하여 일관된 ID 생성)
-  const getChatRoomId = (user1Email, user2Email) => {
-    return [user1Email, user2Email].sort().join('_');
-  };
-
-  // localStorage에서 채팅 메시지 로드
-  const loadChatMessages = (roomId) => {
-    const stored = localStorage.getItem(`chat_${roomId}`);
-    return stored ? JSON.parse(stored) : [];
-  };
-
-  // localStorage에 채팅 메시지 저장
-  const saveChatMessages = (roomId, messages) => {
-    localStorage.setItem(`chat_${roomId}`, JSON.stringify(messages));
-    // storage 이벤트 트리거 (같은 탭에서는 발생하지 않으므로 커스텀 이벤트 사용)
-    window.dispatchEvent(new CustomEvent('chatUpdate', { detail: { roomId, messages } }));
-  };
-
-  // 실시간 메시지 수신 (다른 탭/창에서의 메시지)
+  // Socket.IO 연결 초기화
   useEffect(() => {
-    const handleStorageChange = (e) => {
-      if (e.key && e.key.startsWith('chat_') && selectedUser) {
-        const roomId = getChatRoomId(user?.email, selectedUser.email);
-        if (e.key === `chat_${roomId}`) {
-          const messages = JSON.parse(e.newValue || '[]');
-          setChatMessages(messages);
-        }
-      }
-    };
+    if (!socketRef.current) {
+      socketRef.current = io(API_BASE_URL, {
+        transports: ['websocket', 'polling'],
+        reconnection: true,
+        reconnectionAttempts: 5,
+        reconnectionDelay: 1000
+      });
 
-    const handleChatUpdate = (e) => {
-      if (selectedUser && user) {
-        const roomId = getChatRoomId(user.email, selectedUser.email);
-        if (e.detail.roomId === roomId) {
-          setChatMessages(e.detail.messages);
-        }
-      }
-    };
+      // 연결 성공
+      socketRef.current.on('connect', () => {
+        console.log('✅ Socket.IO 연결됨');
+      });
 
-    window.addEventListener('storage', handleStorageChange);
-    window.addEventListener('chatUpdate', handleChatUpdate);
+      // 연결 실패
+      socketRef.current.on('connect_error', (error) => {
+        console.error('❌ Socket.IO 연결 실패:', error);
+      });
+
+      // 새 메시지 수신
+      socketRef.current.on('new_message', (message) => {
+        console.log('📨 새 메시지 수신:', message);
+        setChatMessages(prev => {
+          const messagesWithIsMe = [...prev, {
+            ...message,
+            isMe: message.user_id === user?.email || message.username === user?.name
+          }];
+          return messagesWithIsMe;
+        });
+      });
+
+      // 사용자 입장
+      socketRef.current.on('user_joined', (data) => {
+        console.log('👋 사용자 입장:', data);
+      });
+
+      // 사용자 퇴장
+      socketRef.current.on('user_left', (data) => {
+        console.log('👋 사용자 퇴장:', data);
+      });
+    }
 
     return () => {
-      window.removeEventListener('storage', handleStorageChange);
-      window.removeEventListener('chatUpdate', handleChatUpdate);
+      if (socketRef.current) {
+        socketRef.current.disconnect();
+        socketRef.current = null;
+      }
     };
-  }, [selectedUser, user]);
+  }, [user]);
+
+  // 채팅방 나가기 (모달 닫을 때)
+  useEffect(() => {
+    if (!showChatModal && currentRoomId && socketRef.current) {
+      socketRef.current.emit('leave', {
+        room_id: currentRoomId,
+        username: user?.name || '익명'
+      });
+      setCurrentRoomId(null);
+    }
+  }, [showChatModal, currentRoomId, user]);
 
   const handleLike = (postId) => {
     setPosts(posts.map(post =>
@@ -191,57 +209,77 @@ function CommunityPage() {
     alert('게시글이 작성되었습니다! 📝');
   };
 
-  const handleStartChat = (chatUser) => {
+  const handleStartChat = async (chatUser) => {
     if (!user) {
       alert('로그인이 필요합니다.');
       return;
     }
 
     setSelectedUser(chatUser);
-
-    // 채팅방 ID 생성 및 기존 메시지 로드
-    const roomId = getChatRoomId(user.email, chatUser.email);
-    const existingMessages = loadChatMessages(roomId);
-
-    // 기존 메시지를 현재 사용자 관점으로 변환
-    const messagesWithIsMe = existingMessages.map(msg => ({
-      ...msg,
-      isMe: msg.fromEmail === user.email
-    }));
-
-    setChatMessages(messagesWithIsMe);
     setShowChatModal(true);
+
+    try {
+      // 1:1 채팅방 가져오기 또는 생성
+      const response = await fetch(`${API_BASE_URL}/api/community/chat/private`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          user1_email: user.email,
+          user2_email: chatUser.email,
+          user1_name: user.name || '나',
+          user2_name: chatUser.name
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('채팅방 생성 실패');
+      }
+
+      const result = await response.json();
+      if (result.success) {
+        const roomId = result.data.room.room_id;
+        const messages = result.data.messages || [];
+
+        setCurrentRoomId(roomId);
+
+        // 기존 메시지를 현재 사용자 관점으로 변환
+        const messagesWithIsMe = messages.map(msg => ({
+          ...msg,
+          isMe: msg.user_id === user.email || msg.username === (user.name || '나')
+        }));
+
+        setChatMessages(messagesWithIsMe);
+
+        // 소켓으로 채팅방 입장
+        if (socketRef.current) {
+          socketRef.current.emit('join', {
+            room_id: roomId,
+            username: user.name || '나'
+          });
+        }
+      }
+    } catch (error) {
+      console.error('채팅방 로드 실패:', error);
+      alert('채팅을 시작할 수 없습니다. 다시 시도해주세요.');
+    }
   };
 
   const handleSendMessage = () => {
-    if (!newChatMessage.trim() || !user || !selectedUser) return;
+    if (!newChatMessage.trim() || !user || !selectedUser || !currentRoomId) return;
 
-    const roomId = getChatRoomId(user.email, selectedUser.email);
+    if (!socketRef.current || !socketRef.current.connected) {
+      alert('채팅 서버에 연결되지 않았습니다. 잠시 후 다시 시도해주세요.');
+      return;
+    }
 
-    const message = {
-      id: Date.now(),
-      fromEmail: user.email,
-      fromName: user.name || '나',
-      toEmail: selectedUser.email,
-      toName: selectedUser.name,
+    // SocketIO로 메시지 전송
+    socketRef.current.emit('send_message', {
+      room_id: currentRoomId,
+      user_id: user.email,
+      username: user.name || '나',
       content: newChatMessage,
-      time: new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' }),
-      timestamp: Date.now()
-    };
-
-    // 기존 메시지에 새 메시지 추가
-    const existingMessages = loadChatMessages(roomId);
-    const updatedMessages = [...existingMessages, message];
-
-    // localStorage에 저장
-    saveChatMessages(roomId, updatedMessages);
-
-    // 현재 화면 업데이트
-    const messagesWithIsMe = updatedMessages.map(msg => ({
-      ...msg,
-      isMe: msg.fromEmail === user.email
-    }));
-    setChatMessages(messagesWithIsMe);
+      message_type: 'text'
+    });
 
     setNewChatMessage('');
   };
@@ -502,16 +540,20 @@ function CommunityPage() {
                   </p>
                 </div>
               )}
-              {chatMessages.map(message => (
-                <div key={message.id} className={`chat-message ${message.isMe ? 'chat-message-me' : 'chat-message-other'}`}>
+              {chatMessages.map((message, index) => (
+                <div key={message.message_id || message.id || index} className={`chat-message ${message.isMe ? 'chat-message-me' : 'chat-message-other'}`}>
                   {!message.isMe && (
                     <div style={{ fontSize: '0.75rem', color: '#666', marginBottom: '0.25rem', marginLeft: '0.5rem' }}>
-                      {message.fromName}
+                      {message.username || message.fromName || '익명'}
                     </div>
                   )}
                   <div className="chat-message-bubble">
                     <p>{message.content}</p>
-                    <span className="chat-message-time">{message.time}</span>
+                    <span className="chat-message-time">
+                      {message.created_at
+                        ? new Date(message.created_at).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' })
+                        : message.time || ''}
+                    </span>
                   </div>
                 </div>
               ))}
