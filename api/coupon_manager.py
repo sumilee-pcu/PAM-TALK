@@ -8,8 +8,11 @@ PAM-TALK Digital Coupon Manager
 import json
 import os
 import uuid
+import logging
 from datetime import datetime, timedelta
 from typing import Dict, List, Optional
+
+logger = logging.getLogger(__name__)
 
 
 class DigitalCoupon:
@@ -17,7 +20,8 @@ class DigitalCoupon:
 
     def __init__(self, coupon_id: str, name: str, discount_type: str,
                  discount_value: float, valid_from: str, valid_until: str,
-                 usage_limit: int = 1, product_ids: List[str] = None):
+                 usage_limit: int = 1, product_ids: List[str] = None,
+                 used_count: int = 0, created_at: str = None):
         self.coupon_id = coupon_id
         self.name = name
         self.discount_type = discount_type  # "percentage" or "fixed"
@@ -26,8 +30,8 @@ class DigitalCoupon:
         self.valid_until = valid_until
         self.usage_limit = usage_limit
         self.product_ids = product_ids or []  # 빈 리스트면 전체 상품 적용
-        self.used_count = 0
-        self.created_at = datetime.now().isoformat()
+        self.used_count = used_count
+        self.created_at = created_at or datetime.now().isoformat()
 
     def to_dict(self) -> Dict:
         return {
@@ -77,7 +81,7 @@ class Product:
 
     def __init__(self, product_id: str, name: str, category: str,
                  price: float, stock: int, description: str = "",
-                 image_url: str = "", farm_id: str = None):
+                 image_url: str = "", farm_id: str = None, created_at: str = None):
         self.product_id = product_id
         self.name = name
         self.category = category
@@ -86,7 +90,7 @@ class Product:
         self.description = description
         self.image_url = image_url
         self.farm_id = farm_id
-        self.created_at = datetime.now().isoformat()
+        self.created_at = created_at or datetime.now().isoformat()
 
     def to_dict(self) -> Dict:
         return {
@@ -105,7 +109,11 @@ class Product:
 class CouponManager:
     """쿠폰 및 상품 관리자"""
 
-    def __init__(self, data_dir: str = "data/mall"):
+    def __init__(self, data_dir: str = None):
+        # 기본 경로: PAM-TALK/data/mall (api 디렉토리 기준 상위)
+        if data_dir is None:
+            current_dir = os.path.dirname(os.path.abspath(__file__))
+            data_dir = os.path.join(os.path.dirname(current_dir), "data", "mall")
         self.data_dir = data_dir
         os.makedirs(data_dir, exist_ok=True)
 
@@ -120,7 +128,7 @@ class CouponManager:
         self.orders: List[Dict] = []
 
         self._load_data()
-        self._init_default_data()
+        # self._init_default_data()  # 주석 처리: products.json 덮어쓰기 방지
 
     def _load_data(self):
         """데이터 로드"""
@@ -133,12 +141,17 @@ class CouponManager:
                     self.coupons[coupon.coupon_id] = coupon
 
         # 상품 로드
+        logger.info(f"[DEBUG] Products file path: {self.products_file}")
+        logger.info(f"[DEBUG] Products file exists: {os.path.exists(self.products_file)}")
         if os.path.exists(self.products_file):
             with open(self.products_file, 'r', encoding='utf-8') as f:
                 data = json.load(f)
+                logger.info(f"[DEBUG] Loaded {len(data)} products from JSON")
                 for product_data in data:
                     product = Product(**product_data)
                     self.products[product.product_id] = product
+                    logger.info(f"[DEBUG] Loaded product: {product.name} - Category: {product.category}")
+        logger.info(f"[DEBUG] Total products in memory: {len(self.products)}")
 
         # 사용자 쿠폰 로드
         if os.path.exists(self.user_coupons_file):
@@ -337,8 +350,14 @@ class CouponManager:
 
     def get_all_products(self, category: str = None) -> List[Product]:
         """모든 상품 조회"""
+        logger.info(f"[DEBUG] get_all_products called with category: {category}")
+        logger.info(f"[DEBUG] Total products available: {len(self.products)}")
         if category:
-            return [p for p in self.products.values() if p.category == category]
+            filtered = [p for p in self.products.values() if p.category == category]
+            logger.info(f"[DEBUG] Filtered products for category '{category}': {len(filtered)}")
+            for p in filtered:
+                logger.info(f"[DEBUG]   - {p.name} (category: {p.category})")
+            return filtered
         return list(self.products.values())
 
     def update_stock(self, product_id: str, quantity: int) -> bool:

@@ -79,8 +79,26 @@ function useDarkMode() {
 // 상품 카드 컴포넌트
 const ProductCard = ({ product, onAddToCart }: { product: Product; onAddToCart: (p: Product) => void }) => (
   <article className="rounded-2xl border bg-white p-6 shadow-sm hover:shadow-md transition-shadow dark:bg-neutral-900 dark:border-neutral-800">
-    <div className="aspect-square bg-emerald-50 rounded-xl mb-4 flex items-center justify-center dark:bg-neutral-800">
-      <Store className="w-16 h-16 text-emerald-300 dark:text-emerald-700" />
+    <div className="aspect-square bg-emerald-50 rounded-xl mb-4 overflow-hidden dark:bg-neutral-800">
+      {product.image_url ? (
+        <img
+          src={product.image_url}
+          alt={product.name}
+          className="w-full h-full object-cover"
+          onError={(e) => {
+            // 이미지 로드 실패 시 폴백
+            e.currentTarget.style.display = 'none'
+            e.currentTarget.parentElement!.classList.add('flex', 'items-center', 'justify-center')
+            const fallback = document.createElement('div')
+            fallback.innerHTML = `<svg class="w-16 h-16 text-emerald-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>`
+            e.currentTarget.parentElement!.appendChild(fallback)
+          }}
+        />
+      ) : (
+        <div className="w-full h-full flex items-center justify-center">
+          <Store className="w-16 h-16 text-emerald-300 dark:text-emerald-700" />
+        </div>
+      )}
     </div>
     <h3 className="text-lg font-bold text-emerald-900 mb-2 dark:text-neutral-100">{product.name}</h3>
     <p className="text-sm text-emerald-900/70 mb-3 dark:text-neutral-300">{product.description}</p>
@@ -488,6 +506,22 @@ export default function PamMallApp() {
         </Container>
       </header>
 
+      {/* 런칭 특가 이벤트 배너 */}
+      <Link href="/launch-event">
+        <div className="bg-gradient-to-r from-red-600 via-orange-600 to-red-600 text-white py-8 cursor-pointer hover:from-red-700 hover:via-orange-700 hover:to-red-700 transition-all">
+          <Container>
+            <div className="flex items-center justify-center gap-4">
+              <Sparkles className="w-8 h-8 animate-pulse" />
+              <div className="text-center">
+                <h2 className="text-3xl font-extrabold mb-1">🎉 팜몰 런칭 기념 특가 🎉</h2>
+                <p className="text-xl font-semibold">모든 상품 단돈 100DC! 선착순 한정 수량 ⚡</p>
+              </div>
+              <Sparkles className="w-8 h-8 animate-pulse" />
+            </div>
+          </Container>
+        </div>
+      </Link>
+
       {/* 히어로 섹션 */}
       <section className="bg-gradient-to-r from-emerald-50 to-emerald-100 dark:from-neutral-900 dark:to-neutral-900 py-12">
         <Container>
@@ -498,9 +532,18 @@ export default function PamMallApp() {
             <p className="text-lg text-emerald-900/80 dark:text-neutral-300 mb-6">
               Algorand 블록체인 기반 투명하고 안전한 거래
             </p>
-            <div className="inline-flex items-center gap-2 bg-emerald-600 text-white px-6 py-3 rounded-full">
-              <Sparkles className="w-5 h-5" />
-              <span>오늘의 특가 상품</span>
+            <div className="flex gap-4 items-center justify-center flex-wrap">
+              <Link
+                href="/launch-event"
+                className="inline-flex items-center gap-2 bg-gradient-to-r from-red-600 to-orange-600 text-white px-8 py-4 rounded-full font-bold hover:from-red-700 hover:to-orange-700 transition-all shadow-lg"
+              >
+                <Tag className="w-5 h-5" />
+                <span>런칭특가 보러가기</span>
+              </Link>
+              <div className="inline-flex items-center gap-2 bg-emerald-600 text-white px-6 py-3 rounded-full">
+                <Sparkles className="w-5 h-5" />
+                <span>오늘의 특가 상품</span>
+              </div>
             </div>
           </div>
         </Container>

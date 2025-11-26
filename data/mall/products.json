@@ -1,14 +1,58 @@
 [
   {
-    "product_id": "PRODUCT_APPLE",
-    "name": "사과",
-    "category": "과일",
-    "price": 5000,
-    "stock": 98,
-    "description": "신선한 아산 사과 1kg",
-    "image_url": "/images/apple.jpg",
+    "product_id": "LAUNCH_SPECIAL_APPLE",
+    "name": "사과 3개",
+    "category": "런칭특가",
+    "price": 100,
+    "stock": 80,
+    "description": "🎉 런칭특가! 달콤한 국내산 사과 3개 - 원가 4,500원",
+    "image_url": "https://images.unsplash.com/photo-1568702846914-96b305d2aaeb?w=400&h=400&fit=crop",
     "farm_id": "FARM_001",
-    "created_at": "2025-11-23T17:35:02.274149"
+    "created_at": "2025-11-26T02:00:00.000000"
+  },
+  {
+    "product_id": "LAUNCH_SPECIAL_ORANGE",
+    "name": "귤 1kg",
+    "category": "런칭특가",
+    "price": 100,
+    "stock": 70,
+    "description": "🎉 런칭특가! 제주 감귤 1kg - 원가 5,000원",
+    "image_url": "https://images.unsplash.com/photo-1547514701-42782101795e?w=400&h=400&fit=crop",
+    "farm_id": "FARM_002",
+    "created_at": "2025-11-26T02:00:00.000000"
+  },
+  {
+    "product_id": "LAUNCH_SPECIAL_STRAWBERRY",
+    "name": "딸기 1팩",
+    "category": "런칭특가",
+    "price": 100,
+    "stock": 50,
+    "description": "🎉 런칭특가! 설향 딸기 1팩 (500g) - 원가 8,000원",
+    "image_url": "https://images.unsplash.com/photo-1464965911861-746a04b4bca6?w=400&h=400&fit=crop",
+    "farm_id": "FARM_001",
+    "created_at": "2025-11-26T02:00:00.000000"
+  },
+  {
+    "product_id": "LAUNCH_SPECIAL_GRAPE",
+    "name": "샤인머스캣 1송이",
+    "category": "런칭특가",
+    "price": 100,
+    "stock": 30,
+    "description": "🎉 런칭특가! 프리미엄 샤인머스캣 1송이 - 원가 12,000원",
+    "image_url": "https://images.unsplash.com/photo-1596363505729-4190a9506133?w=400&h=400&fit=crop",
+    "farm_id": "FARM_003",
+    "created_at": "2025-11-26T02:00:00.000000"
+  },
+  {
+    "product_id": "LAUNCH_SPECIAL_BANANA",
+    "name": "바나나 1송이",
+    "category": "런칭특가",
+    "price": 100,
+    "stock": 90,
+    "description": "🎉 런칭특가! 필리핀 바나나 1송이 - 원가 3,500원",
+    "image_url": "https://images.unsplash.com/photo-1603833665858-e61d17a86224?w=400&h=400&fit=crop",
+    "farm_id": "FARM_002",
+    "created_at": "2025-11-26T02:00:00.000000"
   },
   {
     "product_id": "PRODUCT_CARROT",
@@ -17,7 +61,7 @@
     "price": 3000,
     "stock": 149,
     "description": "유기농 당근 500g",
-    "image_url": "/images/carrot.jpg",
+    "image_url": "https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?w=400&h=400&fit=crop",
     "farm_id": "FARM_002",
     "created_at": "2025-11-23T17:35:02.274293"
   },
@@ -28,8 +72,74 @@
     "price": 4000,
     "stock": 120,
     "description": "국내산 햇양파 1kg",
-    "image_url": "/images/onion.jpg",
+    "image_url": "https://images.unsplash.com/photo-1618512496248-a07fe83aa8cb?w=400&h=400&fit=crop",
     "farm_id": "FARM_003",
     "created_at": "2025-11-23T17:35:02.274301"
+  },
+  {
+    "product_id": "LAUNCH_SPECIAL_TOMATO",
+    "name": "방울토마토 500g",
+    "category": "런칭특가",
+    "price": 100,
+    "stock": 50,
+    "description": "🎉 런칭특가! 신선한 방울토마토 500g - 원가 3,500원",
+    "image_url": "https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=400&h=400&fit=crop",
+    "farm_id": "FARM_001",
+    "created_at": "2025-11-26T02:00:00.000000"
+  },
+  {
+    "product_id": "LAUNCH_SPECIAL_LETTUCE",
+    "name": "싱싱한 상추 1단",
+    "category": "런칭특가",
+    "price": 100,
+    "stock": 40,
+    "description": "🎉 런칭특가! 유기농 상추 1단 - 원가 2,500원",
+    "image_url": "https://images.unsplash.com/photo-1622206151226-18ca2c9ab4a1?w=400&h=400&fit=crop",
+    "farm_id": "FARM_002",
+    "created_at": "2025-11-26T02:00:00.000000"
+  },
+  {
+    "product_id": "LAUNCH_SPECIAL_MUSHROOM",
+    "name": "새송이버섯 300g",
+    "category": "런칭특가",
+    "price": 100,
+    "stock": 35,
+    "description": "🎉 런칭특가! 국내산 새송이버섯 300g - 원가 2,800원",
+    "image_url": "https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?w=400&h=400&fit=crop",
+    "farm_id": "FARM_003",
+    "created_at": "2025-11-26T02:00:00.000000"
+  },
+  {
+    "product_id": "LAUNCH_SPECIAL_SPINACH",
+    "name": "시금치 300g",
+    "category": "런칭특가",
+    "price": 100,
+    "stock": 45,
+    "description": "🎉 런칭특가! 신선한 시금치 300g - 원가 2,000원",
+    "image_url": "https://images.unsplash.com/photo-1576045057995-568f588f82fb?w=400&h=400&fit=crop",
+    "farm_id": "FARM_001",
+    "created_at": "2025-11-26T02:00:00.000000"
+  },
+  {
+    "product_id": "LAUNCH_SPECIAL_CUCUMBER",
+    "name": "오이 3개",
+    "category": "런칭특가",
+    "price": 100,
+    "stock": 60,
+    "description": "🎉 런칭특가! 싱싱한 오이 3개 - 원가 2,500원",
+    "image_url": "https://images.unsplash.com/photo-1604977042946-1eecc30f269e?w=400&h=400&fit=crop",
+    "farm_id": "FARM_002",
+    "created_at": "2025-11-26T02:00:00.000000"
+  },
+  {
+    "product_id": "LAUNCH_SPECIAL_EGGPLANT",
+    "name": "가지 2개",
+    "category": "런칭특가",
+    "price": 100,
+    "stock": 30,
+    "description": "🎉 런칭특가! 국내산 가지 2개 - 원가 2,200원",
+    "image_url": "https://images.unsplash.com/photo-1659261200833-ec8761558af7?w=400&h=400&fit=crop",
+    "farm_id": "FARM_003",
+    "created_at": "2025-11-26T02:00:00.000000"
   }
 ]

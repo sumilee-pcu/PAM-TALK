@@ -21,6 +21,11 @@ function CommunityPage() {
   const socketRef = useRef(null);
   const API_BASE_URL = 'https://web-production-1b6c.up.railway.app';
 
+  // 댓글 관련 state
+  const [postComments, setPostComments] = useState({}); // { postId: [comments] }
+  const [newComment, setNewComment] = useState({}); // { postId: 'comment text' }
+  const [showComments, setShowComments] = useState({}); // { postId: true/false }
+
   // 사용자 역할에 따른 아바타 매핑
   const getRoleAvatar = (role) => {
     const avatars = {
@@ -356,6 +361,114 @@ function CommunityPage() {
     setNewChatMessage('');
   };
 
+  // 댓글 토글 및 불러오기
+  const handleToggleComments = async (postId) => {
+    // 댓글 섹션 토글
+    setShowComments(prev => ({
+      ...prev,
+      [postId]: !prev[postId]
+    }));
+
+    // 이미 불러온 댓글이 있으면 API 호출 생략
+    if (postComments[postId]) return;
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/community/posts/${postId}/comments`);
+      const result = await response.json();
+
+      if (result.success && result.data) {
+        setPostComments(prev => ({
+          ...prev,
+          [postId]: result.data
+        }));
+      }
+    } catch (error) {
+      console.error('댓글 로딩 실패:', error);
+    }
+  };
+
+  // 댓글 작성
+  const handleAddComment = async (postId) => {
+    if (!user) {
+      alert('로그인이 필요합니다.');
+      return;
+    }
+
+    const commentText = newComment[postId];
+    if (!commentText || !commentText.trim()) return;
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/community/posts/${postId}/comments`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          user_id: user.email,
+          username: user.name || '익명',
+          content: commentText
+        })
+      });
+
+      const result = await response.json();
+
+      if (result.success && result.data) {
+        // 새 댓글을 목록에 추가
+        setPostComments(prev => ({
+          ...prev,
+          [postId]: [...(prev[postId] || []), result.data]
+        }));
+
+        // 입력창 초기화
+        setNewComment(prev => ({
+          ...prev,
+          [postId]: ''
+        }));
+
+        // 게시물의 댓글 카운트 업데이트
+        setPosts(posts.map(p =>
+          p.id === postId ? { ...p, comments: p.comments + 1 } : p
+        ));
+      }
+    } catch (error) {
+      console.error('댓글 작성 실패:', error);
+      alert('댓글 작성 중 오류가 발생했습니다.');
+    }
+  };
+
+  // 댓글 삭제
+  const handleDeleteComment = async (postId, commentId) => {
+    if (!user) return;
+
+    if (!window.confirm('댓글을 삭제하시겠습니까?')) return;
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/community/comments/${commentId}`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          user_id: user.email
+        })
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        // 댓글 목록에서 제거
+        setPostComments(prev => ({
+          ...prev,
+          [postId]: (prev[postId] || []).filter(c => c.comment_id !== commentId)
+        }));
+
+        // 게시물의 댓글 카운트 업데이트
+        setPosts(posts.map(p =>
+          p.id === postId ? { ...p, comments: Math.max(0, p.comments - 1) } : p
+        ));
+      }
+    } catch (error) {
+      console.error('댓글 삭제 실패:', error);
+      alert('댓글 삭제 중 오류가 발생했습니다.');
+    }
+  };
+
   return (
     <div className="community-page">
       <div className="community-container">
@@ -466,15 +579,165 @@ function CommunityPage() {
                   <i className={`${post.liked ? 'fas' : 'far'} fa-heart`}></i>
                   좋아요
                 </button>
-                <button className="interaction-btn">
+                <button
+                  className="interaction-btn"
+                  onClick={() => handleToggleComments(post.id)}
+                >
                   <i className="far fa-comment"></i>
-                  댓글
+                  댓글 {post.comments > 0 && `(${post.comments})`}
                 </button>
                 <button className="interaction-btn">
                   <i className="fas fa-share"></i>
                   공유
                 </button>
               </div>
+
+              {/* 댓글 섹션 */}
+              {showComments[post.id] && (
+                <div style={{
+                  marginTop: '1rem',
+                  paddingTop: '1rem',
+                  borderTop: '1px solid #eee'
+                }}>
+                  {/* 댓글 목록 */}
+                  <div style={{ marginBottom: '1rem' }}>
+                    {(!postComments[post.id] || postComments[post.id].length === 0) ? (
+                      <p style={{
+                        textAlign: 'center',
+                        color: '#999',
+                        fontSize: '0.9rem',
+                        padding: '1rem 0'
+                      }}>
+                        첫 댓글을 작성해보세요!
+                      </p>
+                    ) : (
+                      postComments[post.id].map(comment => (
+                        <div
+                          key={comment.comment_id}
+                          style={{
+                            display: 'flex',
+                            gap: '0.75rem',
+                            marginBottom: '1rem',
+                            padding: '0.75rem',
+                            background: '#f8f9fa',
+                            borderRadius: '10px'
+                          }}
+                        >
+                          <div className="user-avatar-small" style={{
+                            width: '35px',
+                            height: '35px',
+                            fontSize: '1rem',
+                            flexShrink: 0
+                          }}>
+                            👤
+                          </div>
+                          <div style={{ flex: 1 }}>
+                            <div style={{
+                              display: 'flex',
+                              justifyContent: 'space-between',
+                              alignItems: 'flex-start',
+                              marginBottom: '0.25rem'
+                            }}>
+                              <div>
+                                <strong style={{ fontSize: '0.9rem' }}>
+                                  {comment.username}
+                                </strong>
+                                <span style={{
+                                  marginLeft: '0.5rem',
+                                  color: '#888',
+                                  fontSize: '0.75rem'
+                                }}>
+                                  {new Date(comment.created_at).toLocaleString('ko-KR')}
+                                </span>
+                              </div>
+                              {user && comment.user_id === user.email && (
+                                <button
+                                  onClick={() => handleDeleteComment(post.id, comment.comment_id)}
+                                  style={{
+                                    background: 'none',
+                                    border: 'none',
+                                    color: '#999',
+                                    cursor: 'pointer',
+                                    fontSize: '0.8rem',
+                                    padding: '0.25rem 0.5rem'
+                                  }}
+                                >
+                                  삭제
+                                </button>
+                              )}
+                            </div>
+                            <p style={{
+                              margin: 0,
+                              fontSize: '0.9rem',
+                              lineHeight: '1.5'
+                            }}>
+                              {comment.content}
+                            </p>
+                          </div>
+                        </div>
+                      ))
+                    )}
+                  </div>
+
+                  {/* 댓글 작성 폼 */}
+                  <div style={{
+                    display: 'flex',
+                    gap: '0.75rem',
+                    alignItems: 'flex-start'
+                  }}>
+                    <div className="user-avatar-small" style={{
+                      width: '35px',
+                      height: '35px',
+                      fontSize: '1rem',
+                      flexShrink: 0
+                    }}>
+                      {user ? getRoleAvatar(user.role) : '👤'}
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <textarea
+                        style={{
+                          width: '100%',
+                          padding: '0.75rem',
+                          border: '2px solid #eee',
+                          borderRadius: '10px',
+                          resize: 'none',
+                          fontSize: '0.9rem',
+                          fontFamily: 'inherit',
+                          minHeight: '60px'
+                        }}
+                        placeholder="댓글을 입력하세요..."
+                        value={newComment[post.id] || ''}
+                        onChange={(e) => setNewComment(prev => ({
+                          ...prev,
+                          [post.id]: e.target.value
+                        }))}
+                        onKeyPress={(e) => {
+                          if (e.key === 'Enter' && !e.shiftKey) {
+                            e.preventDefault();
+                            handleAddComment(post.id);
+                          }
+                        }}
+                      />
+                      <button
+                        onClick={() => handleAddComment(post.id)}
+                        style={{
+                          marginTop: '0.5rem',
+                          padding: '0.5rem 1.5rem',
+                          background: '#27ae60',
+                          color: 'white',
+                          border: 'none',
+                          borderRadius: '8px',
+                          cursor: 'pointer',
+                          fontSize: '0.9rem',
+                          fontWeight: '600'
+                        }}
+                      >
+                        댓글 작성
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           ))}
         </div>

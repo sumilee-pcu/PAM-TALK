@@ -1,0 +1,79 @@
+[
+  {
+    "product_id": "PRODUCT_APPLE",
+    "name": "사과",
+    "category": "과일",
+    "price": 5000,
+    "stock": 100,
+    "description": "신선한 아산 사과 1kg",
+    "image_url": "/images/apple.jpg",
+    "farm_id": "FARM_001",
+    "created_at": "2025-11-26T12:02:24.407238"
+  },
+  {
+    "product_id": "PRODUCT_CARROT",
+    "name": "당근",
+    "category": "채소",
+    "price": 3000,
+    "stock": 150,
+    "description": "유기농 당근 500g",
+    "image_url": "/images/carrot.jpg",
+    "farm_id": "FARM_002",
+    "created_at": "2025-11-26T12:02:24.407271"
+  },
+  {
+    "product_id": "PRODUCT_ONION",
+    "name": "양파",
+    "category": "채소",
+    "price": 4000,
+    "stock": 120,
+    "description": "국내산 햇양파 1kg",
+    "image_url": "/images/onion.jpg",
+    "farm_id": "FARM_003",
+    "created_at": "2025-11-26T12:02:24.407278"
+  },
+  {
+    "product_id": "PRODUCT_RADISH",
+    "name": "무",
+    "category": "채소",
+    "price": 3500,
+    "stock": 80,
+    "description": "국내산 무 1개 (약 1.5kg)",
+    "image_url": "/images/radish.jpg",
+    "farm_id": "FARM_004",
+    "created_at": "2025-11-26T12:02:24.407283"
+  },
+  {
+    "product_id": "PRODUCT_CABBAGE",
+    "name": "배추",
+    "category": "채소",
+    "price": 6000,
+    "stock": 60,
+    "description": "절임배추 1포기 (약 3kg)",
+    "image_url": "/images/cabbage.jpg",
+    "farm_id": "FARM_004",
+    "created_at": "2025-11-26T12:02:24.407287"
+  },
+  {
+    "product_id": "PRODUCT_LATTE",
+    "name": "카페라떼",
+    "category": "음료",
+    "price": 4500,
+    "stock": 999,
+    "description": "부드러운 우유와 에스프레소의 조화",
+    "image_url": "/images/latte.jpg",
+    "farm_id": "CAFE_001",
+    "created_at": "2025-11-26T12:02:24.407292"
+  },
+  {
+    "product_id": "PRODUCT_AMERICANO",
+    "name": "아메리카노",
+    "category": "음료",
+    "price": 3500,
+    "stock": 999,
+    "description": "깔끔한 에스프레소 아메리카노",
+    "image_url": "/images/americano.jpg",
+    "farm_id": "CAFE_001",
+    "created_at": "2025-11-26T12:02:24.407296"
+  }
+]
