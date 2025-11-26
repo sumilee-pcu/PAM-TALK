@@ -195,9 +195,9 @@ def test_data_generation():
 
 def run_all_tests():
     """Run all tests"""
-    print("\n" + "🚀"*35)
+    print("\n" + "="*70)
     print("LSTM Demand Predictor - 전체 테스트 실행")
-    print("🚀"*35)
+    print("="*70)
 
     try:
         # Test 1: Basic training

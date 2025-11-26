@@ -998,6 +998,101 @@ def lstm_products():
 
 
 # ========================================
+# Simulation APIs
+# ========================================
+
+@app.route('/api/simulation/run', methods=['POST'])
+def run_simulation():
+    """통합 시뮬레이션 실행"""
+    try:
+        data = request.get_json()
+        population = data.get('population', 100000)
+
+        # 시뮬레이터 import
+        try:
+            sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+            from ai_models.integrated_simulator import IntegratedSimulator
+        except ImportError as e:
+            logger.error(f"Simulator import error: {e}")
+            return jsonify(create_error_response("시뮬레이터를 불러올 수 없습니다.")), 500
+
+        # 시뮬레이션 실행
+        simulator = IntegratedSimulator(population=population)
+        results = simulator.run_full_simulation()
+
+        return jsonify(create_success_response({
+            "simulation_results": results
+        }))
+
+    except Exception as e:
+        logger.error(f"Simulation error: {e}")
+        return jsonify(create_error_response(f"시뮬레이션 실패: {str(e)}")), 500
+
+
+@app.route('/api/simulation/distribution', methods=['POST'])
+def run_distribution_simulation():
+    """유통 구조 시뮬레이션"""
+    try:
+        sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        from ai_models.distribution_simulator import DistributionSimulator
+
+        simulator = DistributionSimulator()
+        results = simulator.run_simulation()
+
+        return jsonify(create_success_response({
+            "distribution_results": results
+        }))
+
+    except Exception as e:
+        logger.error(f"Distribution simulation error: {e}")
+        return jsonify(create_error_response(f"유통 시뮬레이션 실패: {str(e)}")), 500
+
+
+@app.route('/api/simulation/carbon', methods=['POST'])
+def calculate_carbon():
+    """탄소 절감 계산"""
+    try:
+        data = request.get_json()
+        population = data.get('population', 100000)
+
+        sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        from ai_models.carbon_calculator import CarbonCalculator
+
+        calculator = CarbonCalculator(population=population)
+        results = calculator.run_calculation()
+
+        return jsonify(create_success_response({
+            "carbon_results": results
+        }))
+
+    except Exception as e:
+        logger.error(f"Carbon calculation error: {e}")
+        return jsonify(create_error_response(f"탄소 계산 실패: {str(e)}")), 500
+
+
+@app.route('/api/simulation/economic', methods=['POST'])
+def analyze_economic():
+    """경제 효과 분석"""
+    try:
+        data = request.get_json()
+        population = data.get('population', 100000)
+
+        sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        from ai_models.economic_analyzer import EconomicAnalyzer
+
+        analyzer = EconomicAnalyzer(population=population)
+        results = analyzer.run_analysis()
+
+        return jsonify(create_success_response({
+            "economic_results": results
+        }))
+
+    except Exception as e:
+        logger.error(f"Economic analysis error: {e}")
+        return jsonify(create_error_response(f"경제 분석 실패: {str(e)}")), 500
+
+
+# ========================================
 # Health Check
 # ========================================
 

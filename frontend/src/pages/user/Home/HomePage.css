@@ -1684,6 +1684,13 @@ section {
   color: rgba(255, 255, 255, 0.8);
 }
 
+.demo-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
 .btn-demo {
   background: white;
   color: #667eea;
@@ -1695,14 +1702,31 @@ section {
   cursor: pointer;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 0.75rem;
   transition: all 0.3s ease;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
 }
 
+.btn-demo.primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.btn-demo.secondary {
+  background: white;
+  color: #667eea;
+  border: 2px solid #667eea;
+}
+
 .btn-demo:hover {
   transform: translateY(-4px);
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
+}
+
+.btn-demo.secondary:hover {
+  background: #667eea;
+  color: white;
 }
 
 .btn-demo .btn-icon {

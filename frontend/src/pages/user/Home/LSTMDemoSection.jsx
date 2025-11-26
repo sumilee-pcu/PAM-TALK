@@ -76,13 +76,22 @@ function LSTMDemoSection() {
             </div>
           </div>
 
-          <button
-            className="btn-demo"
-            onClick={() => navigate('/demo/lstm')}
-          >
-            <span>실시간 데모 체험하기</span>
-            <span className="btn-icon">→</span>
-          </button>
+          <div className="demo-buttons">
+            <button
+              className="btn-demo primary"
+              onClick={() => navigate('/demo/simulation')}
+            >
+              <span>통합 시뮬레이션 실행</span>
+              <span className="btn-icon">→</span>
+            </button>
+            <button
+              className="btn-demo secondary"
+              onClick={() => navigate('/demo/lstm')}
+            >
+              <span>LSTM 수요 예측 데모</span>
+              <span className="btn-icon">→</span>
+            </button>
+          </div>
 
           <div className="demo-tech-stack">
             <span className="tech-badge">TensorFlow</span>

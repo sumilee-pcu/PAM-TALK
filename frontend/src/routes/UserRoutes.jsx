@@ -23,6 +23,7 @@ const ProfilePage = React.lazy(() => import('../pages/user/Profile/ProfilePage')
 const SettingsPage = React.lazy(() => import('../pages/user/Settings/SettingsPage'));
 const ESGRouter = React.lazy(() => import('../pages/user/ESG'));
 const LSTMDemoPage = React.lazy(() => import('../pages/user/Demo/LSTMDemoPage'));
+const SimulationPage = React.lazy(() => import('../pages/user/Demo/SimulationPage'));
 
 function UserRoutes() {
   return (
@@ -32,6 +33,7 @@ function UserRoutes() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/demo/lstm" element={<LSTMDemoPage />} />
+        <Route path="/demo/simulation" element={<SimulationPage />} />
 
         {/* Routes with UserLayout */}
         <Route element={<UserLayout />}>
