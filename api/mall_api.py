@@ -343,6 +343,87 @@ def update_order_status(order_id):
 
 
 # =============================================================================
+# 사용자 관리 엔드포인트
+# =============================================================================
+
+@app.route('/api/mall/users/register', methods=['POST'])
+def register_user():
+    """신규 사용자 가입 및 100DC 지급"""
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify(create_error_response("요청 데이터가 없습니다")), 400
+
+        # 필수 필드 확인
+        user_address = data.get('user_address')
+        if not user_address:
+            return jsonify(create_error_response("사용자 주소가 필요합니다")), 400
+
+        manager = get_coupon_manager()
+
+        # 이미 가입된 사용자인지 확인
+        if user_address in manager.user_coupons:
+            return jsonify(create_error_response("이미 가입된 사용자입니다")), 400
+
+        # 신규 가입자에게 100DC 웰컴 쿠폰 발급
+        welcome_coupon_id = "WELCOME_100DC"
+
+        # 웰컴 쿠폰이 없으면 생성
+        if welcome_coupon_id not in manager.coupons:
+            welcome_coupon = DigitalCoupon(
+                coupon_id=welcome_coupon_id,
+                name="신규 가입 웰컴 쿠폰",
+                discount_type="fixed",
+                discount_value=100,
+                valid_from=datetime.now().isoformat(),
+                valid_until="2099-12-31T23:59:59",
+                usage_limit=999999,
+                used_count=0,
+                product_ids=[]  # 모든 상품에 사용 가능
+            )
+            manager.coupons[welcome_coupon_id] = welcome_coupon
+            manager._save_coupons()
+
+        # 사용자에게 쿠폰 발급
+        success = manager.issue_coupon_to_user(user_address, welcome_coupon_id)
+
+        if success:
+            logger.info(f"New user registered: {user_address}, 100DC issued")
+            return jsonify(create_success_response(
+                {
+                    "user_address": user_address,
+                    "welcome_bonus": 100,
+                    "coupon_id": welcome_coupon_id,
+                    "message": "가입을 환영합니다! 100DC가 지급되었습니다."
+                },
+                "회원가입이 완료되었습니다"
+            )), 201
+        else:
+            return jsonify(create_error_response("쿠폰 발급에 실패했습니다")), 500
+
+    except Exception as e:
+        logger.error(f"Register user error: {e}")
+        return jsonify(create_error_response(f"회원가입 실패: {str(e)}")), 500
+
+
+@app.route('/api/mall/users/<string:user_address>/check', methods=['GET'])
+def check_user_exists(user_address):
+    """사용자 가입 여부 확인"""
+    try:
+        manager = get_coupon_manager()
+        exists = user_address in manager.user_coupons
+
+        return jsonify(create_success_response({
+            "user_address": user_address,
+            "is_registered": exists
+        }))
+
+    except Exception as e:
+        logger.error(f"Check user exists error: {e}")
+        return jsonify(create_error_response(f"사용자 확인 실패: {str(e)}")), 500
+
+
+# =============================================================================
 # Health Check
 # =============================================================================
 

@@ -75,10 +75,13 @@ function LoginPage() {
   // Quick login buttons for demo
   const quickLogin = async (email, password, label) => {
     setFormData({ email, password });
+    setError(''); // Clear any previous errors
     setLoading(true);
     try {
       const result = await login(email, password);
       if (result.success) {
+        // Clear error on success
+        setError('');
         const role = result.user.role;
         switch (role) {
           case 'ADMIN':
@@ -96,9 +99,13 @@ function LoginPage() {
           default:
             navigate('/user/dashboard');
         }
+      } else {
+        // Only set error if login actually failed
+        setError(result.error || `${label} 로그인에 실패했습니다.`);
       }
     } catch (err) {
-      setError('로그인 실패');
+      console.error('Quick login error:', err);
+      setError(`${label} 로그인 중 오류가 발생했습니다.`);
     } finally {
       setLoading(false);
     }

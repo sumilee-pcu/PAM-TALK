@@ -291,12 +291,73 @@ export default function PamMallApp() {
   const [products, setProducts] = useState<Product[]>([])
   const [cart, setCart] = useState<CartItem[]>([])
   const [cartOpen, setCartOpen] = useState(false)
-  const [userAddress, setUserAddress] = useState("USER_WALLET_ADDRESS_123")
+  const [userAddress, setUserAddress] = useState("")
+  const [isRegistered, setIsRegistered] = useState(false)
   const [orderComplete, setOrderComplete] = useState(false)
+  const [welcomeBonus, setWelcomeBonus] = useState<number | null>(null)
 
   useEffect(() => {
     fetchProducts()
+    // 테스트용 임시 주소 설정 (실제로는 지갑 연결 후 설정됨)
+    const tempAddress = localStorage.getItem('pam.userAddress')
+    if (tempAddress) {
+      setUserAddress(tempAddress)
+      checkUserRegistration(tempAddress)
+    }
   }, [])
+
+  const checkUserRegistration = async (address: string) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/users/${address}/check`)
+      const data = await response.json()
+      if (data.success) {
+        setIsRegistered(data.data.is_registered)
+      }
+    } catch (error) {
+      console.error('사용자 확인 실패:', error)
+    }
+  }
+
+  const handleWalletConnect = async () => {
+    // 실제 지갑 연결 로직은 여기에 구현
+    // 테스트를 위해 임시 주소 생성
+    const tempAddress = `USER_WALLET_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+    setUserAddress(tempAddress)
+    localStorage.setItem('pam.userAddress', tempAddress)
+
+    // 신규 사용자인지 확인
+    try {
+      const checkResponse = await fetch(`${API_BASE_URL}/users/${tempAddress}/check`)
+      const checkData = await checkResponse.json()
+
+      if (checkData.success && !checkData.data.is_registered) {
+        // 신규 사용자 - 회원가입 및 100DC 지급
+        const registerResponse = await fetch(`${API_BASE_URL}/users/register`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            user_address: tempAddress
+          })
+        })
+
+        const registerData = await registerResponse.json()
+
+        if (registerData.success) {
+          setIsRegistered(true)
+          setWelcomeBonus(registerData.data.welcome_bonus)
+          setTimeout(() => setWelcomeBonus(null), 5000)
+          alert(`🎉 ${registerData.data.message}`)
+        }
+      } else {
+        setIsRegistered(true)
+      }
+    } catch (error) {
+      console.error('지갑 연결 실패:', error)
+      alert('지갑 연결 중 오류가 발생했습니다')
+    }
+  }
 
   const fetchProducts = async () => {
     try {
@@ -365,6 +426,19 @@ export default function PamMallApp() {
 
   return (
     <div className="min-h-screen bg-white text-emerald-900 dark:bg-neutral-900 dark:text-neutral-100">
+      {/* 신규 가입 이벤트 배너 */}
+      {!isRegistered && (
+        <div className="bg-gradient-to-r from-emerald-500 to-teal-500 text-white py-3 text-center sticky top-0 z-50">
+          <Container className="flex items-center justify-center gap-3">
+            <Gift className="w-5 h-5 animate-bounce" />
+            <p className="font-bold text-sm sm:text-base">
+              🎉 신규 가입 이벤트! 지금 가입하면 100DC 쿠폰을 드립니다!
+            </p>
+            <Gift className="w-5 h-5 animate-bounce" />
+          </Container>
+        </div>
+      )}
+
       {/* 헤더 */}
       <header className="border-b bg-white dark:bg-neutral-900 dark:border-neutral-800 sticky top-0 z-40">
         <Container className="flex items-center justify-between gap-4 py-3">
@@ -397,9 +471,18 @@ export default function PamMallApp() {
               )}
               <span className="hidden sm:inline">장바구니</span>
             </button>
-            <button className="flex items-center gap-1 text-emerald-800 hover:text-emerald-600 dark:text-neutral-200">
+            <button
+              onClick={handleWalletConnect}
+              className={`flex items-center gap-1 transition-colors ${
+                userAddress
+                  ? 'text-emerald-600 dark:text-emerald-400'
+                  : 'text-emerald-800 hover:text-emerald-600 dark:text-neutral-200'
+              }`}
+            >
               <Wallet className="w-5 h-5" />
-              <span className="hidden sm:inline">지갑 연결</span>
+              <span className="hidden sm:inline">
+                {userAddress ? '연결됨' : '지갑 연결'}
+              </span>
             </button>
           </nav>
         </Container>
@@ -456,6 +539,17 @@ export default function PamMallApp() {
           <div>
             <p className="font-bold">주문이 완료되었습니다!</p>
             <p className="text-sm">블록체인에 기록되었습니다</p>
+          </div>
+        </div>
+      )}
+
+      {/* 웰컴 보너스 알림 */}
+      {welcomeBonus !== null && (
+        <div className="fixed bottom-4 left-4 bg-gradient-to-r from-emerald-500 to-teal-500 text-white px-6 py-4 rounded-xl shadow-lg flex items-center gap-3 z-50 animate-bounce">
+          <Gift className="w-6 h-6" />
+          <div>
+            <p className="font-bold">🎉 회원가입 축하합니다!</p>
+            <p className="text-sm">{welcomeBonus}DC 쿠폰이 지급되었습니다</p>
           </div>
         </div>
       )}
