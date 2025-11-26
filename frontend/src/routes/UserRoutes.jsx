@@ -22,6 +22,7 @@ const CommunityPage = React.lazy(() => import('../pages/user/Community/Community
 const ProfilePage = React.lazy(() => import('../pages/user/Profile/ProfilePage'));
 const SettingsPage = React.lazy(() => import('../pages/user/Settings/SettingsPage'));
 const ESGRouter = React.lazy(() => import('../pages/user/ESG'));
+const LSTMDemoPage = React.lazy(() => import('../pages/user/Demo/LSTMDemoPage'));
 
 function UserRoutes() {
   return (
@@ -30,6 +31,7 @@ function UserRoutes() {
         {/* Public Routes (No Layout) */}
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
+        <Route path="/demo/lstm" element={<LSTMDemoPage />} />
 
         {/* Routes with UserLayout */}
         <Route element={<UserLayout />}>

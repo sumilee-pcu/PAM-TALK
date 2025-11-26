@@ -12,6 +12,7 @@ import BlockchainSection from './BlockchainSection';
 import TestimonialsSection from './TestimonialsSection';
 import PartnersSection from './PartnersSection';
 import CTASection from './CTASection';
+import LSTMDemoSection from './LSTMDemoSection';
 import './HomePage.css';
 
 function HomePage() {
@@ -25,6 +26,7 @@ function HomePage() {
       <HeroSection />
       <StatsSection />
       <FeaturesSection />
+      <LSTMDemoSection />
       {/* HowItWorksSection - 내부 운영 프로세스, 위원회 페이지에서만 표시 */}
       {/* BlockchainSection - 내부 운영 프로세스, 위원회 페이지에서만 표시 */}
       <TestimonialsSection />

@@ -893,6 +893,111 @@ def get_profile():
     return jsonify({'error': 'Not implemented'}), 501
 
 # ========================================
+# LSTM Demand Prediction
+# ========================================
+
+@app.route('/api/lstm/predict', methods=['POST'])
+def lstm_predict():
+    """LSTM 수요 예측 실행"""
+    try:
+        data = request.get_json()
+        product_name = data.get('product', 'tomatoes')
+        days_ahead = data.get('days_ahead', 7)
+
+        # LSTM predictor import
+        try:
+            sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+            from ai_models.lstm_demand_predictor import LSTMDemandPredictor
+        except ImportError as e:
+            logger.error(f"LSTM import error: {e}")
+            return jsonify(create_error_response("LSTM 모델을 불러올 수 없습니다.")), 500
+
+        # 예측 실행
+        predictor = LSTMDemandPredictor()
+        predictions = predictor.predict(product_name, days_ahead=days_ahead)
+
+        # DataFrame을 dict로 변환
+        predictions_dict = predictions.to_dict(orient='records')
+
+        return jsonify(create_success_response({
+            "product": product_name,
+            "days_ahead": days_ahead,
+            "predictions": predictions_dict
+        }))
+
+    except Exception as e:
+        logger.error(f"LSTM prediction error: {e}")
+        return jsonify(create_error_response(f"예측 실패: {str(e)}")), 500
+
+
+@app.route('/api/lstm/train', methods=['POST'])
+def lstm_train():
+    """LSTM 모델 학습 실행"""
+    try:
+        data = request.get_json()
+        product_name = data.get('product', 'tomatoes')
+        epochs = data.get('epochs', 20)
+        training_days = data.get('training_days', 90)
+
+        # LSTM predictor import
+        try:
+            sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+            from ai_models.lstm_demand_predictor import LSTMDemandPredictor
+        except ImportError as e:
+            logger.error(f"LSTM import error: {e}")
+            return jsonify(create_error_response("LSTM 모델을 불러올 수 없습니다.")), 500
+
+        # 모델 학습
+        predictor = LSTMDemandPredictor()
+        predictor.config['training_parameters']['epochs'] = epochs
+        predictor.config['data_parameters']['training_days'] = training_days
+
+        results = predictor.train(product_name, save_model=True)
+
+        return jsonify(create_success_response({
+            "product": product_name,
+            "training_results": {
+                "test_loss": float(results['test_loss']),
+                "test_mae": float(results['test_mae']),
+                "test_mape": float(results['test_mape']),
+                "epochs_trained": int(results['epochs_trained']),
+                "training_time": float(results['training_time'])
+            }
+        }))
+
+    except Exception as e:
+        logger.error(f"LSTM training error: {e}")
+        return jsonify(create_error_response(f"학습 실패: {str(e)}")), 500
+
+
+@app.route('/api/lstm/products', methods=['GET'])
+def lstm_products():
+    """사용 가능한 제품 목록 조회"""
+    try:
+        sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        from ai_models.lstm_demand_predictor import LSTMDemandPredictor
+
+        predictor = LSTMDemandPredictor()
+        products = predictor.config['products']
+
+        product_list = []
+        for name, config in products.items():
+            product_list.append({
+                "name": name,
+                "description": config.get('description', ''),
+                "base_demand": config.get('base_demand', 0)
+            })
+
+        return jsonify(create_success_response({
+            "products": product_list
+        }))
+
+    except Exception as e:
+        logger.error(f"LSTM products error: {e}")
+        return jsonify(create_error_response(f"제품 목록 조회 실패: {str(e)}")), 500
+
+
+# ========================================
 # Health Check
 # ========================================
 
