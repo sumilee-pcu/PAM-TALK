@@ -707,6 +707,10 @@ def root():
         "status": "running",
         "timestamp": datetime.now().isoformat(),
         "endpoints": [
+            "POST /api/auth/login",
+            "POST /api/auth/signup",
+            "POST /api/auth/logout",
+            "GET /api/auth/me",
             "POST /api/community/users",
             "GET /api/community/users/{id}",
             "GET /api/community/posts",
@@ -730,6 +734,167 @@ def root():
         ]
     })
 
+
+# ========================================
+# Authentication Endpoints (데모용)
+# ========================================
+
+# 데모 사용자 데이터
+DEMO_USERS = {
+    'consumer@pamtalk.com': {
+        'id': 1,
+        'email': 'consumer@pamtalk.com',
+        'name': '소비자',
+        'role': 'CONSUMER',
+        'password': 'Consumer123!'
+    },
+    'supplier@pamtalk.com': {
+        'id': 2,
+        'email': 'supplier@pamtalk.com',
+        'name': '공급자',
+        'role': 'SUPPLIER',
+        'password': 'Supplier123!'
+    },
+    'company@pamtalk.com': {
+        'id': 3,
+        'email': 'company@pamtalk.com',
+        'name': '기업담당자',
+        'role': 'COMPANY',
+        'password': 'Company123!'
+    },
+    'farmer@pamtalk.com': {
+        'id': 4,
+        'email': 'farmer@pamtalk.com',
+        'name': '농부',
+        'role': 'FARMER',
+        'password': 'Farmer123!'
+    },
+    'committee@pamtalk.com': {
+        'id': 5,
+        'email': 'committee@pamtalk.com',
+        'name': '위원회',
+        'role': 'COMMITTEE',
+        'password': 'Committee123!'
+    },
+    'admin@pamtalk.com': {
+        'id': 6,
+        'email': 'admin@pamtalk.com',
+        'name': '관리자',
+        'role': 'ADMIN',
+        'password': 'Admin123!'
+    }
+}
+
+@app.route('/api/auth/login', methods=['POST'])
+def login():
+    """사용자 로그인"""
+    try:
+        data = request.get_json()
+        email = data.get('email')
+        password = data.get('password')
+
+        logger.info(f"Login attempt: {email}")
+
+        if not email or not password:
+            return jsonify({'error': '이메일과 비밀번호를 입력하세요.'}), 400
+
+        # 데모 사용자 확인
+        user_data = DEMO_USERS.get(email)
+        if not user_data:
+            logger.warning(f"Unknown email: {email}")
+            return jsonify({'error': '등록되지 않은 이메일입니다.'}), 401
+
+        # 비밀번호 확인
+        if user_data['password'] != password:
+            logger.warning(f"Invalid password for: {email}")
+            return jsonify({'error': '비밀번호가 일치하지 않습니다.'}), 401
+
+        # 비밀번호를 제외한 사용자 정보 반환
+        user = {
+            'id': user_data['id'],
+            'email': user_data['email'],
+            'name': user_data['name'],
+            'role': user_data['role']
+        }
+
+        # 토큰 생성 (데모용)
+        access_token = f"demo_token_{user['id']}_{datetime.now().timestamp()}"
+        refresh_token = f"demo_refresh_{user['id']}_{datetime.now().timestamp()}"
+
+        logger.info(f"Login successful: {email} ({user['role']})")
+
+        return jsonify({
+            'user': user,
+            'tokens': {
+                'accessToken': access_token,
+                'refreshToken': refresh_token
+            }
+        })
+
+    except Exception as e:
+        logger.error(f"Login error: {e}")
+        return jsonify({'error': '로그인 중 오류가 발생했습니다.'}), 500
+
+@app.route('/api/auth/signup', methods=['POST'])
+def signup():
+    """사용자 회원가입"""
+    try:
+        data = request.get_json()
+        name = data.get('name')
+        email = data.get('email')
+        password = data.get('password')
+        phone = data.get('phone', '')
+        role = data.get('role', 'CONSUMER')
+
+        if not name or not email or not password:
+            return jsonify({'error': '필수 정보를 입력하세요.'}), 400
+
+        # 이메일 중복 확인
+        if email in DEMO_USERS:
+            return jsonify({'error': '이미 등록된 이메일입니다.'}), 400
+
+        # 새 사용자 생성 (데모용 - 실제로는 DB에 저장)
+        user = {
+            'id': len(DEMO_USERS) + 1,
+            'email': email,
+            'name': name,
+            'phone': phone,
+            'role': role,
+            'createdAt': datetime.now().isoformat()
+        }
+
+        # 토큰 생성 (데모용)
+        access_token = f"demo_token_{user['id']}_{datetime.now().timestamp()}"
+        refresh_token = f"demo_refresh_{user['id']}_{datetime.now().timestamp()}"
+
+        logger.info(f"User registered: {email}")
+
+        return jsonify({
+            'user': user,
+            'tokens': {
+                'accessToken': access_token,
+                'refreshToken': refresh_token
+            }
+        }), 201
+
+    except Exception as e:
+        logger.error(f"Signup error: {e}")
+        return jsonify({'error': '회원가입 중 오류가 발생했습니다.'}), 500
+
+@app.route('/api/auth/logout', methods=['POST'])
+def logout():
+    """사용자 로그아웃"""
+    return jsonify({'message': '로그아웃되었습니다.'})
+
+@app.route('/api/auth/me', methods=['GET'])
+def get_profile():
+    """사용자 프로필 조회"""
+    # 데모용 - 실제로는 토큰에서 사용자 정보를 가져옴
+    return jsonify({'error': 'Not implemented'}), 501
+
+# ========================================
+# Health Check
+# ========================================
 
 @app.route('/api/community/health', methods=['GET'])
 def health_check():
