@@ -1,0 +1,101 @@
+/**
+ * Company Layout with Navigation
+ * 기업 레이아웃 with 네비게이션
+ */
+
+import React, { useState } from 'react';
+import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
+import './CompanyLayout.css';
+
+function CompanyLayout() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [sidebarOpen, setSidebarOpen] = useState(false); // 모바일 기본 닫힘
+
+  const menuItems = [
+    { path: '/company', icon: '📊', label: '대시보드' },
+    { path: '/', icon: '🏠', label: '홈으로' },
+  ];
+
+  const handleLogout = () => {
+    if (window.confirm('로그아웃 하시겠습니까?')) {
+      localStorage.removeItem('token');
+      navigate('/login');
+    }
+  };
+
+  const toggleSidebar = () => {
+    setSidebarOpen(!sidebarOpen);
+  };
+
+  return (
+    <div className="company-layout-container">
+      {/* Mobile Overlay */}
+      {sidebarOpen && (
+        <div className="mobile-overlay" onClick={toggleSidebar}></div>
+      )}
+
+      {/* Sidebar */}
+      <aside className={`company-sidebar ${sidebarOpen ? 'open' : 'closed'}`}>
+        <div className="sidebar-header">
+          <h2>🏢 기업</h2>
+          <button className="sidebar-close" onClick={toggleSidebar}>
+            ✕
+          </button>
+        </div>
+
+        <nav className="sidebar-nav">
+          {menuItems.map((item) => {
+            const isActive = item.path === '/company'
+              ? location.pathname === '/company'
+              : location.pathname.startsWith(item.path) && item.path !== '/';
+            return (
+              <Link
+                key={item.path}
+                to={item.path}
+                className={`nav-item ${isActive ? 'active' : ''}`}
+                onClick={() => setSidebarOpen(false)}
+              >
+                <span className="nav-icon">{item.icon}</span>
+                <span className="nav-label">{item.label}</span>
+              </Link>
+            );
+          })}
+        </nav>
+
+        <div className="sidebar-footer">
+          <button className="logout-btn" onClick={handleLogout}>
+            <span className="nav-icon">🚪</span>
+            <span>로그아웃</span>
+          </button>
+        </div>
+      </aside>
+
+      {/* Main Content */}
+      <div className="company-main">
+        <header className="company-top-header">
+          <div className="header-left">
+            <button className="mobile-menu-toggle" onClick={toggleSidebar}>
+              ☰
+            </button>
+            <h1>기업 대시보드</h1>
+          </div>
+          <div className="header-right">
+            <button className="btn-home" onClick={() => navigate('/')}>
+              🏠 홈
+            </button>
+            <div className="user-info">
+              <span className="user-avatar">👤</span>
+            </div>
+          </div>
+        </header>
+
+        <main className="company-content">
+          <Outlet />
+        </main>
+      </div>
+    </div>
+  );
+}
+
+export default CompanyLayout;

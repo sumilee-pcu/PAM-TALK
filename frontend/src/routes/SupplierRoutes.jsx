@@ -5,6 +5,7 @@
 
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
+import SupplierLayout from '../layouts/SupplierLayout';
 
 // Lazy load pages
 const SupplierDashboard = React.lazy(() => import('../pages/supplier/Dashboard/SupplierDashboard'));
@@ -13,7 +14,9 @@ function SupplierRoutes() {
   return (
     <React.Suspense fallback={<div>Loading...</div>}>
       <Routes>
-        <Route index element={<SupplierDashboard />} />
+        <Route element={<SupplierLayout />}>
+          <Route index element={<SupplierDashboard />} />
+        </Route>
         <Route path="*" element={<Navigate to="/supplier" replace />} />
       </Routes>
     </React.Suspense>
