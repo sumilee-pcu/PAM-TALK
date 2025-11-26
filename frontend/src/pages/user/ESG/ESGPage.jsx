@@ -116,14 +116,6 @@ const ESG_ACTIVITIES = {
         rewardType: 'fixed',
         verification: '수동 검증',
         icon: '🎉'
-      },
-      {
-        id: 'helping_errand',
-        name: '이웃 돕기 심부름 (커피 배달 등)',
-        reward: 0.5,
-        rewardType: 'fixed',
-        verification: 'AI 이미지 인식, GPS 위치',
-        icon: '🤲'
       }
     ],
     color: '#3498db'
