@@ -122,7 +122,18 @@ function LoginPage() {
         <form className="login-form" onSubmit={handleSubmit}>
           <h2>로그인</h2>
 
-          {error && <div className="error-message">{error}</div>}
+          {error && (
+            <div className="error-message">
+              <span>{error}</span>
+              <button
+                type="button"
+                onClick={() => navigate('/')}
+                className="btn-home"
+              >
+                홈으로 가기
+              </button>
+            </div>
+          )}
 
           <div className="form-group">
             <label htmlFor="email">이메일</label>
