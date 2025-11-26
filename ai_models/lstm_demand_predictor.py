@@ -439,10 +439,15 @@ class LSTMDemandPredictor:
             # Try to load saved model
             model_file = os.path.join(self.model_path, f"lstm_{product_name}.h5")
             if os.path.exists(model_file):
-                self.model = keras.models.load_model(model_file)
+                self.model = keras.models.load_model(model_file, compile=False)
                 print(f"✅ 저장된 모델 로드: {model_file}")
             else:
-                raise ValueError("모델이 학습되지 않았습니다. train() 메서드를 먼저 실행하세요.")
+                # Auto-train if model doesn't exist
+                print(f"⚠️  저장된 모델이 없습니다. 자동 학습을 시작합니다...")
+                self.config['training_parameters']['epochs'] = 15
+                self.config['data_parameters']['training_days'] = 90
+                self.train(product_name, save_model=True)
+                print(f"✅ 자동 학습 완료")
 
         # Generate recent data for context
         data = self.generate_training_data(product_name)
