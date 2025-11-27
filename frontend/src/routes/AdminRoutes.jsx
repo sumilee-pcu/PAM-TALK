@@ -19,6 +19,8 @@ const SystemPage = React.lazy(() => import('../pages/admin/System/SystemPage'));
 const SupportPage = React.lazy(() => import('../pages/admin/Support/SupportPage'));
 const ESGActivitiesPage = React.lazy(() => import('../pages/admin/ESGActivities/ESGActivitiesPage'));
 const BulkDCPage = React.lazy(() => import('../pages/admin/BulkDC/BulkDCPage'));
+const ProductManagementPage = React.lazy(() => import('../pages/admin/Products/ProductManagementPage'));
+const OrderManagementPage = React.lazy(() => import('../pages/admin/Orders/OrderManagementPage'));
 
 function AdminRoutes() {
   return (
@@ -60,6 +62,12 @@ function AdminRoutes() {
 
           {/* Bulk DC Distribution */}
           <Route path="/bulk-dc/*" element={<BulkDCPage />} />
+
+          {/* Product Management */}
+          <Route path="/products" element={<ProductManagementPage />} />
+
+          {/* Order Management */}
+          <Route path="/orders" element={<OrderManagementPage />} />
         </Route>
 
         {/* 404 */}

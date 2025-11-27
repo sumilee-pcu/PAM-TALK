@@ -154,6 +154,33 @@ const marketplaceService = {
   },
 
   /**
+   * 전체 주문 목록 조회 (Admin)
+   * @param {Object} params - 필터 옵션 (status)
+   * @returns {Promise} 주문 목록
+   */
+  getAllOrders: async (params = {}) => {
+    try {
+      const queryParams = new URLSearchParams();
+      if (params.status) {
+        queryParams.append('status', params.status);
+      }
+
+      const url = `${API_BASE_URL}/api/mall/orders${queryParams.toString() ? '?' + queryParams.toString() : ''}`;
+      const response = await fetch(url);
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error?.message || '주문 목록 조회 실패');
+      }
+
+      return result;
+    } catch (error) {
+      console.error('Get all orders error:', error);
+      throw error;
+    }
+  },
+
+  /**
    * 사용자 주문 목록 조회
    * @param {string} userAddress - 사용자 주소
    * @returns {Promise} 주문 목록
@@ -191,6 +218,32 @@ const marketplaceService = {
       return result;
     } catch (error) {
       console.error('Get order error:', error);
+      throw error;
+    }
+  },
+
+  /**
+   * 주문 상태 변경 (Admin)
+   * @param {string} orderId - 주문 ID
+   * @param {string} status - 변경할 상태 (pending, confirmed, shipping, delivered, cancelled)
+   * @returns {Promise} 변경 결과
+   */
+  updateOrderStatus: async (orderId, status) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/mall/orders/${orderId}/status`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status })
+      });
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error?.message || '주문 상태 변경 실패');
+      }
+
+      return result;
+    } catch (error) {
+      console.error('Update order status error:', error);
       throw error;
     }
   },
