@@ -32,7 +32,7 @@ def mint_token_route():
         unit_name = body.get("unit_name", "").strip().upper()
 
         # 발행자 정보 (로그인된 사용자로 대체 가능)
-        issued_by = "admin@hcf.com"
+        issued_by = "admin@esgdigital.org"
 
         # 수량 유효성 검사
         if amount <= 0:

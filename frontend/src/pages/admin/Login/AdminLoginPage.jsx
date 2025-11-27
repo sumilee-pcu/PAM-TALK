@@ -26,11 +26,11 @@ function AdminLoginPage() {
     try {
       // 개발 모드: 간단한 인증
       // 실제 배포 시에는 백엔드 API 호출로 변경
-      if (email === 'admin@hcf.com' && password === 'admin123') {
+      if (email === 'admin@esgdigital.org' && password === 'admin123') {
         // 로그인 성공
         const adminUser = {
           id: 1,
-          email: 'admin@hcf.com',
+          email: 'admin@esgdigital.org',
           name: '관리자',
           role: 'admin',
         };
@@ -55,7 +55,7 @@ function AdminLoginPage() {
 
   // 개발용 빠른 로그인
   const handleQuickLogin = () => {
-    setEmail('admin@hcf.com');
+    setEmail('admin@esgdigital.org');
     setPassword('admin123');
   };
 
@@ -74,7 +74,7 @@ function AdminLoginPage() {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="admin@hcf.com"
+              placeholder="admin@esgdigital.org"
               className="form-input"
               autoComplete="email"
             />
@@ -108,7 +108,7 @@ function AdminLoginPage() {
               빠른 로그인 (자동 입력)
             </button>
             <div className="dev-credentials">
-              <small>ID: admin@hcf.com</small>
+              <small>ID: admin@esgdigital.org</small>
               <small>PW: admin123</small>
             </div>
           </div>
