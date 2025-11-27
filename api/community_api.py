@@ -1105,6 +1105,130 @@ def get_mall_product(product_id):
         return jsonify(create_error_response(f"상품 조회 실패: {str(e)}")), 500
 
 
+@app.route('/api/mall/products', methods=['POST'])
+def create_mall_product():
+    """상품 등록 (Admin)"""
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify(create_error_response("요청 데이터가 없습니다")), 400
+
+        # 필수 필드 확인
+        required_fields = ['product_id', 'name', 'category', 'price', 'stock']
+        missing_fields = [field for field in required_fields if field not in data]
+        if missing_fields:
+            return jsonify(create_error_response(
+                f"필수 필드가 누락되었습니다: {', '.join(missing_fields)}"
+            )), 400
+
+        manager = get_coupon_manager()
+
+        # 중복 확인
+        existing = manager.get_product(data['product_id'])
+        if existing:
+            return jsonify(create_error_response("이미 존재하는 상품 ID입니다")), 400
+
+        # Product 객체 생성
+        from api.coupon_manager import Product
+        product = Product(
+            product_id=data['product_id'],
+            name=data['name'],
+            category=data['category'],
+            price=float(data['price']),
+            stock=int(data['stock']),
+            description=data.get('description', ''),
+            image_url=data.get('image_url', ''),
+            farm_id=data.get('farm_id')
+        )
+
+        # 저장
+        success = manager.add_product(product)
+
+        if success:
+            return jsonify(create_success_response(
+                product.to_dict(),
+                "상품이 등록되었습니다"
+            )), 201
+        else:
+            return jsonify(create_error_response("상품 등록 실패")), 500
+
+    except Exception as e:
+        logger.error(f"Create product error: {e}")
+        return jsonify(create_error_response(f"상품 등록 실패: {str(e)}")), 500
+
+
+@app.route('/api/mall/products/<string:product_id>', methods=['PUT'])
+def update_mall_product(product_id):
+    """상품 수정 (Admin)"""
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify(create_error_response("요청 데이터가 없습니다")), 400
+
+        manager = get_coupon_manager()
+
+        # 기존 상품 확인
+        existing_product = manager.get_product(product_id)
+        if not existing_product:
+            return jsonify(create_error_response("상품을 찾을 수 없습니다")), 404
+
+        # 업데이트할 필드들
+        if 'name' in data:
+            existing_product.name = data['name']
+        if 'category' in data:
+            existing_product.category = data['category']
+        if 'price' in data:
+            existing_product.price = float(data['price'])
+        if 'stock' in data:
+            existing_product.stock = int(data['stock'])
+        if 'description' in data:
+            existing_product.description = data['description']
+        if 'image_url' in data:
+            existing_product.image_url = data['image_url']
+        if 'farm_id' in data:
+            existing_product.farm_id = data['farm_id']
+
+        # 저장
+        manager._save_products()
+
+        return jsonify(create_success_response(
+            existing_product.to_dict(),
+            "상품이 수정되었습니다"
+        )), 200
+
+    except Exception as e:
+        logger.error(f"Update product error: {e}")
+        return jsonify(create_error_response(f"상품 수정 실패: {str(e)}")), 500
+
+
+@app.route('/api/mall/products/<string:product_id>', methods=['DELETE'])
+def delete_mall_product(product_id):
+    """상품 삭제 (Admin)"""
+    try:
+        manager = get_coupon_manager()
+
+        # 상품 존재 확인
+        product = manager.get_product(product_id)
+        if not product:
+            return jsonify(create_error_response("상품을 찾을 수 없습니다")), 404
+
+        # 삭제
+        if product_id in manager.products:
+            del manager.products[product_id]
+            manager._save_products()
+
+            return jsonify(create_success_response(
+                {"product_id": product_id},
+                "상품이 삭제되었습니다"
+            )), 200
+        else:
+            return jsonify(create_error_response("상품 삭제 실패")), 500
+
+    except Exception as e:
+        logger.error(f"Delete product error: {e}")
+        return jsonify(create_error_response(f"상품 삭제 실패: {str(e)}")), 500
+
+
 @app.route('/api/mall/orders', methods=['POST'])
 def create_mall_order():
     """주문 생성"""
