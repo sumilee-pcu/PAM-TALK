@@ -1266,6 +1266,98 @@ def create_mall_order():
         return jsonify(create_error_response(f"주문 생성 실패: {str(e)}")), 500
 
 
+@app.route('/api/mall/orders', methods=['GET'])
+def get_all_orders():
+    """전체 주문 목록 조회 (Admin)"""
+    try:
+        manager = get_coupon_manager()
+
+        # 모든 주문 가져오기
+        all_orders = list(manager.orders.values()) if hasattr(manager, 'orders') else []
+
+        # 상태 필터
+        status = request.args.get('status')
+        if status:
+            all_orders = [o for o in all_orders if o.get('status') == status]
+
+        return jsonify(create_success_response(all_orders)), 200
+
+    except Exception as e:
+        logger.error(f"Get all orders error: {e}")
+        return jsonify(create_error_response(f"주문 목록 조회 실패: {str(e)}")), 500
+
+
+@app.route('/api/mall/orders/<string:order_id>', methods=['GET'])
+def get_order_detail(order_id):
+    """주문 상세 조회"""
+    try:
+        manager = get_coupon_manager()
+        order = manager.get_order(order_id)
+
+        if not order:
+            return jsonify(create_error_response("주문을 찾을 수 없습니다")), 404
+
+        return jsonify(create_success_response(order)), 200
+
+    except Exception as e:
+        logger.error(f"Get order detail error: {e}")
+        return jsonify(create_error_response(f"주문 조회 실패: {str(e)}")), 500
+
+
+@app.route('/api/mall/orders/<string:order_id>/status', methods=['PUT'])
+def update_order_status(order_id):
+    """주문 상태 변경 (Admin)"""
+    try:
+        data = request.get_json()
+        if not data or 'status' not in data:
+            return jsonify(create_error_response("status 필드가 필요합니다")), 400
+
+        new_status = data['status']
+        valid_statuses = ['pending', 'confirmed', 'shipping', 'delivered', 'cancelled']
+
+        if new_status not in valid_statuses:
+            return jsonify(create_error_response(
+                f"올바른 상태를 입력하세요: {', '.join(valid_statuses)}"
+            )), 400
+
+        manager = get_coupon_manager()
+        order = manager.get_order(order_id)
+
+        if not order:
+            return jsonify(create_error_response("주문을 찾을 수 없습니다")), 404
+
+        # 상태 업데이트
+        order['status'] = new_status
+        order['updated_at'] = datetime.now().isoformat()
+
+        # 저장
+        if hasattr(manager, '_save_orders'):
+            manager._save_orders()
+
+        return jsonify(create_success_response(
+            order,
+            f"주문 상태가 '{new_status}'(으)로 변경되었습니다"
+        )), 200
+
+    except Exception as e:
+        logger.error(f"Update order status error: {e}")
+        return jsonify(create_error_response(f"주문 상태 변경 실패: {str(e)}")), 500
+
+
+@app.route('/api/mall/users/<string:user_address>/orders', methods=['GET'])
+def get_user_orders(user_address):
+    """사용자 주문 내역 조회"""
+    try:
+        manager = get_coupon_manager()
+        orders = manager.get_user_orders(user_address)
+
+        return jsonify(create_success_response(orders)), 200
+
+    except Exception as e:
+        logger.error(f"Get user orders error: {e}")
+        return jsonify(create_error_response(f"주문 내역 조회 실패: {str(e)}")), 500
+
+
 @app.route('/api/mall/health', methods=['GET'])
 def mall_health_check():
     """Mall API 헬스 체크"""
