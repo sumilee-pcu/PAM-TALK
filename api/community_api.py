@@ -1068,6 +1068,9 @@ def lstm_products():
 # Mall API Endpoints
 # ========================================
 
+# 장바구니 저장소 (메모리)
+cart_db = {}  # {user_address: [{product_id, quantity}]}
+
 @app.route('/api/mall/products', methods=['GET'])
 def get_mall_products():
     """상품 목록 조회"""
@@ -1154,6 +1157,148 @@ def mall_health_check():
     except Exception as e:
         logger.error(f"Mall health check error: {e}")
         return jsonify(create_error_response("서비스 상태 확인 실패")), 500
+
+
+# ========================================
+# Cart API Endpoints
+# ========================================
+
+@app.route('/api/mall/cart', methods=['POST'])
+def add_to_cart():
+    """장바구니에 추가"""
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify(create_error_response("요청 데이터가 없습니다")), 400
+
+        user_address = data.get('user_address')
+        product_id = data.get('product_id')
+        quantity = data.get('quantity', 1)
+
+        if not user_address or not product_id:
+            return jsonify(create_error_response("user_address와 product_id가 필요합니다")), 400
+
+        # 사용자 장바구니 초기화
+        if user_address not in cart_db:
+            cart_db[user_address] = []
+
+        # 이미 있는 상품인지 확인
+        existing_item = next((item for item in cart_db[user_address] if item['product_id'] == product_id), None)
+
+        if existing_item:
+            existing_item['quantity'] += quantity
+        else:
+            cart_db[user_address].append({
+                'product_id': product_id,
+                'quantity': quantity,
+                'added_at': datetime.now().isoformat()
+            })
+
+        return jsonify(create_success_response(
+            {'cart': cart_db[user_address]},
+            "장바구니에 추가되었습니다"
+        )), 201
+
+    except Exception as e:
+        logger.error(f"Add to cart error: {e}")
+        return jsonify(create_error_response(f"장바구니 추가 실패: {str(e)}")), 500
+
+
+@app.route('/api/mall/cart/<string:user_address>', methods=['GET'])
+def get_cart(user_address):
+    """장바구니 조회"""
+    try:
+        cart_items = cart_db.get(user_address, [])
+
+        # 상품 정보 포함
+        manager = get_coupon_manager()
+        enriched_cart = []
+
+        for item in cart_items:
+            product = manager.get_product(item['product_id'])
+            if product:
+                enriched_cart.append({
+                    **item,
+                    'product_info': product.to_dict()
+                })
+
+        return jsonify(create_success_response(enriched_cart)), 200
+
+    except Exception as e:
+        logger.error(f"Get cart error: {e}")
+        return jsonify(create_error_response(f"장바구니 조회 실패: {str(e)}")), 500
+
+
+@app.route('/api/mall/cart/<string:user_address>/<string:product_id>', methods=['PUT'])
+def update_cart_item(user_address, product_id):
+    """장바구니 상품 수량 변경"""
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify(create_error_response("요청 데이터가 없습니다")), 400
+
+        quantity = data.get('quantity')
+        if quantity is None or quantity < 0:
+            return jsonify(create_error_response("올바른 수량을 입력하세요")), 400
+
+        if user_address not in cart_db:
+            return jsonify(create_error_response("장바구니를 찾을 수 없습니다")), 404
+
+        # 상품 찾기
+        item = next((item for item in cart_db[user_address] if item['product_id'] == product_id), None)
+
+        if not item:
+            return jsonify(create_error_response("상품을 찾을 수 없습니다")), 404
+
+        if quantity == 0:
+            # 수량이 0이면 삭제
+            cart_db[user_address] = [i for i in cart_db[user_address] if i['product_id'] != product_id]
+        else:
+            item['quantity'] = quantity
+
+        return jsonify(create_success_response(
+            {'cart': cart_db[user_address]},
+            "수량이 변경되었습니다"
+        )), 200
+
+    except Exception as e:
+        logger.error(f"Update cart item error: {e}")
+        return jsonify(create_error_response(f"수량 변경 실패: {str(e)}")), 500
+
+
+@app.route('/api/mall/cart/<string:user_address>/<string:product_id>', methods=['DELETE'])
+def remove_from_cart(user_address, product_id):
+    """장바구니에서 제거"""
+    try:
+        if user_address not in cart_db:
+            return jsonify(create_error_response("장바구니를 찾을 수 없습니다")), 404
+
+        cart_db[user_address] = [item for item in cart_db[user_address] if item['product_id'] != product_id]
+
+        return jsonify(create_success_response(
+            {'cart': cart_db[user_address]},
+            "상품이 제거되었습니다"
+        )), 200
+
+    except Exception as e:
+        logger.error(f"Remove from cart error: {e}")
+        return jsonify(create_error_response(f"상품 제거 실패: {str(e)}")), 500
+
+
+@app.route('/api/mall/cart/<string:user_address>', methods=['DELETE'])
+def clear_cart(user_address):
+    """장바구니 비우기"""
+    try:
+        cart_db[user_address] = []
+
+        return jsonify(create_success_response(
+            {},
+            "장바구니가 비워졌습니다"
+        )), 200
+
+    except Exception as e:
+        logger.error(f"Clear cart error: {e}")
+        return jsonify(create_error_response(f"장바구니 비우기 실패: {str(e)}")), 500
 
 
 # ========================================

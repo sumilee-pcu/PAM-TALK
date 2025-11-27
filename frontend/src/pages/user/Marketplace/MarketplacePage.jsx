@@ -5,6 +5,7 @@
 
 import React, { useState, useEffect } from 'react';
 import algorandService, { PAM_TOKEN_ASSET_ID } from '../../../services/blockchain/algorandService';
+import marketplaceService from '../../../services/api/marketplaceService';
 import './MarketplacePage.css';
 
 function MarketplacePage() {
@@ -90,9 +91,7 @@ function MarketplacePage() {
   }, [bannerSlides.length]);
 
   useEffect(() => {
-    const demoProducts = generateEnhancedProducts();
-    setProducts(demoProducts);
-    setFilteredProducts(demoProducts);
+    loadProducts();
 
     const savedCart = localStorage.getItem('pamtalk_cart');
     if (savedCart) {
@@ -104,6 +103,56 @@ function MarketplacePage() {
       setWallet(JSON.parse(savedWallet));
     }
   }, []);
+
+  // API에서 상품 불러오기
+  const loadProducts = async () => {
+    try {
+      const response = await marketplaceService.getProducts();
+
+      if (response.success && response.data) {
+        // API 데이터를 프론트엔드 형식으로 변환
+        const apiProducts = response.data.map((item, index) => ({
+          product_id: item.product_id,
+          name: item.name,
+          category: item.category,
+          image: item.image_url || `https://images.unsplash.com/photo-1546470427-227a1e3e0d05?w=500`,
+          price_per_kg: item.price,
+          farmer_name: '직영농장',
+          farmer_photo: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=100',
+          farmer_id: item.farm_id || 'FARM_001',
+          location: '충남 아산시',
+          certifications: '친환경',
+          carbon_footprint: '1.2',
+          description: item.description,
+          badge: index < 5 ? 'best' : null,
+          available_quantity: item.stock,
+          distance_km: Math.floor(Math.random() * 100) + 5,
+          likes: Math.floor(Math.random() * 150) + 10,
+          reviews: Math.floor(Math.random() * 50) + 5,
+          rating: (Math.random() * 1.5 + 3.5).toFixed(1),
+          discount: item.price === 100 ? 90 : 0 // 런칭특가 상품은 할인
+        }));
+
+        // 더미 데이터 추가 (더 풍성하게)
+        const demoProducts = generateEnhancedProducts();
+        const combinedProducts = [...apiProducts, ...demoProducts];
+
+        setProducts(combinedProducts);
+        setFilteredProducts(combinedProducts);
+      } else {
+        // API 실패 시 더미 데이터만 사용
+        const demoProducts = generateEnhancedProducts();
+        setProducts(demoProducts);
+        setFilteredProducts(demoProducts);
+      }
+    } catch (error) {
+      console.error('상품 로딩 실패:', error);
+      // 에러 시에도 더미 데이터 표시
+      const demoProducts = generateEnhancedProducts();
+      setProducts(demoProducts);
+      setFilteredProducts(demoProducts);
+    }
+  };
 
   // 필터 적용
   useEffect(() => {
@@ -421,6 +470,26 @@ function MarketplacePage() {
           note: `PAM-TALK 구매: ${cart.map(item => item.name).join(', ')}`
         });
 
+        // 주문 생성 API 호출
+        try {
+          const orderItems = cart.map(item => ({
+            product_id: item.product_id,
+            quantity: item.quantity,
+            price: item.price_per_kg
+          }));
+
+          const orderResult = await marketplaceService.createOrder({
+            user_address: wallet.address,
+            items: orderItems,
+            payment_txid: txId
+          });
+
+          console.log('주문 생성 완료:', orderResult);
+        } catch (orderError) {
+          console.error('주문 생성 실패:', orderError);
+          // 주문 생성 실패해도 결제는 완료됨
+        }
+
         alert(
           `✅ 결제가 완료되었습니다!\n\n` +
           `🪙 사용 토큰: ${tokenAmount} DC (PAM)\n` +
@@ -445,7 +514,27 @@ function MarketplacePage() {
         `총 금액: ${totalAmount.toLocaleString()}원\n` +
         `상품: ${cart.map(item => `${item.name} x${item.quantity}kg`).join(', ')}`
       )) {
-        alert('✅ 주문이 접수되었습니다!');
+        try {
+          const orderItems = cart.map(item => ({
+            product_id: item.product_id,
+            quantity: item.quantity,
+            price: item.price_per_kg
+          }));
+
+          const userAddress = wallet?.address || `GUEST_${Date.now()}`;
+          const orderResult = await marketplaceService.createOrder({
+            user_address: userAddress,
+            items: orderItems
+          });
+
+          console.log('주문 생성 완료:', orderResult);
+          alert('✅ 주문이 접수되었습니다!');
+        } catch (error) {
+          console.error('주문 생성 실패:', error);
+          alert('❌ 주문 생성 실패: ' + error.message);
+          return;
+        }
+
         setCart([]);
         localStorage.removeItem('pamtalk_cart');
         setCartOpen(false);
