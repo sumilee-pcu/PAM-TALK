@@ -18,7 +18,7 @@ function ActivitiesPage() {
         time: '방금 전'
       },
       content: '오늘 아침 수확한 토마토들! 🍅 30년간 키워온 노하우로 당도 최고예요',
-      image: 'https://images.unsplash.com/photo-1546470427-227a1e3e0d05?w=600&h=400&fit=crop',
+      image: 'https://images.unsplash.com/photo-1546094096-0df4bcaaa337?w=600&h=400&fit=crop&q=80',
       hashtags: ['토마토', '수확', '유기농'],
       eco: {
         carbon: 2.1,
@@ -41,7 +41,7 @@ function ActivitiesPage() {
         time: '1시간 전'
       },
       content: '김농부님 토마토로 만든 파스타 🍝 정말 맛있어요!',
-      image: 'https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=600&h=400&fit=crop',
+      image: 'https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=600&h=400&fit=crop&q=80',
       hashtags: ['리뷰', '로컬푸드', '파스타'],
       eco: {
         carbon: 1.5,
@@ -64,7 +64,7 @@ function ActivitiesPage() {
         time: '3시간 전'
       },
       content: '오늘 메뉴는 로컬 채소로 만든 비건 샐러드! 🥗 신선함이 달라요',
-      image: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600&h=400&fit=crop',
+      image: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600&h=400&fit=crop&q=80',
       hashtags: ['로컬식재료', '비건', '레스토랑'],
       eco: {
         carbon: 3.2,

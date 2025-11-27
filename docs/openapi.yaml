@@ -1,0 +1,673 @@
+openapi: 3.0.3
+info:
+  title: PAM-TALK API
+  description: |
+    PAM-TALK 플랫폼 REST API 문서
+
+    탄소 절감 추적 및 보상 플랫폼의 API 명세서입니다.
+
+    ## 주요 기능
+    - 사용자 인증 및 권한 관리
+    - ESG 활동 추적 및 보상
+    - 농산물 마켓플레이스
+    - 쿠폰 발행 및 관리
+    - 농부-소비자 매칭
+    - Algorand 블록체인 통합
+
+    ## 인증
+    Bearer Token 방식을 사용합니다.
+
+    ```
+    Authorization: Bearer <access_token>
+    ```
+  version: 1.0.0
+  contact:
+    name: PAM-TALK Support
+    email: support@pamtalk.com
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: http://localhost:5000
+    description: Main API Server
+  - url: http://localhost:5001
+    description: Mall API Server
+  - url: http://localhost:5002
+    description: Matching API Server
+  - url: https://pam-talk.vercel.app
+    description: Production Server
+
+tags:
+  - name: Authentication
+    description: 사용자 인증 관련 API
+  - name: Users
+    description: 사용자 관리 API
+  - name: ESG Activities
+    description: ESG 활동 추적 API
+  - name: Tokens
+    description: 토큰 발행 및 관리 API
+  - name: Coupons
+    description: 쿠폰 관리 API
+  - name: Marketplace
+    description: 마켓플레이스 API
+  - name: Matching
+    description: 농부-소비자 매칭 API
+  - name: Blockchain
+    description: Algorand 블록체인 API
+
+paths:
+  # ==================== Authentication ====================
+  /api/auth/login:
+    post:
+      tags:
+        - Authentication
+      summary: 로그인
+      description: 이메일과 비밀번호로 로그인하여 액세스 토큰을 받습니다.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: admin@pamtalk.com
+                password:
+                  type: string
+                  format: password
+                  example: Admin123!
+      responses:
+        '200':
+          description: 로그인 성공
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    $ref: '#/components/schemas/User'
+                  tokens:
+                    $ref: '#/components/schemas/Tokens'
+        '401':
+          description: 인증 실패
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/auth/signup:
+    post:
+      tags:
+        - Authentication
+      summary: 회원가입
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - email
+                - password
+              properties:
+                name:
+                  type: string
+                  example: 홍길동
+                email:
+                  type: string
+                  format: email
+                  example: user@example.com
+                password:
+                  type: string
+                  format: password
+                phone:
+                  type: string
+                  example: 010-1234-5678
+                role:
+                  type: string
+                  enum: [CONSUMER, FARMER, SUPPLIER, COMPANY, COMMITTEE, ADMIN]
+                  default: CONSUMER
+      responses:
+        '201':
+          description: 회원가입 성공
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    $ref: '#/components/schemas/User'
+                  tokens:
+                    $ref: '#/components/schemas/Tokens'
+
+  /api/auth/logout:
+    post:
+      tags:
+        - Authentication
+      summary: 로그아웃
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: 로그아웃 성공
+
+  # ==================== Tokens ====================
+  /api/token/mint:
+    post:
+      tags:
+        - Tokens
+      summary: 쿠폰 대량 발행
+      description: ADMIN 또는 COMMITTEE 권한이 필요합니다.
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - amount
+                - unit_name
+              properties:
+                amount:
+                  type: integer
+                  minimum: 1
+                  example: 1000
+                  description: 발행할 쿠폰 개수
+                unit_name:
+                  type: string
+                  example: ESGC
+                  description: 쿠폰 단위 이름
+                description:
+                  type: string
+                  example: ESG 활동 보상 쿠폰
+      responses:
+        '200':
+          description: 발행 성공
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  unit_name:
+                    type: string
+                  asset_id:
+                    type: integer
+                  amount:
+                    type: integer
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+  # ==================== Coupons ====================
+  /api/give-coupon:
+    post:
+      tags:
+        - Coupons
+      summary: 사용자에게 쿠폰 지급
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - user_address
+                - amount
+              properties:
+                user_address:
+                  type: string
+                  example: ABCDEFGHIJKLMNOPQRSTUVWXYZ234567890ABCDEFGHIJKLMNOPQRS
+                amount:
+                  type: integer
+                  example: 100
+      responses:
+        '200':
+          description: 쿠폰 지급 성공
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  txid:
+                    type: string
+                  explorer_url:
+                    type: string
+
+  # ==================== Marketplace ====================
+  /api/mall/products:
+    get:
+      tags:
+        - Marketplace
+      summary: 상품 목록 조회
+      parameters:
+        - name: category
+          in: query
+          schema:
+            type: string
+          description: 카테고리 필터
+      responses:
+        '200':
+          description: 상품 목록
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Product'
+    post:
+      tags:
+        - Marketplace
+      summary: 상품 등록
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductInput'
+      responses:
+        '201':
+          description: 상품 등록 성공
+
+  /api/mall/products/{product_id}:
+    get:
+      tags:
+        - Marketplace
+      summary: 상품 상세 조회
+      parameters:
+        - name: product_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 상품 정보
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    $ref: '#/components/schemas/Product'
+
+  /api/mall/orders:
+    post:
+      tags:
+        - Marketplace
+      summary: 주문 생성
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderInput'
+      responses:
+        '201':
+          description: 주문 생성 성공
+
+  # ==================== Matching ====================
+  /api/matching/find-farmers:
+    post:
+      tags:
+        - Matching
+      summary: 소비자에게 적합한 농부 찾기
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - consumer_id
+                - consumer_name
+                - latitude
+                - longitude
+              properties:
+                consumer_id:
+                  type: string
+                consumer_name:
+                  type: string
+                region:
+                  type: string
+                latitude:
+                  type: number
+                  format: double
+                longitude:
+                  type: number
+                  format: double
+                preferences:
+                  $ref: '#/components/schemas/ConsumerPreferences'
+                top_n:
+                  type: integer
+                  default: 10
+      responses:
+        '200':
+          description: 매칭 결과
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      consumer_id:
+                        type: string
+                      total_matches:
+                        type: integer
+                      matches:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/MatchResult'
+
+  /api/matching/find-consumers:
+    post:
+      tags:
+        - Matching
+      summary: 농부에게 적합한 소비자 찾기
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FarmerProfile'
+      responses:
+        '200':
+          description: 매칭 결과
+
+  /api/matching/mutual-matches:
+    post:
+      tags:
+        - Matching
+      summary: 상호 최적 매칭 찾기
+      security:
+        - BearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                threshold:
+                  type: number
+                  format: double
+                  default: 60.0
+                limit:
+                  type: integer
+                  default: 50
+      responses:
+        '200':
+          description: 상호 매칭 결과
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  responses:
+    Unauthorized:
+      description: 인증되지 않음
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            success: false
+            error:
+              message: 인증이 필요합니다. 로그인 후 다시 시도하세요.
+              status_code: 401
+
+    Forbidden:
+      description: 권한 없음
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            success: false
+            error:
+              message: 접근 권한이 없습니다. 필요한 권한: ADMIN, COMMITTEE
+              status_code: 403
+
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        email:
+          type: string
+          format: email
+        name:
+          type: string
+        role:
+          type: string
+          enum: [CONSUMER, FARMER, SUPPLIER, COMPANY, COMMITTEE, ADMIN]
+
+    Tokens:
+      type: object
+      properties:
+        accessToken:
+          type: string
+        refreshToken:
+          type: string
+
+    Error:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        error:
+          type: object
+          properties:
+            message:
+              type: string
+            status_code:
+              type: integer
+            timestamp:
+              type: string
+              format: date-time
+
+    Product:
+      type: object
+      properties:
+        product_id:
+          type: string
+        name:
+          type: string
+        category:
+          type: string
+        price:
+          type: number
+          format: double
+        stock:
+          type: integer
+        description:
+          type: string
+        image_url:
+          type: string
+        farm_id:
+          type: string
+
+    ProductInput:
+      type: object
+      required:
+        - product_id
+        - name
+        - category
+        - price
+        - stock
+      properties:
+        product_id:
+          type: string
+        name:
+          type: string
+        category:
+          type: string
+        price:
+          type: number
+          format: double
+        stock:
+          type: integer
+        description:
+          type: string
+        image_url:
+          type: string
+        farm_id:
+          type: string
+
+    OrderInput:
+      type: object
+      required:
+        - user_address
+        - items
+      properties:
+        user_address:
+          type: string
+        items:
+          type: array
+          items:
+            type: object
+            properties:
+              product_id:
+                type: string
+              quantity:
+                type: integer
+        coupon_id:
+          type: string
+        payment_txid:
+          type: string
+
+    ConsumerPreferences:
+      type: object
+      properties:
+        product_types:
+          type: array
+          items:
+            type: string
+        farming_method:
+          type: string
+          enum: [organic, sustainable, conventional]
+        max_distance_km:
+          type: integer
+        max_price_per_kg:
+          type: number
+        min_esg_score:
+          type: number
+        certifications_required:
+          type: array
+          items:
+            type: string
+
+    FarmerProfile:
+      type: object
+      required:
+        - farmer_id
+        - farmer_name
+        - latitude
+        - longitude
+      properties:
+        farmer_id:
+          type: string
+        farmer_name:
+          type: string
+        region:
+          type: string
+        farm_type:
+          type: string
+        crop_types:
+          type: array
+          items:
+            type: string
+        certifications:
+          type: array
+          items:
+            type: string
+        esg_score:
+          type: number
+          format: double
+        latitude:
+          type: number
+          format: double
+        longitude:
+          type: number
+          format: double
+        farming_method:
+          type: string
+        available_quantity:
+          type: number
+        price_range:
+          type: array
+          items:
+            type: number
+          minItems: 2
+          maxItems: 2
+
+    MatchResult:
+      type: object
+      properties:
+        farmer_id:
+          type: string
+        farmer_name:
+          type: string
+        match_score:
+          type: number
+          format: double
+        distance_km:
+          type: number
+          format: double
+        reason:
+          type: string
+        breakdown:
+          type: object
+          properties:
+            distance:
+              type: number
+            price:
+              type: number
+            esg_score:
+              type: number
+            farming_method:
+              type: number
+            product_match:
+              type: number
+            certification:
+              type: number

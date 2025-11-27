@@ -6,6 +6,7 @@ from app.service.coupon_service import create_initial_coupons
 from app.service.token_service import transfer_committee_token
 from app.service.token_service import transfer_provider_token
 from app.service.token_service import transfer_consumer_token
+from app.auth_middleware import require_role
 import os
 from dotenv import load_dotenv
 
@@ -19,8 +20,9 @@ ASSET_NAME = os.getenv("ASA_NAME", "Pamtalk ESG Asset")  # 기본 자산 이름
 # Flask Blueprint 설정
 token_routes = Blueprint("token_routes", __name__)
 
-# 토큰 발행 엔드포인트
+# 토큰 발행 엔드포인트 (관리자 및 위원회만 접근 가능)
 @token_routes.route("/mint", methods=["POST"])
+@require_role('ADMIN', 'COMMITTEE')
 def mint_token_route():
     try:
         # JSON 요청 파싱
@@ -68,6 +70,7 @@ def mint_token_route():
         }), 500
 
 @token_routes.route('/transfer-committee', methods=['POST'])
+@require_role('ADMIN', 'COMMITTEE')
 def token_transfer_committee():
     data = request.get_json()
     committee_id = data.get('committee_id')
@@ -85,6 +88,7 @@ def token_transfer_committee():
         return jsonify({'error': f'[토큰 전송 실패] 에러: {str(e)}'}), 500
 
 @token_routes.route('/transfer-provider', methods=['POST'])
+@require_role('ADMIN', 'COMMITTEE')
 def token_transfer_provider():
     data = request.get_json()
     provider_id = data.get('provider_id')
@@ -102,6 +106,7 @@ def token_transfer_provider():
         return jsonify({'error': f'[토큰 전송 실패] 에러: {str(e)}'}), 500
 
 @token_routes.route('/transfer-consumer', methods=['POST'])
+@require_role('ADMIN', 'COMMITTEE')
 def token_transfer_consumer():
     data = request.get_json()
     consumer_id = data.get('consumer_id')

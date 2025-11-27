@@ -14,6 +14,7 @@ import requests
 # 상위 디렉토리의 모듈 import
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 from token_creation_api import AlgorandTokenAPI
+from api.auth_middleware import register_token, revoke_token, require_auth, require_role
 
 # 로깅 설정
 logging.basicConfig(
@@ -141,6 +142,9 @@ def login():
         access_token = f"demo_token_{user['id']}_{datetime.now().timestamp()}"
         refresh_token = f"demo_refresh_{user['id']}_{datetime.now().timestamp()}"
 
+        # 토큰 등록 (보안 강화)
+        register_token(access_token, user['id'], user['email'], user['role'])
+
         return jsonify({
             'user': user,
             'tokens': {
@@ -198,6 +202,11 @@ def signup():
 
 @app.route('/api/auth/logout', methods=['POST'])
 def logout():
+    # 토큰 무효화
+    auth_header = request.headers.get('Authorization')
+    if auth_header:
+        token = auth_header.replace('Bearer ', '')
+        revoke_token(token)
     return jsonify({'message': '로그아웃되었습니다.'})
 
 @app.route('/api/auth/me', methods=['GET'])
@@ -245,6 +254,7 @@ def check_user_opt_in():
         return jsonify({'success': False, 'error': str(e)}), 500
 
 @app.route('/api/give-coupon', methods=['POST'])
+@require_role('ADMIN', 'COMMITTEE')
 def give_coupon():
     try:
         data = request.get_json()

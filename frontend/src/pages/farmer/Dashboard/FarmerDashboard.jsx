@@ -594,7 +594,7 @@ function generateDemoCrops() {
       expectedYield: 2500,
       harvestedAmount: 0,
       status: 'growing',
-      imageUrl: 'https://images.unsplash.com/photo-1546470427-e26264592e6f?w=300&h=300&fit=crop'
+      imageUrl: 'https://images.unsplash.com/photo-1546094096-0df4bcaaa337?w=300&h=300&fit=crop&q=80'
     },
     {
       id: 'CROP002',
@@ -608,7 +608,7 @@ function generateDemoCrops() {
       expectedYield: 1200,
       harvestedAmount: 0,
       status: 'growing',
-      imageUrl: 'https://images.unsplash.com/photo-1622206151226-18ca2c9ab4a1?w=300&h=300&fit=crop'
+      imageUrl: 'https://images.unsplash.com/photo-1622206151226-18ca2c9ab4a1?w=300&h=300&fit=crop&q=80'
     },
     {
       id: 'CROP003',
@@ -622,7 +622,7 @@ function generateDemoCrops() {
       expectedYield: 1800,
       harvestedAmount: 1750,
       status: 'harvested',
-      imageUrl: 'https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?w=300&h=300&fit=crop'
+      imageUrl: 'https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?w=300&h=300&fit=crop&q=80'
     },
     {
       id: 'CROP004',
@@ -636,7 +636,7 @@ function generateDemoCrops() {
       expectedYield: 3000,
       harvestedAmount: 0,
       status: 'growing',
-      imageUrl: 'https://images.unsplash.com/photo-1597362925123-77861d3fbac7?w=300&h=300&fit=crop'
+      imageUrl: 'https://images.unsplash.com/photo-1576801570809-0f88c23e6264?w=300&h=300&fit=crop&q=80'
     }
   ];
 }
@@ -707,7 +707,7 @@ function generateDemoEsgActivities() {
       reward: 500,
       carbonReduction: 15.5,
       location: '경기도 여주시',
-      imageUrl: 'https://images.unsplash.com/photo-1464226184884-fa280b87c399?w=400&h=300&fit=crop',
+      imageUrl: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=400&h=300&fit=crop&q=80',
       status: 'approved'
     },
     {
@@ -718,7 +718,7 @@ function generateDemoEsgActivities() {
       reward: 1000,
       carbonReduction: 45.0,
       location: '경기도 여주시',
-      imageUrl: 'https://images.unsplash.com/photo-1509391366360-2e959784a276?w=400&h=300&fit=crop',
+      imageUrl: 'https://images.unsplash.com/photo-1509391366360-2e959784a276?w=400&h=300&fit=crop&q=80',
       status: 'pending'
     },
     {
@@ -729,7 +729,7 @@ function generateDemoEsgActivities() {
       reward: 300,
       carbonReduction: 8.2,
       location: '경기도 여주시',
-      imageUrl: 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=400&h=300&fit=crop',
+      imageUrl: 'https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=400&h=300&fit=crop&q=80',
       status: 'approved'
     },
     {

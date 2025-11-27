@@ -1,0 +1,602 @@
+{
+  "info": {
+    "name": "PAM-TALK API Collection",
+    "_postman_id": "pam-talk-api-v1",
+    "description": "PAM-TALK 플랫폼 REST API 컬렉션\n\n탄소 절감 추적 및 보상 플랫폼의 전체 API 엔드포인트를 포함합니다.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{access_token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:5000",
+      "type": "string"
+    },
+    {
+      "key": "mall_url",
+      "value": "http://localhost:5001",
+      "type": "string"
+    },
+    {
+      "key": "matching_url",
+      "value": "http://localhost:5002",
+      "type": "string"
+    },
+    {
+      "key": "access_token",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Login - Admin",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.collectionVariables.set('access_token', jsonData.tokens.accessToken);",
+                  "    pm.environment.set('access_token', jsonData.tokens.accessToken);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@pamtalk.com\",\n  \"password\": \"Admin123!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "login"]
+            },
+            "description": "관리자 계정으로 로그인합니다."
+          },
+          "response": []
+        },
+        {
+          "name": "Login - Committee",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.collectionVariables.set('access_token', jsonData.tokens.accessToken);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"committee@pamtalk.com\",\n  \"password\": \"Committee123!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "login"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login - Consumer",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"consumer@pamtalk.com\",\n  \"password\": \"Consumer123!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "login"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Signup",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"홍길동\",\n  \"email\": \"test@example.com\",\n  \"password\": \"Test123!\",\n  \"phone\": \"010-1234-5678\",\n  \"role\": \"CONSUMER\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/signup",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "signup"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/auth/logout",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "logout"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Token Management",
+      "item": [
+        {
+          "name": "Mint Coupons",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 100,\n  \"unit_name\": \"ESGC\",\n  \"description\": \"ESG 활동 보상 쿠폰\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/token/mint",
+              "host": ["{{base_url}}"],
+              "path": ["api", "token", "mint"]
+            },
+            "description": "대량 쿠폰 발행 (ADMIN, COMMITTEE만 가능)"
+          },
+          "response": []
+        },
+        {
+          "name": "Give Coupon to User",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"user_address\": \"ABCDEFGHIJKLMNOPQRSTUVWXYZ234567890ABCDEFGHIJKLMNOPQRS\",\n  \"amount\": 100\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/give-coupon",
+              "host": ["{{base_url}}"],
+              "path": ["api", "give-coupon"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Check Balance",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/balance",
+              "host": ["{{base_url}}"],
+              "path": ["api", "balance"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Token Info",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/token-info",
+              "host": ["{{base_url}}"],
+              "path": ["api", "token-info"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Marketplace",
+      "item": [
+        {
+          "name": "Get All Products",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{mall_url}}/api/mall/products",
+              "host": ["{{mall_url}}"],
+              "path": ["api", "mall", "products"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Product by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{mall_url}}/api/mall/products/PROD001",
+              "host": ["{{mall_url}}"],
+              "path": ["api", "mall", "products", "PROD001"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Add Product",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"product_id\": \"PROD123\",\n  \"name\": \"유기농 토마토\",\n  \"category\": \"vegetables\",\n  \"price\": 5000,\n  \"stock\": 100,\n  \"description\": \"신선한 유기농 토마토\",\n  \"image_url\": \"https://example.com/tomato.jpg\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{mall_url}}/api/mall/products",
+              "host": ["{{mall_url}}"],
+              "path": ["api", "mall", "products"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Coupons",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{mall_url}}/api/mall/coupons",
+              "host": ["{{mall_url}}"],
+              "path": ["api", "mall", "coupons"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Issue Coupon to User",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{mall_url}}/api/mall/users/USER001/coupons/COUPON001",
+              "host": ["{{mall_url}}"],
+              "path": ["api", "mall", "users", "USER001", "coupons", "COUPON001"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Order",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"user_address\": \"USER001\",\n  \"items\": [\n    {\n      \"product_id\": \"PROD001\",\n      \"quantity\": 2\n    }\n  ],\n  \"coupon_id\": \"COUPON001\",\n  \"payment_txid\": \"TX123456\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{mall_url}}/api/mall/orders",
+              "host": ["{{mall_url}}"],
+              "path": ["api", "mall", "orders"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Matching System",
+      "item": [
+        {
+          "name": "Find Farmers for Consumer",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"consumer_id\": \"C001\",\n  \"consumer_name\": \"이소비\",\n  \"region\": \"서울 강남\",\n  \"latitude\": 37.4979,\n  \"longitude\": 127.0276,\n  \"preferences\": {\n    \"product_types\": [\"tomato\", \"lettuce\"],\n    \"farming_method\": \"organic\",\n    \"max_distance_km\": 50,\n    \"max_price_per_kg\": 6000,\n    \"min_esg_score\": 70,\n    \"certifications_required\": [\"organic\"]\n  },\n  \"top_n\": 10\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{matching_url}}/api/matching/find-farmers",
+              "host": ["{{matching_url}}"],
+              "path": ["api", "matching", "find-farmers"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Find Consumers for Farmer",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"farmer_id\": \"F001\",\n  \"farmer_name\": \"김농부\",\n  \"region\": \"경기도 용인\",\n  \"farm_type\": \"유기농 채소농장\",\n  \"crop_types\": [\"tomato\", \"lettuce\", \"cucumber\"],\n  \"certifications\": [\"organic\", \"gmo_free\"],\n  \"esg_score\": 85.0,\n  \"latitude\": 37.2411,\n  \"longitude\": 127.1776,\n  \"farming_method\": \"organic\",\n  \"available_quantity\": 500.0,\n  \"price_range\": [3000, 5000],\n  \"top_n\": 10\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{matching_url}}/api/matching/find-consumers",
+              "host": ["{{matching_url}}"],
+              "path": ["api", "matching", "find-consumers"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Mutual Matches",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"threshold\": 60.0,\n  \"limit\": 50\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{matching_url}}/api/matching/mutual-matches",
+              "host": ["{{matching_url}}"],
+              "path": ["api", "matching", "mutual-matches"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Match History",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{matching_url}}/api/matching/match-history?limit=100",
+              "host": ["{{matching_url}}"],
+              "path": ["api", "matching", "match-history"],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "100"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Health Check - Matching",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{matching_url}}/api/matching/health",
+              "host": ["{{matching_url}}"],
+              "path": ["api", "matching", "health"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Health Checks",
+      "item": [
+        {
+          "name": "Main API Health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/health",
+              "host": ["{{base_url}}"],
+              "path": ["api", "health"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Mall API Health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{mall_url}}/api/mall/health",
+              "host": ["{{mall_url}}"],
+              "path": ["api", "mall", "health"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Root",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/",
+              "host": ["{{base_url}}"],
+              "path": [""]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

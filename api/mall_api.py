@@ -16,6 +16,7 @@ from flask_cors import CORS
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from api.coupon_manager import CouponManager, Product, DigitalCoupon
+from api.auth_middleware import require_auth, require_role
 
 # Configure logging
 logging.basicConfig(
@@ -110,8 +111,9 @@ def get_product(product_id):
 
 
 @app.route('/api/mall/products', methods=['POST'])
+@require_role('ADMIN', 'SUPPLIER')
 def add_product():
-    """상품 추가"""
+    """상품 추가 (관리자 및 공급자만 가능)"""
     try:
         data = request.get_json()
         if not data:
@@ -203,8 +205,9 @@ def get_user_coupons(user_address):
 
 
 @app.route('/api/mall/users/<string:user_address>/coupons/<string:coupon_id>', methods=['POST'])
+@require_role('ADMIN', 'COMMITTEE')
 def issue_coupon(user_address, coupon_id):
-    """사용자에게 쿠폰 발급"""
+    """사용자에게 쿠폰 발급 (관리자 및 위원회만 가능)"""
     try:
         manager = get_coupon_manager()
         success = manager.issue_coupon_to_user(user_address, coupon_id)

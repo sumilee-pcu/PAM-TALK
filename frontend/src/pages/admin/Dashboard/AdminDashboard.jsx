@@ -539,7 +539,7 @@ function generateDemoEsgActivities() {
       carbonSaved: 2.5,
       timestamp: new Date(Date.now() - 1800000).toISOString(),
       location: '서울시 강남구',
-      imageUrl: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=300&h=200&fit=crop',
+      imageUrl: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=300&h=200&fit=crop&q=80',
       status: 'pending'
     },
     {
@@ -551,7 +551,7 @@ function generateDemoEsgActivities() {
       carbonSaved: 1.2,
       timestamp: new Date(Date.now() - 3600000).toISOString(),
       location: '서울시 서초구',
-      imageUrl: 'https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?w=300&h=200&fit=crop',
+      imageUrl: 'https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?w=300&h=200&fit=crop&q=80',
       status: 'pending'
     },
     {
@@ -563,7 +563,7 @@ function generateDemoEsgActivities() {
       carbonSaved: 3.0,
       timestamp: new Date(Date.now() - 7200000).toISOString(),
       location: '경기도 성남시',
-      imageUrl: 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=300&h=200&fit=crop',
+      imageUrl: 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=300&h=200&fit=crop&q=80',
       status: 'approved'
     },
     {
