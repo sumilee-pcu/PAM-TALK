@@ -1,4 +1,5 @@
 from flask import Flask
+from flask_cors import CORS
 
 from app.api.token_routes import token_routes
 from app.api.wallet_routes import wallet_routes
@@ -12,6 +13,10 @@ from app.routes.blockchain_setup import blockchain_setup_bp
 
 def create_app():
     app = Flask(__name__)
+
+    # CORS 설정
+    CORS(app, origins="*", methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"])
+
     app.register_blueprint(token_routes, url_prefix="/api/token")
     app.register_blueprint(wallet_routes, url_prefix="/api/wallet")
     app.register_blueprint(batch_routes, url_prefix="/api/batch")
