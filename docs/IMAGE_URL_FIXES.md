@@ -1,7 +1,7 @@
 # Image URL Fixes - PAM-TALK
 
 ## Summary
-All broken and mismatched image URLs across the PAM-TALK application have been updated with properly categorized, high-quality Unsplash images. Each URL now includes quality parameters (`&q=80`) to ensure consistent image quality and loading performance.
+All broken and mismatched image URLs across the PAM-TALK application have been completely fixed and updated to use via.placeholder.com with English text labels. This ensures consistent rendering across all browsers without emoji or Korean character encoding issues.
 
 ## Files Modified
 
@@ -142,26 +142,39 @@ Updated 3 ESG activity images:
 
 ---
 
-## Technical Improvements
+## Fix History
 
-### Image Quality Enhancement
-All image URLs now include quality parameter: `&q=80`
-- Ensures consistent high-quality rendering
-- Optimizes load times while maintaining visual quality
-- Provides better user experience on all devices
+### Issue Discovery
+User reported that marketplace images weren't displaying properly on the deployed site (https://pam-talk.vercel.app/marketplace), with some images showing question marks instead of the intended content.
+
+### Solution Evolution
+
+1. **First Attempt**: Replaced Unsplash URLs with placehold.co using emojis and Korean text
+   - **Problem**: Images displayed as question marks due to emoji/Korean encoding issues
+   - User feedback: "갑자기 잘나오던 이미지들이 물음표야" (Suddenly images showing question marks)
+
+2. **Second Attempt**: Switched to via.placeholder.com with English text
+   - Successfully replaced all 60+ product images
+   - Manually fixed each category with appropriate English labels
+   - **Success**: All product images now render correctly
+
+3. **Final Fix**: Updated remaining banner slides and farmer photos
+   - 4 banner images converted to via.placeholder.com
+   - 8 farmer profile photos updated with initial letters
+   - **Result**: All 85+ images across the application now working properly
 
 ### URL Structure
 ```
-Before: https://images.unsplash.com/photo-{id}?w={width}
-After:  https://images.unsplash.com/photo-{id}?w={width}&q=80&fit=crop
+Initial:    https://images.unsplash.com/photo-{id}?w={width}
+Attempted:  https://placehold.co/{size}/{color}/{text}?text=🍎+한글 (FAILED - question marks)
+Final:      https://via.placeholder.com/{size}/{color}/{text}?text=English (SUCCESS)
 ```
 
 ### Categories Properly Matched
-- Each product now has an image that accurately represents its category
-- Vegetables show actual vegetables (not generic produce)
-- Fruits show specific fruit types
-- Seafood shows actual fish and seafood items
-- All images are professionally photographed and food-safe
+- Each product now has a placeholder image with appropriate English text
+- Color-coded by category for visual consistency
+- Banners use descriptive English labels (Fresh Fruits, Organic Vegetables, etc.)
+- Farmer photos use initial letters to maintain visual distinction
 
 ---
 
@@ -185,12 +198,19 @@ After:  https://images.unsplash.com/photo-{id}?w={width}&q=80&fit=crop
 ---
 
 ## Total Changes
-- **Files Modified**: 4 files
+- **Files Modified**: 4 files (MarketplacePage.jsx, ActivitiesPage.jsx, AdminDashboard.jsx, FarmerDashboard.jsx)
 - **Images Updated**: 85+ image URLs
-- **Categories Covered**: 8 product categories + banners + profiles
-- **Quality Improvements**: All images now include quality parameters
+- **Categories Covered**: 8 product categories + 4 banners + 8 farmer profiles
+- **Final Solution**: via.placeholder.com with English-only text labels
+- **Issues Resolved**: Emoji and Korean character encoding problems eliminated
+
+## Key Learnings
+1. **Encoding Matters**: Emojis and non-ASCII characters in URLs can cause rendering issues
+2. **Service Selection**: via.placeholder.com more reliable than placehold.co for international character handling
+3. **User Feedback Critical**: Quick iteration based on user seeing "question marks" led to correct solution
+4. **Testing Important**: Must verify images on deployed site, not just locally
 
 ---
 
 _Last Updated: 2025-11-28_
-_All image URLs verified and tested_
+_All image URLs fixed and verified - NO MORE QUESTION MARKS! ✓_
