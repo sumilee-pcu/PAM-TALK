@@ -1272,8 +1272,8 @@ def get_all_orders():
     try:
         manager = get_coupon_manager()
 
-        # 모든 주문 가져오기
-        all_orders = list(manager.orders.values()) if hasattr(manager, 'orders') else []
+        # 모든 주문 가져오기 (orders는 이미 list)
+        all_orders = manager.orders if hasattr(manager, 'orders') else []
 
         # 상태 필터
         status = request.args.get('status')
