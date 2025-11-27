@@ -17,6 +17,7 @@ from flask_socketio import SocketIO, emit, join_room, leave_room
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from api.community_manager import CommunityManager
+from api.coupon_manager import CouponManager
 
 # Configure logging
 logging.basicConfig(
@@ -39,6 +40,7 @@ socketio = SocketIO(app, cors_allowed_origins="*")
 
 # Global community manager instance
 community_manager = None
+coupon_manager = None
 
 
 def get_community_manager():
@@ -49,6 +51,14 @@ def get_community_manager():
         # 초기 데이터 생성
         _initialize_sample_data()
     return community_manager
+
+
+def get_coupon_manager():
+    """Get or create coupon manager instance"""
+    global coupon_manager
+    if coupon_manager is None:
+        coupon_manager = CouponManager()
+    return coupon_manager
 
 
 def _initialize_sample_data():
@@ -1052,6 +1062,98 @@ def lstm_products():
     except Exception as e:
         logger.error(f"LSTM products error: {e}")
         return jsonify(create_error_response(f"제품 목록 조회 실패: {str(e)}")), 500
+
+
+# ========================================
+# Mall API Endpoints
+# ========================================
+
+@app.route('/api/mall/products', methods=['GET'])
+def get_mall_products():
+    """상품 목록 조회"""
+    try:
+        manager = get_coupon_manager()
+        category = request.args.get('category')
+
+        products = manager.get_all_products(category)
+        products_data = [p.to_dict() for p in products]
+
+        return jsonify(create_success_response(products_data))
+
+    except Exception as e:
+        logger.error(f"Get products error: {e}")
+        return jsonify(create_error_response(f"상품 조회 실패: {str(e)}")), 500
+
+
+@app.route('/api/mall/products/<string:product_id>', methods=['GET'])
+def get_mall_product(product_id):
+    """특정 상품 조회"""
+    try:
+        manager = get_coupon_manager()
+        product = manager.get_product(product_id)
+
+        if not product:
+            return jsonify(create_error_response("상품을 찾을 수 없습니다")), 404
+
+        return jsonify(create_success_response(product.to_dict()))
+
+    except Exception as e:
+        logger.error(f"Get product error: {e}")
+        return jsonify(create_error_response(f"상품 조회 실패: {str(e)}")), 500
+
+
+@app.route('/api/mall/orders', methods=['POST'])
+def create_mall_order():
+    """주문 생성"""
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify(create_error_response("요청 데이터가 없습니다")), 400
+
+        # 필수 필드 확인
+        required_fields = ['user_address', 'items']
+        missing_fields = [field for field in required_fields if field not in data]
+        if missing_fields:
+            return jsonify(create_error_response(
+                f"필수 필드가 누락되었습니다: {', '.join(missing_fields)}"
+            )), 400
+
+        manager = get_coupon_manager()
+
+        result = manager.create_order(
+            user_address=data['user_address'],
+            items=data['items'],
+            coupon_id=data.get('coupon_id'),
+            payment_txid=data.get('payment_txid')
+        )
+
+        if result['success']:
+            return jsonify(create_success_response(
+                result['order'], "주문이 생성되었습니다"
+            )), 201
+        else:
+            return jsonify(create_error_response(result.get('error', '주문 생성 실패'))), 400
+
+    except Exception as e:
+        logger.error(f"Create order error: {e}")
+        return jsonify(create_error_response(f"주문 생성 실패: {str(e)}")), 500
+
+
+@app.route('/api/mall/health', methods=['GET'])
+def mall_health_check():
+    """Mall API 헬스 체크"""
+    try:
+        manager = get_coupon_manager()
+        products_count = len(manager.products)
+
+        return jsonify(create_success_response({
+            "status": "healthy",
+            "total_products": products_count
+        }))
+
+    except Exception as e:
+        logger.error(f"Mall health check error: {e}")
+        return jsonify(create_error_response("서비스 상태 확인 실패")), 500
 
 
 # ========================================
