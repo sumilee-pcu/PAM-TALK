@@ -72,31 +72,33 @@ export const classifyImage = async (imageElement) => {
 /**
  * Activity verification keywords mapping
  * Maps ESG activity IDs to expected image classification keywords
+ *
+ * UPDATED: Expanded keywords and lowered threshold for better recognition
  */
 const ACTIVITY_KEYWORDS = {
   // Environment - Recycling
-  recycling: ['bottle', 'container', 'plastic', 'jug', 'waste', 'recycling', 'trash', 'bin'],
+  recycling: ['bottle', 'container', 'plastic', 'jug', 'waste', 'recycling', 'trash', 'bin', 'can', 'glass', 'jar', 'carton'],
 
   // Environment - Transport
-  public_transport: ['bus', 'train', 'subway', 'metro', 'tram', 'station', 'transit'],
-  bike_sharing: ['bicycle', 'bike', 'cycling', 'wheel', 'mountain bike'],
+  public_transport: ['bus', 'train', 'subway', 'metro', 'tram', 'station', 'transit', 'railway', 'platform'],
+  bike_sharing: ['bicycle', 'bike', 'cycling', 'wheel', 'mountain bike', 'motorcycle', 'pedal'],
 
   // Environment - Food & Products (Manual verification)
-  local_food: ['food', 'market', 'grocery', 'produce', 'vegetable', 'fruit'],
-  low_carbon_product: ['product', 'package', 'eco', 'green', 'sustainable'],
+  local_food: ['food', 'market', 'grocery', 'produce', 'vegetable', 'fruit', 'shopping', 'store'],
+  low_carbon_product: ['product', 'package', 'eco', 'green', 'sustainable', 'organic', 'natural'],
 
   // Environment - Reusable Items
-  reusable_tumbler: ['cup', 'mug', 'tumbler', 'coffee', 'beverage', 'drink', 'espresso', 'latte'],
-  reusable_basket: ['basket', 'shopping cart', 'cart', 'hamper', 'container'],
-  ecobag_use: ['bag', 'tote', 'shopping bag', 'fabric', 'cloth', 'canvas'],
+  reusable_tumbler: ['cup', 'mug', 'tumbler', 'coffee', 'beverage', 'drink', 'espresso', 'latte', 'bottle', 'flask', 'thermos'],
+  reusable_basket: ['basket', 'shopping cart', 'cart', 'hamper', 'container', 'wicker', 'crate'],
+  ecobag_use: ['bag', 'tote', 'shopping bag', 'fabric', 'cloth', 'canvas', 'sack', 'purse', 'handbag', 'backpack', 'textile', 'carrier', 'reusable', 'pouch', 'shoulder bag'],
 
   // Social - Public Facilities
-  public_facility: ['library', 'building', 'gym', 'center', 'facility', 'museum', 'stadium'],
+  public_facility: ['library', 'building', 'gym', 'center', 'facility', 'museum', 'stadium', 'hall', 'structure', 'architecture'],
 
   // Social - Volunteer & Events (Manual verification primarily)
-  volunteer: ['volunteer', 'helping', 'community', 'service', 'people'],
-  local_event: ['event', 'gathering', 'festival', 'ceremony', 'celebration'],
-  helping_errand: ['coffee', 'delivery', 'package', 'bag', 'helping', 'carrying'],
+  volunteer: ['volunteer', 'helping', 'community', 'service', 'people', 'group', 'team', 'crowd'],
+  local_event: ['event', 'gathering', 'festival', 'ceremony', 'celebration', 'party', 'meeting'],
+  helping_errand: ['coffee', 'delivery', 'package', 'bag', 'helping', 'carrying', 'box', 'parcel'],
 
   // Governance (Primarily digital verification)
   platform_voting: [],
@@ -143,8 +145,8 @@ export const verifyActivity = (predictions, activityId) => {
 
   // Verification criteria:
   // - At least one match found
-  // - Confidence > 0.3 (30%)
-  const verified = matches.length > 0 && maxConfidence > 0.3;
+  // - Confidence > 0.2 (20%) - LOWERED from 30% for better demo success rate
+  const verified = matches.length > 0 && maxConfidence > 0.2;
 
   return {
     verified,
